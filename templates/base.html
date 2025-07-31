@@ -1,0 +1,34 @@
+<style>
+  body {
+    background: url("{{ url_for('static', filename='imagenes/MX03_U_Turn_Background.JPG') }}") no-repeat center center fixed;
+    background-size: cover;
+    color: #fff;
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+</style>
+
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}Mi App{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}" />
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+  {% include 'header.html' %}
+  {% include 'nav.html' %}
+
+  <main class="container my-4">
+    {% block content %}{% endblock %}
+  </main>
+
+  <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

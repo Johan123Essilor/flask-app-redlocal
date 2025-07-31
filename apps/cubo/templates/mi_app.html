@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Visualizador de Cubo</title>
+
+  <!-- Estilos personalizados -->
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="../../../estilos.css" />
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+
+<body>
+  <!-- Header y Nav dinámicos -->
+  <div id="header-container"></div>
+  <div id="nav-container"></div>
+
+  <main class="container my-4">
+    <h2 class="text-center mb-4">Visualizador de cubo</h2>
+
+    <!-- Input de búsqueda -->
+    <div class="mb-3">
+      <input type="text" id="busqueda" class="form-control" placeholder="Buscar..." />
+    </div>
+
+    <!-- Grid de tarjetas -->
+    <div class="grid-container d-flex flex-wrap gap-3 justify-content-center" id="contenedor">
+      <!-- Se llenará dinámicamente -->
+    </div>
+  </main>
+
+  <!-- Scripts -->
+  <script>
+    // const gridItems = [
+    //   { url: "https://example.com/1", img: "img/Hibbets.png", alt: "Hibbets", name: "Hibbets" },
+    //   { url: "https://example.com/2", img: "imaganes/academy.png", alt: "Academy", name: "Academy" },
+    //   { url: "http://127.0.0.1:5502/FlaskProject/apps/cubo/views/cubo.html", img: "https://via.placeholder.com/200x150", alt: "Ross", name: "Ross" },
+    //   { url: "https://example.com/4", img: "https://via.placeholder.com/200x150", alt: "Nike", name: "Nike" },
+    //   { url: "https://example.com/5", img: "https://via.placeholder.com/200x150", alt: "Adidas", name: "Adidas" },
+    //   { url: "https://example.com/6", img: "https://via.placeholder.com/200x150", alt: "Puma", name: "Puma" }
+    // ];
+
+    const contenedor = document.getElementById("contenedor");
+
+    function renderGrid(items) {
+      contenedor.innerHTML = ""; // Limpia contenido anterior
+      items.forEach(item => {
+        const card = document.createElement("a");
+        card.href = item.url;
+        card.target = "_blank";
+        card.className = "item text-center";
+        card.innerHTML = `
+          <img src="${item.img}" alt="${item.alt}" />
+          <p>${item.name}</p>
+        `;
+        contenedor.appendChild(card);
+      });
+    }
+
+    // Render inicial
+    renderGrid(gridItems);
+
+    // Filtro en tiempo real
+    const input = document.getElementById('busqueda');
+    input.addEventListener('input', () => {
+      const filtro = input.value.toLowerCase();
+      const filtrados = gridItems.filter(item =>
+        item.name.toLowerCase().includes(filtro)
+      );
+      renderGrid(filtrados);
+    });
+  </script>
+
+  <script src="../../../loader.js"></script>
+  <!-- Al final del body -->
+  <script src="script.js"></script>
+
+</body>
+</html>

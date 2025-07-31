@@ -1,0 +1,95 @@
+/* Fondo general y tipografía */
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: url("/static/imagenes/MX03_U_Turn_Background.JPG") no-repeat center center fixed;
+    background-size: cover;
+    color: #fff;
+   
+}
+
+/* Encabezado */
+.header {
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.9);  /* Semi-transparente para ver el fondo */
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.titulo-home {
+    color: #ffffff; 
+    font-weight: bold;
+}
+
+/* Logo */
+.logo {
+    background-color: transparent; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.logo img {
+    height: 40px;
+    filter: invert(1); 
+}
+
+/* Menú */
+body{ margin:0; font-family:'tahoma'}
+
+nav {
+  margin:0 auto;
+  width:100%;
+  height:auto;
+  display:inline-block;
+  background:#000000;
+}
+
+nav ul {
+  margin:0;padding:0;
+  list-style-type:none;
+  float:center;
+  display:inline-block;
+}
+
+nav ul li {
+  position:relative;
+  margin:0 20px 0 0;
+  float:center;
+  display:inline-block;
+}
+
+li > a:after { content: ' »'; } /* Change this in order to change the Dropdown symbol */
+
+li > a:only-child:after { content: ''; }
+
+nav ul li a {
+  padding:20px;
+  display:inline-block;
+  color:white;
+  text-decoration:none;
+}
+
+nav ul li a:hover {
+  opacity:0.5;
+}
+
+nav ul li ul {
+  display:none;
+  position:absolute;
+  left:0;
+  background:#000000;
+  float:left;
+}
+
+nav ul li ul li {
+  width:100%;
+  border-bottom:1px solid rgba(0, 0, 0, 0.3);
+}
+
+nav ul li:hover ul {
+  display:block;
+}

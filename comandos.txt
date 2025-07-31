@@ -1,0 +1,23 @@
+puerto 443
+openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes
+
+Ejecutar app
+sudo python app.py
+
+Mas seguro 
+sudo setcap 'cap_net_bind_service=+ep' $(which python3)
+python app.py
+
+
+
+en puerto 8000
+app.run(host='0.0.0.0', port=8000)
+
+.\venv\Scripts\activate
+
+pip install flask
+
+py app.run
+
+
+

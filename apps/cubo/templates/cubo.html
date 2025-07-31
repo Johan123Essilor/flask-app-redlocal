@@ -1,0 +1,61 @@
+{% extends "index.html" %}
+
+{% block title %}Visualizador de Cubo{% endblock %}
+
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/estiloGrid.css') }}">
+
+
+  <h2 class="text-center mb-4">Visualizador de cubo</h2>
+
+  <!-- Input de búsqueda -->
+  <div class="mb-3">
+    <input type="text" id="busqueda" class="form-control" placeholder="Buscar..." />
+  </div>
+
+  <!-- Grid de tarjetas -->
+  <div class="grid-container d-flex flex-wrap gap-3 justify-content-center" id="contenedor">
+    <!-- Se llenará dinámicamente -->
+  </div>
+
+<script>
+  const contenedor = document.getElementById("contenedor");
+  const input = document.getElementById("busqueda");
+  let gridItems = [];
+
+  function renderGrid(items) {
+    contenedor.innerHTML = "";
+    items.forEach(item => {
+      const card = document.createElement("a");
+      card.href = item.url;
+      card.target = "_blank";
+      card.className = "item text-center";
+      card.innerHTML = `
+        <img src="${item.img}" alt="${item.alt}" />
+        <p>${item.name}</p>
+      `;
+      contenedor.appendChild(card);
+    });
+  }
+
+  // Cargar desde archivo JSON en static
+  fetch("{{ url_for('static', filename='data/clients.json') }}")
+    .then(res => res.json())
+    .then(data => {
+      gridItems = data;
+      renderGrid(gridItems);
+    });
+
+  input.addEventListener('input', () => {
+    const filtro = input.value.toLowerCase();
+    const filtrados = gridItems.filter(item =>
+      item.name.toLowerCase().includes(filtro)
+    );
+    renderGrid(filtrados);
+  });
+</script>
+
+
+  <!-- Aquí si quieres agregar más scripts específicos para esta página -->
+{% endblock %}
