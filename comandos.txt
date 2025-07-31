@@ -21,3 +21,13 @@ py app.run
 
 
 
+
+ 1. Agrega todos los archivos al control de versiones:
+git add .
+
+ 2. Crea un commit con un mensaje (por ejemplo: "Primer commit"):
+ git commit -m "Primer commit"
+
+3. Sube los cambios al repositorio remoto en GitHub:
+git push origin master
+Si estás usando una rama diferente a master (como main), cambia master por main.
