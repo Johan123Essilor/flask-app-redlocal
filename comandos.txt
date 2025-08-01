@@ -13,6 +13,13 @@ python app.py
 en puerto 8000
 app.run(host='0.0.0.0', port=8000)
 
+C:\flask-app-redlocal>python -m venv env
+
+C:\flask-app-redlocal>env\Scripts\activate
+
+(env) C:\flask-app-redlocal>pip install flask
+
+
 .\venv\Scripts\activate
 
 pip install flask
