@@ -10,46 +10,57 @@
 </head>
 <body>
   <header>
-    <h1>{{ cliente.name }}</h1>
+    <h1>{{ cliente.name }} </h1>
+    
     <nav id="cubeSelector"></nav>
   </header>
-
+ <div id="btnSelected"></div>
   <main>
     <div class="container" id="cube"></div>
   </main>
+ 
 
   <script>
-     const clienteData = {{ cliente | tojson }};
+    var btnValue = "D2"
+    const clienteData = {{ cliente | tojson }};
     const cube = document.getElementById('cube');
     const nav = document.getElementById('cubeSelector');
-
     let isDragging = false;
     let prevX, prevY;
     let rotX = -10, rotY = 20;
 
     // Definimos 6 cubos con diferentes dimensiones y colores
     const cubesData = {
-      cube1: { w: 200, h: 100, d: 100, zli:50, zld:150, zts: 50, zti: 50, zf:0,color: '#C2A073', label: 'Caja Pequeña' },
-      cube2: { w: 300, h: 200, d: 150, zli:75, zld:225, zts: 75, zti: 125, color: '#C2A073', label: 'Caja Mediana' },
-      cube3: { w: 500, h: 300, d: 300, zli:75, zld:225, zts: 75, zti: 125, color: '#C2A073', label: 'Caja Grande' },
-      cube4: { w: 250, h: 250, d: 250, zli:75, zld:225, zts: 75, zti: 125, color: '#C2A073', label: 'Caja Cuadrada' },
-      cube5: { w: 350, h: 150, d: 200, zli:75, zld:225, zts: 75, zti: 125, color: '#C2A073', label: 'Caja Apilable' },
-      cube6: { w: 150, h: 400, d: 100, zli:75, zld:225, zts: 75, zti: 125, color: '#C2A073', label: 'Caja Alta' }
+      cube1: { w: 200, h: 100, d: 100, zli:50, zld:150, zts: 50, zti: 50, zf:0,color: '#C2A073', label: 'DS' },
+      cube2: { w: 300, h: 200, d: 150, zli:75, zld:225, zts: 75, zti: 125, color: '#C2A073', label: 'FS' },
+      cube3: { w: 500, h: 300, d: 300, zli:75, zld:225, zts: 75, zti: 125, color: '#C2A073', label: 'A' },
+      cube4: { w: 250, h: 250, d: 250, zli:75, zld:225, zts: 75, zti: 125, color: '#C2A073', label: 'B' },
+      cube5: { w: 350, h: 150, d: 200, zli:75, zld:225, zts: 75, zti: 125, color: '#C2A073', label: 'C' },
+      cube6: { w: 150, h: 400, d: 100, zli:75, zld:225, zts: 75, zti: 125, color: '#C2A073', label: 'D' },
+      cube6: { w: 150, h: 400, d: 100, zli:75, zld:225, zts: 75, zti: 125, color: '#C2A073', label: 'D2' }
     };
 
     // Función para crear el nav dinámico
     function createNav() {
-      for (const key in cubesData) {
-        const btn = document.createElement('button');
-        btn.textContent = cubesData[key].label;
-        btn.dataset.cube = key;
-        btn.addEventListener('click', () => {
-          setActiveButton(btn);
-          setCube(key);
-        });
-        nav.appendChild(btn);
-      }
-    }
+  for (const key in cubesData) {
+    
+    const btn = document.createElement('button');
+    btn.textContent = cubesData[key].label;
+    
+    btn.dataset.cube = key;
+
+    btn.addEventListener('click', () => {
+      document.getElementById("btnSelected").textContent = cubesData[key].label;
+      btnValue = cubesData[key].label;
+      setActiveButton(btn);
+      setCube(key);
+      
+    });
+
+    nav.appendChild(btn);
+  }
+}
+
 
     function setActiveButton(activeBtn) {
       // Remueve clase active de todos y la agrega sólo al seleccionado
@@ -58,13 +69,14 @@
     }
 
     // Construye el cubo basado en el nombre de cubo
+
     function setCube(name) {
       const { w, h, d, zli, zld, zts, zti, color } = cubesData[name];
       cube.style.width = w + 'px';
       cube.style.height = h + 'px';
 
       cube.innerHTML = `
-        <div class="face front" style="width:${w}px; height:${h}px; transform: translateZ(${d/2}px); background-color: ${color};">Frontal</div>
+        <div class="face front" style="width:${w}px; height:${h}px; transform: translateZ(${d/2}px); background-color: ${color};">${btnValue}</div>
         <div class="face back" style="width:${w}px; height:${h}px; transform: rotateY(180deg) translateZ(${d / 2}px); background-color: ${color};">Posterior</div>
         <div class="face right" style="width:${d}px; height:${h}px; transform: rotateY(90deg) translateZ(${zld}px); background-color: ${color};">Derecha</div>
         <div class="face left" style="width:${d}px; height:${h}px; transform: rotateY(-90deg) translateZ(${zli}px); background-color: ${color};">Izquierda</div>
@@ -72,17 +84,44 @@
         <div class="face bottom" style="width:${w}px; height:${d}px; transform: rotateX(-90deg) translateZ(${zti}px); background-color: ${color};">Inferior</div>
       `;
 
-        // Resetea rotación al cambiar cubo
         rotX = -10; rotY = 20;
         cube.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
 
         // Agrega cara extra (opcional)
-        addExtraFaceUCC({ reference: clienteData.UCCface, offset: clienteData.UCCoffset, width: clienteData.UCCetiquetaWidth, height: clienteData.UCCetiquetaHeight, cubeData: cubesData[name], x: clienteData.UCCX, y: clienteData.UCCY });
+      addExtraFaceUCC({
+        reference: clienteData[btnValue].UCCface,
+        offset: clienteData[btnValue].UCCoffset,
+        width: clienteData[btnValue].UCCetiquetaWidth,
+        height: clienteData[btnValue].UCCetiquetaHeight,  // ✅
+        cubeData: cubesData[name],
+        x: clienteData[btnValue].UCCX,                     // ✅
+        y: clienteData[btnValue].UCCY
+      });
+      
+      addExtraFace({
+        reference: clienteData[btnValue].face,
+        offset: clienteData[btnValue].offset,
+        width: clienteData[btnValue].etiquetaWidth,
+        height: clienteData[btnValue].etiquetaHeight,  // ✅
+        cubeData: cubesData[name],
+        x: clienteData[btnValue].X,                     // ✅
+        y: clienteData[btnValue].Y
+      });
+      addExtraFace2({
+        reference: clienteData[btnValue].face2,
+        offset: clienteData[btnValue].offset2,
+        width: clienteData[btnValue].etiquetaWidth2,
+        height: clienteData[btnValue].etiquetaHeight2,  // ✅
+        cubeData: cubesData[name],
+        x: clienteData[btnValue].X2,                     // ✅
+        y: clienteData[btnValue].Y2
+      });
+
 
 
       
     }
-    function addExtraFaceUCC({ reference = 'front', offset = 20, width = 100, height = 100, cubeData,x, y}) {
+function addExtraFaceUCC({ reference = 'front', offset = 20, width = 100, height = 100, cubeData,x, y}) {
   const { w, h, d } = cubeData;
 
   const extra = document.createElement('div');
@@ -91,13 +130,96 @@
   extra.style.opacity = 0.9;
   extra.style.width = `${width}px`;
   extra.style.height = `${height}px`;
-  extra.textContent = 'Extra';
+  extra.textContent = 'UCC';
 
   let transform = '';
 
  switch (reference) {
     case 'front':
-      transform = `translateZ(${d / 2 + offset}px) translateX(10px) translateY(10px)`;  // Mover a la izquierda y abajo
+      transform = `translateZ(${d / 2 + offset}px) translateX(${x}px) translateY(${y}px)`;  // Mover a la izquierda y abajo
+      break;
+    case 'back':
+      transform = `rotateY(180deg) translateZ(${d / 2 + offset}px) translateX(${x}px) translateY(${y}px)`;  // Mover a la izquierda y abajo
+      break;
+    case 'right':
+      transform = `rotateY(90deg) translateZ(${d / 2 + offset}px) translateX(${x}px) translateY(${y}px)`;  // Mover a la izquierda y abajo
+      break;
+    case 'left':
+      transform = `rotateY(-90deg) translateZ(${d / 2 + offset}px) translateX(${x}px) translateY(${y}px)`;  // Mover a la izquierda y abajo
+      break;
+    case 'top':
+      transform = `rotateX(90deg) translateZ(${d / 2 + offset}px) translateX(${x}px) translateY(${y}px)`;  // Mover a la izquierda y abajo
+      break;
+    case 'bottom':
+      transform = `rotateX(-90deg) translateZ(${d / 2 + offset}px) translateX(${x}px) translateY(${y}px)`;  // Mover a la izquierda y abajo
+      break;
+    default:
+      console.warn('Referencia no válida');
+      return;
+  }
+
+
+  extra.style.transform = transform;
+  cube.appendChild(extra);
+}
+  function addExtraFace({ reference = 'front', offset = 20, width = 100, height = 100, cubeData,x, y}) {
+  const { w, h, d } = cubeData;
+
+  const extra = document.createElement('div');
+  extra.className = 'face';
+  extra.style.background = 'white';
+  extra.style.opacity = 0.9;
+  extra.style.width = `${width}px`;
+  extra.style.height = `${height}px`;
+  extra.textContent = 'FACE';
+
+  let transform = '';
+
+ switch (reference) {
+    case 'front':
+      transform = `translateZ(${d / 2 + offset}px) translateX(${x}px) translateY(${y}px)`;  // Mover a la izquierda y abajo
+      break;
+    case 'back':
+      transform = `rotateY(180deg) translateZ(${d / 2 + offset}px) translateX(-10px) translateY(10px)`;  // Mover a la izquierda y abajo
+      break;
+    case 'right':
+      transform = `rotateY(90deg) translateZ(${w / 2 + offset}px) translateX(-10px) translateY(10px)`;  // Mover a la izquierda y abajo
+      break;
+    case 'left':
+      transform = `rotateY(-90deg) translateZ(${w / 2 + offset}px) translateX(-10px) translateY(10px)`;  // Mover a la izquierda y abajo
+      break;
+    case 'top':
+      transform = `rotateX(90deg) translateZ(${h / 2 + offset}px) translateX(-10px) translateY(10px)`;  // Mover a la izquierda y abajo
+      break;
+    case 'bottom':
+      transform = `rotateX(-90deg) translateZ(${h / 2 + offset}px) translateX(-10px) translateY(10px)`;  // Mover a la izquierda y abajo
+      break;
+    default:
+      console.warn('Referencia no válida');
+      return;
+  }
+
+
+  extra.style.transform = transform;
+  cube.appendChild(extra);
+}
+
+function addExtraFace2({ reference = 'front', offset = 20, width = 100, height = 100, cubeData,x, y}) {
+  const { w, h, d } = cubeData;
+
+  const extra = document.createElement('div');
+  extra.className = 'face';
+  extra.style.background = 'white';
+  extra.style.opacity = 0.9;
+  extra.style.width = `${width}px`;
+  extra.style.height = `${height}px`;
+  extra.textContent = 'FACE2';
+
+  let transform = '';
+
+ switch (reference) {
+    case 'front':
+      transform = `translateZ(${d / 2 + offset}px) translateX(${x}px) translateY(${y}px)`;  // Mover a la izquierda y abajo
       break;
     case 'back':
       transform = `rotateY(180deg) translateZ(${d / 2 + offset}px) translateX(-10px) translateY(10px)`;  // Mover a la izquierda y abajo

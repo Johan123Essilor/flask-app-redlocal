@@ -4,13 +4,48 @@
     "label": "Caja Pequeña",
     "urlCaja": "https://example.com/1",
     "img": "img/Hibbets.png",
-    "alt": "Hibbets",
-    "UCCface": "front",
-    "UCCoffset": 10,
-    "UCCetiquetaWidth": 120,
-    "UCCetiquetaHeight": 100,
-    "UCCX": 10,
-    "UCCY": 20
+    "D2":{
+      "UCCface": "front",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 120,
+      "UCCetiquetaHeight": 100,
+      "UCCX": 110,
+      "UCCY": 10,
+
+      "face": "top",
+      "offset": 10,
+      "etiquetaWidth": 120,
+      "etiquetaHeight": 100,
+      "X": 110,
+      "Y": 10,
+
+      "face2": "bottom",
+      "offset2": 10,
+      "etiquetaWidth2": 120,
+      "etiquetaHeight2": 100,
+      "X2": 110,
+      "Y2": 10
+      
+      
+    },
+    "CAJA D":{
+      "UCCface": "front",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 120,
+      "UCCetiquetaHeight": 100,
+      "UCCX": 5,
+      "UCCY": 100
+      
+    },
+    "Caja Grande":{
+      "UCCface": "front",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 120,
+      "UCCetiquetaHeight": 100,
+      "UCCX": 1000,
+      "UCCY": 100
+    },
+    "alt": "Hibbets"
   },
   {
     "name": "Academy",
@@ -18,11 +53,46 @@
     "urlCaja": "https://example.com/2",
     "img": "imaganes/academy.png",
     "alt": "Academy",
-    "UCCface": "top",
-    "UCCoffset":10,
-    "UCCetiquetaWidth": 10,
-    "UCCetiquetaHeight": 80,
-    "UCCX": 20,
-    "UCCY": 10
+    "D2":{
+      "UCCface": "front",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 120,
+      "UCCetiquetaHeight": 100,
+      "UCCX": 110,
+      "UCCY": 10,
+      
+      "face": "top",
+      "offset": 10,
+      "etiquetaWidth": 120,
+      "etiquetaHeight": 100,
+      "X": 110,
+      "Y": 10,
+
+      "face2": "bottom",
+      "offset2": 10,
+      "etiquetaWidth2": 120,
+      "etiquetaHeight2": 100,
+      "X2": 110,
+      "Y2": 10
+      
+      
+    },
+    "CAJA D":{
+      "UCCface": "front",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 120,
+      "UCCetiquetaHeight": 100,
+      "UCCX": 5,
+      "UCCY": 100
+      
+    },
+    "Caja Grande":{
+      "UCCface": "front",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 120,
+      "UCCetiquetaHeight": 100,
+      "UCCX": 1000,
+      "UCCY": 100
+    }
   }
 ]
