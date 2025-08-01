@@ -77,12 +77,12 @@
         cube.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
 
         // Agrega cara extra (opcional)
-        addExtraFaceUCC({ reference: 'front', offset: 20, width: clienteData.etiquetaWidth, height: 100, cubeData: cubesData[name] });
+        addExtraFaceUCC({ reference: clienteData.UCCface, offset: clienteData.UCCoffset, width: clienteData.UCCetiquetaWidth, height: clienteData.UCCetiquetaHeight, cubeData: cubesData[name], x: clienteData.UCCX, y: clienteData.UCCY });
 
 
       
     }
-    function addExtraFaceUCC({ reference = 'front', offset = 20, width = 100, height = 100, cubeData }) {
+    function addExtraFaceUCC({ reference = 'front', offset = 20, width = 100, height = 100, cubeData,x, y}) {
   const { w, h, d } = cubeData;
 
   const extra = document.createElement('div');
@@ -95,29 +95,30 @@
 
   let transform = '';
 
-  switch (reference) {
+ switch (reference) {
     case 'front':
-      transform = `translateZ(${d / 2 + offset}px)`;
+      transform = `translateZ(${d / 2 + offset}px) translateX(10px) translateY(10px)`;  // Mover a la izquierda y abajo
       break;
     case 'back':
-      transform = `rotateY(180deg) translateZ(${d / 2 + offset}px)`;
+      transform = `rotateY(180deg) translateZ(${d / 2 + offset}px) translateX(-10px) translateY(10px)`;  // Mover a la izquierda y abajo
       break;
     case 'right':
-      transform = `rotateY(90deg) translateZ(${w / 2 + offset}px)`;
+      transform = `rotateY(90deg) translateZ(${w / 2 + offset}px) translateX(-10px) translateY(10px)`;  // Mover a la izquierda y abajo
       break;
     case 'left':
-      transform = `rotateY(-90deg) translateZ(${w / 2 + offset}px)`;
+      transform = `rotateY(-90deg) translateZ(${w / 2 + offset}px) translateX(-10px) translateY(10px)`;  // Mover a la izquierda y abajo
       break;
     case 'top':
-      transform = `rotateX(90deg) translateZ(${h / 2 + offset}px)`;
+      transform = `rotateX(90deg) translateZ(${h / 2 + offset}px) translateX(-10px) translateY(10px)`;  // Mover a la izquierda y abajo
       break;
     case 'bottom':
-      transform = `rotateX(-90deg) translateZ(${h / 2 + offset}px)`;
+      transform = `rotateX(-90deg) translateZ(${h / 2 + offset}px) translateX(-10px) translateY(10px)`;  // Mover a la izquierda y abajo
       break;
     default:
       console.warn('Referencia no válida');
       return;
   }
+
 
   extra.style.transform = transform;
   cube.appendChild(extra);

@@ -5,10 +5,12 @@
     "urlCaja": "https://example.com/1",
     "img": "img/Hibbets.png",
     "alt": "Hibbets",
-    "face": "front",
-    "offset": 20,
-    "etiquetaWidth": 120,
-    "etiquetaHeight": 100
+    "UCCface": "front",
+    "UCCoffset": 10,
+    "UCCetiquetaWidth": 120,
+    "UCCetiquetaHeight": 100,
+    "UCCX": 10,
+    "UCCY": 20
   },
   {
     "name": "Academy",
@@ -16,9 +18,11 @@
     "urlCaja": "https://example.com/2",
     "img": "imaganes/academy.png",
     "alt": "Academy",
-    "face": "top",
-    "offset": 30,
-    "etiquetaWidth": 10,
-    "etiquetaHeight": 80
+    "UCCface": "top",
+    "UCCoffset":10,
+    "UCCetiquetaWidth": 10,
+    "UCCetiquetaHeight": 80,
+    "UCCX": 20,
+    "UCCY": 10
   }
 ]

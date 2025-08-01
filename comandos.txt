@@ -8,7 +8,7 @@ Mas seguro
 sudo setcap 'cap_net_bind_service=+ep' $(which python3)
 python app.py
 
-
+<img src="{{ cliente.img }}" alt="{{ cliente.alt }}">
 
 en puerto 8000
 app.run(host='0.0.0.0', port=8000)
