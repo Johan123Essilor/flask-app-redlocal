@@ -24,20 +24,19 @@
   const input = document.getElementById("busqueda");
   let gridItems = [];
 
-  function renderGrid(items) {
-    contenedor.innerHTML = "";
-    items.forEach(item => {
-      const card = document.createElement("a");
-      card.href = item.url;
-      card.target = "_blank";
-      card.className = "item text-center";
-      card.innerHTML = `
-        <img src="${item.img}" alt="${item.alt}" />
-        <p>${item.name}</p>
-      `;
-      contenedor.appendChild(card);
-    });
-  }
+function renderGrid(items) {
+  contenedor.innerHTML = "";
+  items.forEach((item, index) => {
+    const card = document.createElement("a");
+    card.href = `/visor/${index}`;
+    card.className = "item text-center";
+    card.innerHTML = `
+      <img src="${item.img}" alt="${item.alt}" />
+      <p>${item.name}</p>
+    `;
+    contenedor.appendChild(card);
+  });
+}
 
   // Cargar desde archivo JSON en static
   fetch("{{ url_for('static', filename='data/clients.json') }}")

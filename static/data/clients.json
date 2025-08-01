@@ -1,9 +1,24 @@
 [
-  { "urlCaja": "https://example.com/1", "img": "img/Hibbets.png", "alt": "Hibbets", "name": "Hibbets" },
-  { "urlCaja": "https://example.com/2", "img": "imaganes/academy.png", "alt": "Academy", "name": "Academy" },
-  { "urlCaja": "http://127.0.0.1:5502/FlaskProject/apps/cubo/views/cubo.html", "img": "https://via.placeholder.com/200x150", "alt": "Ross", "name": "Ross" },
-  { "urlCaja": "https://example.com/4", "img": "https://via.placeholder.com/200x150", "alt": "Nike", "name": "Nike" },
-  { "urlCaja": "https://example.com/5", "img": "https://via.placeholder.com/200x150", "alt": "Adidas", "name": "Adidas" },
-  { "urlCaja": "https://example.com/6", "img": "https://via.placeholder.com/200x150", "alt": "Puma", "name": "Puma" }
-  
+  {
+    "name": "Hibbets",
+    "label": "Caja Pequeña",
+    "urlCaja": "https://example.com/1",
+    "img": "img/Hibbets.png",
+    "alt": "Hibbets",
+    "face": "front",
+    "offset": 20,
+    "etiquetaWidth": 120,
+    "etiquetaHeight": 100
+  },
+  {
+    "name": "Academy",
+    "label": "Caja Mediana",
+    "urlCaja": "https://example.com/2",
+    "img": "imaganes/academy.png",
+    "alt": "Academy",
+    "face": "top",
+    "offset": 30,
+    "etiquetaWidth": 10,
+    "etiquetaHeight": 80
+  }
 ]

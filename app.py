@@ -1,5 +1,6 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, abort
 from jinja2 import ChoiceLoader, FileSystemLoader
+import json
 
 app = Flask(__name__)
 
@@ -8,6 +9,19 @@ app.jinja_loader = ChoiceLoader([
     FileSystemLoader('apps/cubo/templates'),
     FileSystemLoader('apps/infoshipDev/templates')
 ])
+
+
+def cargar_datos():
+    with open('static/data/clients.json', 'r', encoding='utf-8') as f:
+        return json.load(f)
+
+@app.route('/visor/<int:item_id>')
+def visor(item_id):
+    clientes = cargar_datos()
+    if item_id < 0 or item_id >= len(clientes):
+        abort(404)
+    cliente = clientes[item_id]
+    return render_template('visor.html', cliente=cliente)
 
 @app.route('/')
 def home():
@@ -23,6 +37,8 @@ def infoship():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host="0.0.0.0", debug=True)
+
+    # app.run(debug=True)
 
 
