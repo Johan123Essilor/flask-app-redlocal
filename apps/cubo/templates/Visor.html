@@ -31,13 +31,14 @@
 
     // Definimos 6 cubos con diferentes dimensiones y colores
     const cubesData = {
-      cube1: { w: 200, h: 100, d: 100, zli:50, zld:150, zts: 50, zti: 50, zf:0,color: '#C2A073', label: 'DS' },
-      cube2: { w: 300, h: 200, d: 150, zli:75, zld:225, zts: 75, zti: 125, color: '#C2A073', label: 'FS' },
-      cube3: { w: 500, h: 300, d: 300, zli:75, zld:225, zts: 75, zti: 125, color: '#C2A073', label: 'A' },
-      cube4: { w: 250, h: 250, d: 250, zli:75, zld:225, zts: 75, zti: 125, color: '#C2A073', label: 'B' },
-      cube5: { w: 350, h: 150, d: 200, zli:75, zld:225, zts: 75, zti: 125, color: '#C2A073', label: 'C' },
-      cube6: { w: 150, h: 400, d: 100, zli:75, zld:225, zts: 75, zti: 125, color: '#C2A073', label: 'D' },
-      cube6: { w: 150, h: 400, d: 100, zli:75, zld:225, zts: 75, zti: 125, color: '#C2A073', label: 'D2' }
+      cube1: { w: 100, h: 150, d: 75, zli:38, zld:63, zts: 38, zti: 113, color: '#C2A073', label: 'FS' },
+      cube2: { w: 200, h: 100, d: 133, zli:67, zld:133, zts: 67, zti: 33, zf:0,color: '#C2A073', label: 'DS' },
+      cube3: { w: 200, h: 150, d: 150, zli:75, zld:125, zts: 75, zti: 75, color: '#C2A073', label: 'A' },
+      cube4: { w: 300, h: 150, d: 225, zli:113, zld:188, zts: 113, zti: 38, color: '#C2A073', label: 'B' },
+      cube5: { w: 400, h: 150, d: 260, zli:130, zld:270, zts: 130, zti: 20, color: '#C2A073', label: 'C' },
+      cube6: { w: 400, h: 275, d: 240, zli:120, zld:280, zts: 120, zti: 155, color: '#C2A073', label: 'D' },
+      cube7: { w: 400, h: 300, d: 260, zli:130, zld:270, zts: 130, zti: 170, color: '#C2A073', label: 'D2' },
+      cube8: { w: 400, h: 300, d: 300, zli:140, zld:275, zts: 125, zti: 100, color: '#C2A073', label: 'F' }
     };
 
     // Función para crear el nav dinámico
@@ -76,12 +77,12 @@
       cube.style.height = h + 'px';
 
       cube.innerHTML = `
-        <div class="face front" style="width:${w}px; height:${h}px; transform: translateZ(${d/2}px); background-color: ${color};">${btnValue}</div>
-        <div class="face back" style="width:${w}px; height:${h}px; transform: rotateY(180deg) translateZ(${d / 2}px); background-color: ${color};">Posterior</div>
-        <div class="face right" style="width:${d}px; height:${h}px; transform: rotateY(90deg) translateZ(${zld}px); background-color: ${color};">Derecha</div>
-        <div class="face left" style="width:${d}px; height:${h}px; transform: rotateY(-90deg) translateZ(${zli}px); background-color: ${color};">Izquierda</div>
-        <div class="face top" style="width:${w}px; height:${d}px; transform: rotateX(90deg) translateZ(${zts}px); background-color: ${color};">Superior</div>
-        <div class="face bottom" style="width:${w}px; height:${d}px; transform: rotateX(-90deg) translateZ(${zti}px); background-color: ${color};">Inferior</div>
+        <div class="face front" style="width:${w}px; height:${h}px; transform: translateZ(${d/2}px); background-color: ${color};font-size: 12px;">${btnValue}</div>
+        <div class="face back" style="width:${w}px; height:${h}px; transform: rotateY(180deg) translateZ(${d / 2}px); background-color: ${color};font-size: 12px;">Posterior</div>
+        <div class="face right" style="width:${d}px; height:${h}px; transform: rotateY(90deg) translateZ(${zld}px); background-color: ${color};font-size: 12px;">Derecha</div>
+        <div class="face left" style="width:${d}px; height:${h}px; transform: rotateY(-90deg) translateZ(${zli}px); background-color: ${color};font-size: 12px;">Izquierda</div>
+        <div class="face top" style="width:${w}px; height:${d}px; transform: rotateX(90deg) translateZ(${zts}px); background-color: ${color};font-size: 12px;">Superior</div>
+        <div class="face bottom" style="width:${w}px; height:${d}px; transform: rotateX(-90deg) translateZ(${zti}px); background-color: ${color};font-size: 12px;">Inferior</div>
       `;
 
         rotX = -10; rotY = 20;
