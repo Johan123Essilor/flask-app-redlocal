@@ -4,7 +4,6 @@ from jinja2 import ChoiceLoader, FileSystemLoader
 import json
 
 app = Flask(__name__)
-app.register_blueprint(infoship_bp, url_prefix='/infoship')
 
 app.jinja_loader = ChoiceLoader([
     app.jinja_loader,
@@ -34,12 +33,16 @@ def visor(item_id):
     return render_template('visor.html', cliente=cliente)
 
 #---------------------------------Infoship
+app.register_blueprint(infoship_bp, url_prefix='/infoship')
 @app.route('/infoship')
 def infoship():
     return render_template('infoshipDevIndex.html')
 @app.route('/infoship/direccion')
 def direccion():
     return render_template('direccion.html')
+@app.route('/infoship/carrierChange')
+def carrierChange():
+    return render_template('Cambio de carrier.html')
 
 
 if __name__ == '__main__':

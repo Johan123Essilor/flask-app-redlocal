@@ -3,8 +3,12 @@ body {
     font-family: 'Poppins', sans-serif;
     margin: 0;
     padding: 0;
-    background: url("/static/imagenes/MX03_U_Turn_Background.JPG") no-repeat center center fixed;
+    background: 
+        linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
+        url("/static/imagenes/MX03_U_Turn_Background.JPG") no-repeat center center fixed;
     background-size: cover;
+    background-blend-mode: darken;
+
     color: #fff;
    
 }
@@ -83,7 +87,15 @@ nav ul li a {
 nav ul li a:hover {
   opacity:0.5;
 }
-
+/* Submenú */
+nav ul li ul {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #000000;
+  z-index: 1001;
+}
 nav ul li ul {
   display:none;
   position:absolute;

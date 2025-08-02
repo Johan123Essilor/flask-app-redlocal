@@ -16,6 +16,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>{% block title %}Mi App{% endblock %}</title>
+  <link rel="icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/png" />
   <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" />
   <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}" />
   {% block extra_css %}{% endblock %}

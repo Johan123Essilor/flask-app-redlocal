@@ -1,65 +1,66 @@
 {% extends "index.html" %}
 
-{% block title %}Visualizador de Cubo{% endblock %}
+{% block title %}InfoshipDev{% endblock %}
 
 
 {% block content %} 
+<link rel="stylesheet" href="{{ url_for('static', filename='css/estiloInfoship.css') }}">
 <body>
      <h3><p style="text-align: left;">NOTA: Antes de realizar cualquier cambio, pedir autorizacion del departamento Customer Service</p></h3>
 <center>
         <div id="contenedor_principal">
 <!--Primera Imagen-->
 <div class="contenedor_imagen_texto">
-<div class="imagen"><img src="imagenes/DWP.png" width="340" height="310"></div>
+<div class="imagen"><img src="{{ url_for('infoship.static', filename='img/DWP.png') }}" width="340" height="310"></div>
 <div><h3><center>Paso 1</center><center>Para realizar el cambio de carrier ingresar a DWP</center></div></h3>
 </div>
 
 <!--Segunda Imagen-->
 <div class="contenedor_imagen_texto">
-<div class="imagen"><img src="imagenes/change.png" width="440" height="310"></div>
+<div class="imagen"><img src="{{ url_for('infoship.static', filename='img/change.png') }}" width="440" height="310"></div>
 <div><h3><center>Paso 2</center><center>Para ver el carrier actual del delivery, puedes entrar a la transaccion VL02N - Change Outbound Delivery</center></div></h3>
 </div>
 
 <!--tercera Imagen-->
 <div class="contenedor_imagen_texto">
-<div class="imagen"><img src="imagenes/sombrero.png" width="310" height="310"></div>
+<div class="imagen"><img src="{{ url_for('infoship.static', filename='img/sombrero.png') }}" width="310" height="310"></div>
 <div><h3><center>Paso 3</center><br><center>Una vez ingresado el delivery, haz clic en el icono del sombrero<center></div></h3>
 </div>
 
 <br><br><br><br>
 <!--cuarta Imagen-->
 <div class="contenedor_imagen_texto">
-<div class="imagen"><img src="imagenes/partner.png" width="310" height="310"></div>
+<div class="imagen"><img src="{{ url_for('infoship.static', filename='img/partner.png') }}" width="310" height="310"></div>
 <div><h3><center>Paso 4</center><br><center>Da clic sobre la opcion partner</center></div></h3>
 <br></div>
 
 <!--quinta Imagen-->
 <div class="contenedor_imagen_texto">
-<div class="imagen"><img src="imagenes/check carrier.png" width="310" height="310"></div>
+<div class="imagen"><img src="{{ url_for('infoship.static', filename='img/check carrier.png') }}" width="310" height="310"></div>
 <div><h3><center>Paso 5</center>En area marcada podras revisar el carrier actual del delivery<center></center><br></div></h3>
 <br></div>
 
 <!--sexta Imagen-->
 <div class="contenedor_imagen_texto">
-<div class="imagen"><img src="imagenes/carrier.png" width="310" height="310"></div>
+<div class="imagen"><img src="{{ url_for('infoship.static', filename='img/carrier.png') }}" width="310" height="310"></div>
 <div><h3><center>Paso 6</center><center>Para hacer el cambio de carrier ingresa a la siguiente transaccion ZTLE_MROUTING - Transaction Manual Routing </center></div></h3>
 </div>
 
 <!--septima Imagen-->
 <div class="contenedor_imagen_texto">
-<div class="imagen"><img src="imagenes/1.png" width="310" height="310"></div>
+<div class="imagen"><img src="{{ url_for('infoship.static', filename='img/1.png') }}" width="310" height="310"></div>
 <div><h3><center>Paso 6</center><center>Ingresa el delivery para poder realizar el cambio de carrier</center></div></h3>
 </div>
 
 <!--Octava Imagen-->
 <div class="contenedor_imagen_texto">
-<div class="imagen"><img src="imagenes/2.png" width="310" height="310"></div>
+<div class="imagen"><img src="{{ url_for('infoship.static', filename='img/2.png') }}" width="310" height="310"></div>
 <div><h3><center>Paso 6</center><center>Realiza el cambio al carrier corespondiente y da clic en guardar</center></div></h3>
 </div>
 
 <!--Novena Imagen-->
 <div class="contenedor_imagen_texto">
-<div class="imagen"><img src="imagenes/3.png" width="310" height="310"></div>
+<div class="imagen"><img src="{{ url_for('infoship.static', filename='img/3.png') }}" width="310" height="310"></div>
 <div><h3><center>Paso 6</center><center>Si el cambio de carrier funciona correctamente te saldra la siguiente leyenda</center></div></h3>
 </div>
 
@@ -74,10 +75,10 @@
 <center>
  <!--Decima Imagen-->
 <div class="contenedor_imagen_texto1">
-<div class="imagen"><img src="imagenes/country code.png" width="400" height="410"></div>
+<div class="imagen"><img src="{{ url_for('infoship.static', filename='img/country code.png') }}" width="400" height="410"></div>
 <div><h3><center></center><center></center></div></h3>
 </div></center>
 
-<center><a href="prueba.html" target="_self" onClick="window.open(this.href, this.target, 'width=850,height=700'); return false;"><input type="button" value="Regresar"></a></center>
+<center><a href="/infoship" target="_self" onClick="window.open(this.href, this.target, 'width=850,height=700'); return false;"><input type="button" value="Regresar"></a></center>
 </body>
 {% endblock %}
