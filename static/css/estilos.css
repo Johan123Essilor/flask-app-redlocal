@@ -29,13 +29,20 @@ body {
 .logo {
     background-color: transparent; 
     display: flex;
-    justify-content: center;
+    justify-content: right;
     align-items: center;
+
+    width: 100vw;
+    height: 8vh;
 }
+
 .logo img {
-    height: 40px;
-    filter: invert(1); 
+    width: 20vw; /* o ajusta según el tamaño que prefieras */
+    max-width: 90%;
+    height: auto;
+    filter: invert(1);
 }
+
 
 /* Menú */
 body{ margin:0; font-family:'tahoma'}

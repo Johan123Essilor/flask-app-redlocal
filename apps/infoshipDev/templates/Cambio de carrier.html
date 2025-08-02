@@ -1,9 +1,9 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <link rel="stylesheet" type="text/css" href="estilos.css">
-<title>Carrier</title>
-</head>
+{% extends "index.html" %}
+
+{% block title %}Visualizador de Cubo{% endblock %}
+
+
+{% block content %} 
 <body>
      <h3><p style="text-align: left;">NOTA: Antes de realizar cualquier cambio, pedir autorizacion del departamento Customer Service</p></h3>
 <center>
@@ -80,3 +80,4 @@
 
 <center><a href="prueba.html" target="_self" onClick="window.open(this.href, this.target, 'width=850,height=700'); return false;"><input type="button" value="Regresar"></a></center>
 </body>
+{% endblock %}

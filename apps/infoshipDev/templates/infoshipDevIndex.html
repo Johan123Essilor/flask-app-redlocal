@@ -1,20 +1,22 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <link rel="stylesheet" type="text/css" href="estilos.css">
-<title>INFOSHIP</title>
-</head>
+{% extends "index.html" %}
+
+{% block title %}Visualizador de Cubo{% endblock %}
+
+
+{% block content %} 
+<link rel="stylesheet" href="{{ url_for('static', filename='css/estiloInfoship.css') }}">
+
 <body>
     </header>
    <h3><p style="text-align: left;">En este menu encotraras los errores mas comunes de Infoship. Da clic en el error para ver un paso a paso de como resolverlo</p></h3>
     <div class="main-content">
     <ul class="menu">
-        <li><a href="Direccion.html">Consignee Add ress is invalid - Postal Code is missing or invalid</a></li>
+        <li><a href="/infoship/direccion">Consignee Add ress is invalid - Postal Code is missing or invalid</a></li>
         <li><a href="Direccion.html">Error Processing UPS Online Tools TNT Request</a></li>
         <li><a href="Direccion.html">No services met route criteria</a></li>
         <li><a href="Cambio de carrier.html">Invalid service type</a></li>
         <li><a href="Cambio de carrier.html">Error in UPS Worldwide Commit Validation</a></li>
         <li><a href="Cambio de carrier.html">Invalid postal code or postal code not provided for Consignee</a></li>
     </ul>
-</div>
 </body>
+{% endblock %}
