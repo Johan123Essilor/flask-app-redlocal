@@ -1,7 +1,7 @@
-<header class="header container-fluid d-flex justify-content-between align-items-center p-3">
-   <h1 class="titulo-home">HOME</h1>
-    <div class="logo" style="margin-right: 30px;">
-    <img src="/static/imagenes/Logo_EssilorLuxottica.png" alt="Logo de EssilorLuxottica">
-</div>
+<header class="header w-40 d-flex justify-content-between align-items-center p-3">
 
+   <h1 class="titulo-home">{{ header_title or "HOME" }}</h1>
+   <div class="logo" style="margin-right: 30px;">
+      <img src="{{ url_for('static', filename='imagenes/Logo_EssilorLuxottica.png') }}" alt="Logo de EssilorLuxottica">
+   </div>
 </header>

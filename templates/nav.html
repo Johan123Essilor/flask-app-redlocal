@@ -1,11 +1,13 @@
 <nav>
-  <ul>
+  <ul style="display: flex; align-items: center;">
+
     <li><a href="{{ url_for('home') }}">Home</a></li>
     <li><a href="#">About</a></li>
     <li><a href="#">Sitios web</a>
       <ul>
         <li><a href="{{ url_for('cubo') }}">BoxMap</a></li>
         <li><a href="{{ url_for('infoship') }}">Infoship</a></li>
+        <li><a href="{{ url_for('SOPSite.index') }}">SOP</a></li>
       </ul>
     </li>
     <li><a href="#">Contact</a>
@@ -14,5 +16,22 @@
         <li><a href="#">Form</a></li>
       </ul>
     </li>
+
+    <!-- Este item se empuja a la derecha con margin-left auto -->
+    <li style="margin-left: auto; position: relative;">
+      {% if session.usuario %}
+        <a href="#">{{ session.usuario }}</a>
+        <ul>
+          <li>
+            <form action="{{ url_for('auth.logout') }}" method="GET" style="margin: 0;">
+              <button type="submit" class="btn-logout">Cerrar sesión</button>
+            </form>
+          </li>
+        </ul>
+      {% else %}
+        <a href="{{ url_for('auth.login') }}">Iniciar sesión</a>
+      {% endif %}
+    </li>
+
   </ul>
 </nav>

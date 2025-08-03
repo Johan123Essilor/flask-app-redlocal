@@ -1,0 +1,88 @@
+{% extends "index.html" %}
+{% block title %}SOPSite{% endblock %}
+{% block header_title %}SOPSite{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/estiloSOPIndex.css') }}">
+<div class="sop-container">
+  {% if usuario %}
+    <form method="POST" enctype="multipart/form-data" class="sop-form">
+        <div>
+            <label for="file">Archivo PDF:</label>
+            <input type="file" name="file" accept=".pdf" required>
+        </div>
+
+        <div>
+            <label for="custom_name">Nombre:</label>
+            <input type="text" name="custom_name" placeholder="Nombre del SOP" required>
+        </div>
+
+        <div>
+            <label for="area">Área:</label>
+            <select name="area" required>
+            <option value="" disabled selected>Área</option>
+            {% for a in areas %}
+                <option value="{{ a }}">{{ a }}</option>
+            {% endfor %}
+            </select>
+        </div>
+
+        <div class="autor-info">
+            <p><strong>Autor:</strong> {{ usuario }}</p>
+        </div>
+
+        <div>
+            <button type="submit">Subir</button>
+        </div>
+    </form>
+
+  {% else %}
+    <p><em>Inicia sesión para subir archivos</em></p>
+  {% endif %}
+<form method="GET" action="{{ url_for('SOPSite.index') }}" class="filter-form">
+  <select name="filter_area">
+    <option value="">Todas las áreas</option>
+    {% for a in areas %}
+      <option value="{{ a }}" {% if request.args.get('filter_area') == a %}selected{% endif %}>{{ a }}</option>
+    {% endfor %}
+  </select>
+
+  <input type="text" name="filter_author" placeholder="Filtrar por autor" value="{{ request.args.get('filter_author', '') }}">
+
+  <input type="text" name="filter_name" placeholder="Filtrar por nombre" value="{{ request.args.get('filter_name', '') }}">
+
+  <button type="submit">Filtrar</button>
+</form>
+
+
+
+  <table>
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Área</th>
+        <th>Fecha</th>
+        <th>Autor</th>
+        <th>Acción</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for file in files %}
+        <tr>
+          <td><a href="{{ url_for('SOPSite.static', filename='uploads/' + file.filename) }}" target="_blank">{{ file.original_name }}</a></td>
+          <td>{{ file.area }}</td>
+          <td>{{ file.upload_date }}</td>
+          <td>{{ file.creator }}</td>
+          <td>
+            {% if usuario %}
+              <a href="{{ url_for('SOPSite.delete', file_id=file.id) }}">Eliminar</a>
+            {% else %}
+              -
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+{% set header_title = "SOP" %}

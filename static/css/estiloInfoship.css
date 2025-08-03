@@ -1,11 +1,17 @@
-.main-content {
-    text-align: center;
+.header {
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
     align-items: center;
-    justify-content: center;
-    min-height: 70vh;
+    padding: 12px 20px;
+    background-color: rgba(0, 0, 0, 0.9);
+    height: auto;
+    min-height: 60px;         /* Evita que se colapse */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+    z-index: 1000;            /* Asegura que esté al frente si hay solapamientos */
+    position: relative;
+    flex-shrink: 0;           /* ← evita que se encoja en layouts flex */
 }
+
 
 h1 {
     text-transform: uppercase;

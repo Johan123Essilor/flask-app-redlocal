@@ -22,6 +22,7 @@
   {% block extra_css %}{% endblock %}
 </head>
 <body>
+  {% set header_title = header_title if header_title is defined else "HOME" %}
   {% include 'header.html' %}
   {% include 'nav.html' %}
 

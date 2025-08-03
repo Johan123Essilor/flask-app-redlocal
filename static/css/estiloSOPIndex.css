@@ -1,0 +1,177 @@
+/* estiloSOPIndex.css */
+
+/* Contenedor principal del contenido SOP */
+.sop-container {
+  padding: 2rem;
+  background-color: rgba(0, 0, 0, 0.6); /* Transparente para integrarse con el fondo global */
+  border-radius: 10px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* Encabezado */
+.sop-container h1 {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  color: #fff;
+}
+
+/* Formulario de carga */
+.sop-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 2rem;
+}
+
+.sop-container input[type="file"],
+.sop-container input[type="text"] {
+  padding: 10px;
+  font-family: 'Poppins', sans-serif;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #222;
+  color: #fff;
+}
+
+.sop-container input[type="file"]::file-selector-button {
+  background-color: #444;
+  border: none;
+  padding: 8px 12px;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.sop-container button {
+  padding: 10px;
+  background-color: #ffffff;
+  color: #000000;
+  border: none;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.sop-container button:hover {
+  background-color: #ccc;
+  color: #000;
+}
+
+/* Tabla de archivos */
+.sop-container table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.sop-container th,
+.sop-container td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+.sop-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-end;
+  margin-bottom: 2rem;
+}
+
+.sop-form div {
+  display: flex;
+  flex-direction: column;
+  min-width: 180px;
+}
+
+.sop-form input[type="text"],
+.sop-form input[type="file"],
+.sop-form select {
+  padding: 6px;
+  font-size: 14px;
+}
+
+.sop-form button {
+  padding: 8px 16px;
+  font-size: 14px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+.sop-form {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  flex-direction: row !important;
+  gap: 1rem;
+  align-items: flex-end;
+  margin-bottom: 2rem;
+}
+
+.sop-form button:hover {
+  background-color: #45a049;
+}
+
+.autor-info {
+  padding-top: 1.6rem;
+  font-size: 14px;
+}
+
+.sop-container th {
+  background-color: rgba(255, 255, 255, 0.1);
+  font-weight: bold;
+}
+
+.sop-container a {
+  color: #00bfff;
+  text-decoration: none;
+}
+
+.sop-container a:hover {
+  text-decoration: underline;
+}
+
+/* Mensaje si no hay sesión */
+.sop-container p em {
+  color: #ddd;
+  font-style: italic;
+  display: block;
+  text-align: center;
+}
+.filter-form {
+  display: flex;
+  flex-direction: row !important;  /* Forzar dirección horizontal */
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+
+.filter-form select,
+.filter-form input[type="text"] {
+  padding: 5px 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.filter-form button {
+  padding: 6px 15px;
+  font-size: 1rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.filter-form button:hover {
+  background-color: #0056b3;
+}
