@@ -80,10 +80,9 @@ nav ul li:hover ul {
   max-width: 70%; /* Evita que el logo lo empuje completamente */
 }
 
-
-
 /* Encabezado */
 .header {
+  z-index: 1000;
     width: 100%;
     background-color: rgba(0, 0, 0, 0.9);
     padding: 8px 15px;  /* menos padding vertical */

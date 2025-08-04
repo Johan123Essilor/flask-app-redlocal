@@ -25,6 +25,9 @@ def cargar_datos():
 @app.route('/')
 def home():
     return render_template('index.html')  # Puede quedar como plantilla global
+@app.route('/landing')
+def landing():
+    return render_template('landingPague.html')  # Puede quedar como plantilla global
 #---------------------------------3D View
 @app.route('/cubo')
 def cubo():
