@@ -12,7 +12,8 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # Puedes definir las áreas permitidas si deseas mostrarlas dinámicamente
-AREAS = ['Logística', 'Calidad', 'Producción', 'Mantenimiento', 'Administración']
+AREAS = ['Training', 'Continuous Improvement', 'Engagement', 'Engineering', 'Customer Service', 'Allocation', 'Customer Service', 'Simulation & Capacity', 'Slotting'
+         , 'Quality', 'Inventory', 'Business Intelligence', 'Business Systems', 'Transportation', 'Operations']
 
 @SOPSite_bp.route('/', methods=['GET', 'POST'])
 def index():

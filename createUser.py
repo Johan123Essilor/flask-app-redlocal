@@ -1,3 +1,3 @@
 from apps.auth.models import add_user
-add_user('elpepe', '12345')  # O la contraseña que elijas
+add_user('Johan Lozoya', '12345')  # O la contraseña que elijas
 print("Usuario creado.")

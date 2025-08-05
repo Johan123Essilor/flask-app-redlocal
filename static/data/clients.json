@@ -3,7 +3,7 @@
     "name": "Hibbets",
     "label": "Caja Pequeña",
     "urlCaja": "https://example.com/1",
-    "img": "img/Hibbets.png",
+    "img": "Hibbets.png",
     "D2":{
       "UCCface": "front",
       "UCCoffset": 10,

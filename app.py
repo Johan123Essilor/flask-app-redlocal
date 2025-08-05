@@ -1,6 +1,7 @@
 from flask import Flask, render_template, abort
 from apps.infoshipDev import infoship_bp
 from apps.SOPSite import SOPSite_bp
+from apps.cubo import cubo_bp
 from apps.auth.routes import auth_bp
 from datetime import timedelta
 from jinja2 import ChoiceLoader, FileSystemLoader
@@ -29,6 +30,7 @@ def home():
 def landing():
     return render_template('landingPague.html')  # Puede quedar como plantilla global
 #---------------------------------3D View
+app.register_blueprint(cubo_bp, url_prefix='/cubo')
 @app.route('/cubo')
 def cubo():
     return render_template('cubo.html')

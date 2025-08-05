@@ -27,16 +27,19 @@
 function renderGrid(items) {
   contenedor.innerHTML = "";
   items.forEach((item, index) => {
+    const imgPath = `/cubo/cubo_static/img/${item.img}`;
     const card = document.createElement("a");
     card.href = `/visor/${index}`;
     card.className = "item text-center";
     card.innerHTML = `
-      <img src="${item.img}" alt="${item.alt}" />
+      <img src="${imgPath}" alt="${item.alt}" />
       <p>${item.name}</p>
     `;
     contenedor.appendChild(card);
   });
 }
+
+
 
   // Cargar desde archivo JSON en static
   fetch("{{ url_for('static', filename='data/clients.json') }}")
