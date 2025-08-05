@@ -37,7 +37,7 @@ instance/
 .DS_Store
 
 # SQLite databases
-*.db
+# *.db
 
 # Coverage reports
 htmlcov/
