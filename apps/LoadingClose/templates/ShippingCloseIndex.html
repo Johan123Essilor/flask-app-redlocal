@@ -1,0 +1,118 @@
+{% extends "index.html" %}
+{% block title %}ShippingClose{% endblock %}
+{% block header_title %}ShippingClose{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/estiloSOPIndex.css') }}">
+
+<div class="sop-container">
+  {% if usuario %}
+    <form method="POST" class="sop-form">
+      <div>
+        <label for="anden">Andén:</label>
+        <input type="text" name="anden" placeholder="Andén" required>
+      </div>
+
+      <div>
+        <label for="type">Tipo de envío:</label>
+        <select name="type" required>
+          <option value="" disabled selected>Selecciona</option>
+          {% for t in tipos_envio %}
+            <option value="{{ t }}">{{ t }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div>
+        <label for="qty">Cantidad de pallets:</label>
+        <input type="number" name="qty" min="0" required>
+      </div>
+
+      <div>
+        <label for="sellos">Sellos:</label>
+        <input type="text" name="sellos" min="0">
+      </div>
+
+      <div>
+        <label for="completo">Carga completa?:</label>
+        <select name="completo" id="completo" required>
+          <option value="si">Sí</option>
+          <option value="no">Parcial</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="dest">Destino:</label>
+        <select name="dest" id="dest" required>
+          <option value="MX">MX</option>
+          <option value="US">US</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="comentarios">Comentarios:</label>
+        <textarea name="comentarios" id="comentarios" placeholder="Escribe un comentario..." rows="4" style="width: 100%; resize: vertical;"></textarea>
+      </div>
+
+
+      <div class="autor-info">
+        <p><strong>Encargado:</strong> {{ usuario }}</p>
+      </div>
+
+      <div>
+        <button type="submit">Guardar</button>
+      </div>
+    </form>
+  {% else %}
+    <p><em>Inicia sesión para registrar datos</em></p>
+  {% endif %}
+
+  <form method="GET" action="{{ url_for('ShippingClose.index') }}" class="filter-form">
+    <select name="filter_type">
+      <option value="">Todos los tipos</option>
+      {% for t in tipos_envio %}
+        <option value="{{ t }}" {% if filter_type == t %}selected{% endif %}>{{ t }}</option>
+      {% endfor %}
+    </select>
+    <button type="submit">Filtrar</button>
+  </form>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Andén</th>
+        <th>Tipo de envío</th>
+        <th>Pallets</th>
+        <th>Sellos</th>
+        <th>Carga completa</th>
+        <th>Destino</th>
+        <th>Comentarios</th>
+        <th>Fecha</th>
+        <th>Encargado</th>
+        <th>Acción</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for registro in registros %}
+        <tr>
+          <td>{{ registro.andenNo }}</td>
+          <td>{{ registro.type }}</td>
+          <td>{{ registro.qty }}</td>
+          <td>{{ registro.sellos }}</td>
+          <td>{{ registro.completo }}</td>
+          <td>{{ registro.destino }}</td>
+          <td class="comentarios">{{ registro.comentarios }}</td>
+          <td>{{ registro.fecha_registro }}</td>
+          <td>{{ registro.usuario }}</td>
+          <td>
+            {% if usuario %}
+              <a href="{{ url_for('ShippingClose.delete', registro_id=registro.id) }}">Eliminar</a>
+            {% else %}
+              -
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

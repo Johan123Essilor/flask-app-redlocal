@@ -26,7 +26,8 @@
 }
 
 .sop-container input[type="file"],
-.sop-container input[type="text"] {
+.sop-container input[type="text"],
+.sop-container input[type="number"] {
   padding: 10px;
   font-family: 'Poppins', sans-serif;
   border: 1px solid #ccc;
@@ -34,16 +35,35 @@
   background-color: #222;
   color: #fff;
 }
-
-.sop-container input[type="file"]::file-selector-button {
-  background-color: #444;
-  border: none;
-  padding: 8px 12px;
+.sop-form textarea {
+  padding: 10px;
+  font-family: 'Poppins', sans-serif;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #222;
   color: #fff;
-  font-weight: bold;
-  cursor: pointer;
-  border-radius: 4px;
+  width: 100%;
+  resize: vertical; /* Para que el usuario pueda cambiar la altura */
+  font-size: 14px;
 }
+
+/* Para que la celda comentarios tenga ancho máximo y haga salto de línea */
+.sop-container td.comentarios {
+  max-width: 80px; /* ajusta el ancho máximo que quieras */
+  white-space: normal;  /* permitir salto de línea */
+  word-wrap: break-word; /* fuerza el salto de línea en palabras largas */
+  vertical-align: top; /* la fila crecerá en altura según contenido */
+}
+
+
+.sop-form input[type="text"],
+.sop-form input[type="file"],
+.sop-form input[type="number"],
+.sop-form select {
+  padding: 6px;
+  font-size: 14px;
+}
+
 
 .sop-container button {
   padding: 10px;
@@ -155,13 +175,14 @@
 
 
 .filter-form select,
-.filter-form input[type="text"] {
+.filter-form input[type="text"],
+.filter-form input[type="number"] {
   padding: 5px 10px;
   font-size: 1rem;
   border: 1px solid #ccc;
   border-radius: 4px;
 }
-
+.nu
 .filter-form button {
   padding: 6px 15px;
   font-size: 1rem;

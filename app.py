@@ -3,6 +3,7 @@ from apps.infoshipDev import infoship_bp
 from apps.SOPSite import SOPSite_bp
 from apps.cubo import cubo_bp
 from apps.auth.routes import auth_bp
+from apps.LoadingClose import ShippingClose_bp
 from datetime import timedelta
 from jinja2 import ChoiceLoader, FileSystemLoader
 import json
@@ -62,12 +63,13 @@ app.register_blueprint(SOPSite_bp, url_prefix='/SOPSite')
 #---------------------------------Auth
 app.register_blueprint(auth_bp, url_prefix='/auth')
 
-
+#---------------------------------ShippingClose
+app.register_blueprint(ShippingClose_bp, url_prefix='/LoadingCloseSite')
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=9818,debug=False)
+    # app.run(host="0.0.0.0", port=9818,debug=False)
 
-    # app.run(debug=True)
+    app.run(debug=True)
 
 
