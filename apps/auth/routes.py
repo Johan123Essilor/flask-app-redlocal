@@ -14,7 +14,7 @@ def login():
         if validate_login(username, password):
             session['usuario'] = username
             flash('Sesión iniciada con éxito')
-            return redirect(url_for('SOPSite.index'))  # Cambia según tu blueprint
+            return redirect(url_for('home'))  # Cambia según tu blueprint
         else:
             flash('Credenciales inválidas')
     return render_template('login.html')
