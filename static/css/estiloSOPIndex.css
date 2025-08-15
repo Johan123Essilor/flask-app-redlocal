@@ -139,3 +139,22 @@ table th {
 .sop-form select::-ms-expand {
     display: none; /* IE10+ */
 }
+
+/* Botón blanco para Eliminar */
+.table-container a {
+    display: inline-block;
+    padding: 6px 12px;
+    background-color: #fff;
+    color: #000;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 5px;
+    border: 1.5px solid #fff;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.table-container a:hover {
+    background-color: transparent;
+    color: #fff;
+    border-color: #fff;
+}
