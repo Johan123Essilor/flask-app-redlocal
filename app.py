@@ -68,8 +68,8 @@ app.register_blueprint(ShippingClose_bp, url_prefix='/LoadingCloseSite')
 
 
 if __name__ == '__main__':
-    # app.run(host="0.0.0.0", port=9818,debug=False)
+    app.run(host="0.0.0.0", port=9818,debug=False)
 
-    app.run(debug=True)
+    #app.run(debug=True)
 
 
