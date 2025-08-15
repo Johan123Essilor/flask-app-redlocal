@@ -5,53 +5,118 @@
     "urlCaja": "https://example.com/1",
     "img": "Hibbets.png",
     "D2":{
-      "UCCface": "front",
+      "UCCface": "top",
       "UCCoffset": 10,
-      "UCCetiquetaWidth": 120,
-      "UCCetiquetaHeight": 100,
-      "UCCX": 110,
-      "UCCY": 10,
+      "UCCetiquetaWidth": 150,
+      "UCCetiquetaHeight": 75,
+      "UCCX": 125,
+      "UCCY": 80,
+      "UCCZ": 40,
 
       "face": "top",
-      "offset": 100,
-      "etiquetaWidth": 120,
-      "etiquetaHeight": 100,
-      "X": 110,
-      "Y": 10,
+      "offset": 10,
+      "etiquetaWidth": 150,
+      "etiquetaHeight": 75,
+      "X": 125,
+      "Y": -80,
+      "Z": 40
 
-      "face2": "bottom",
-      "offset2": 10,
-      "etiquetaWidth2": 120,
-      "etiquetaHeight2": 100,
-      "X2": 110,
-      "Y2": 10
-      
+    },
+    "D":{
+      "UCCface": "top",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 150,
+      "UCCetiquetaHeight": 75,
+      "UCCX": 125,
+      "UCCY": 80,
+      "UCCZ": 40,
+
+      "face": "top",
+      "offset": 10,
+      "etiquetaWidth": 150,
+      "etiquetaHeight": 75,
+      "X": 125,
+      "Y": -80,
+      "Z": 40
       
     },
-    "CAJA D":{
-      "UCCface": "front",
+    "C":{
+      "UCCface": "top",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 150,
+      "UCCetiquetaHeight": 75,
+      "UCCX": 125,
+      "UCCY": 80,
+      "UCCZ": 40,
+
+      "face": "top",
+      "offset": 10,
+      "etiquetaWidth": 150,
+      "etiquetaHeight": 75,
+      "X": 125,
+      "Y": -80,
+      "Z": 40
+    },
+    "B":{
+      "UCCface": "top",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 145,
+      "UCCetiquetaHeight": 75,
+      "UCCX": 70,
+      "UCCY": 80,
+      "UCCZ": 40,
+
+      "face": "top",
+      "offset": 10,
+      "etiquetaWidth": 150,
+      "etiquetaHeight": 65,
+      "X": 70,
+      "Y": -80,
+      "Z": 35
+      },
+
+      "A":{
+      "UCCface": "top",
       "UCCoffset": 10,
       "UCCetiquetaWidth": 120,
-      "UCCetiquetaHeight": 100,
-      "UCCX": 5,
-      "UCCY": 100
-      
-    },
-    "Caja Grande":{
+      "UCCetiquetaHeight": 45,
+      "UCCX": 45,
+      "UCCY": 43,
+      "UCCZ": 25,
+
+      "face": "top",
+      "offset": 10,
+      "etiquetaWidth": 120,
+      "etiquetaHeight": 45,
+      "X": 45,
+      "Y": -43,
+      "Z": 25
+      },
+      "DS":{
       "UCCface": "front",
       "UCCoffset": 10,
-      "UCCetiquetaWidth": 120,
-      "UCCetiquetaHeight": 100,
-      "UCCX": 1000,
-      "UCCY": 100
-    },
+      "UCCetiquetaWidth": 60,
+      "UCCetiquetaHeight": 120,
+      "UCCX": 130,
+      "UCCY": -8,
+      "UCCZ": 100,
+
+      "face": "front",
+      "offset": 10,
+      "etiquetaWidth": 60,
+      "etiquetaHeight": 120,
+      "X": 10,
+      "Y": -8,
+      "Z": 100
+
+      },
     "alt": "Hibbets"
-  },
+    },
   {
     "name": "Academy",
     "label": "Caja Mediana",
     "urlCaja": "https://example.com/2",
-    "img": "imaganes/academy.png",
+    "img": "academy.png",
     "alt": "Academy",
     "D2":{
       "UCCface": "front",
@@ -94,5 +159,54 @@
       "UCCX": 1000,
       "UCCY": 100
     }
+  },
+  {
+    "name": "Nordstrom",
+    "label": "Caja Mediana",
+    "urlCaja": "https://example.com/2",
+    "img": "nordstrom.png",
+    "alt": "Nordstrom"
+  },
+  {
+    "name": "FGL",
+    "label": "Caja Mediana",
+    "urlCaja": "https://example.com/2",
+    "img": "FGL.png",
+    "alt": "FGL"
+  },
+  {
+    "name": "Vail Resort",
+    "label": "Caja Mediana",
+    "urlCaja": "https://example.com/2",
+    "img": "vail.png",
+    "alt": "Vail Resort"
+  },
+  {
+    "name": "DSG",
+    "label": "Caja Mediana",
+    "urlCaja": "https://example.com/2",
+    "img": "dsg.png",
+    "alt": "DSG"
+  },
+  {
+    "name": "The buckle",
+    "label": "Caja Mediana",
+    "urlCaja": "https://example.com/2",
+    "img": "buckle.png",
+    "alt": "The buckle"
+  },
+  {
+    "name": "Dillards",
+    "label": "Caja Mediana",
+    "urlCaja": "https://example.com/2",
+    "img": "dillards.png",
+    "alt": "Dillards"
+  },
+  {
+    "name": "SCHEELS",
+    "label": "Caja Mediana",
+    "urlCaja": "https://example.com/2",
+    "img": "scheels.png",
+    "alt": "SCHEELS"
   }
 ]

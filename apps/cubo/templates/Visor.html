@@ -25,7 +25,7 @@
   <script>
     // Nota: Ya no inicializamos btnValue ni setCube automáticamente
 
-    const clienteData = {{ cliente | tojson }};
+    const clienteData = {{cliente|tojson}};
     const cube = document.getElementById('cube');
     const nav = document.getElementById('cubeSelector');
     let isDragging = false;
@@ -71,10 +71,10 @@
       cube.style.height = h + 'px';
 
       cube.innerHTML = `
-        <div class="face front" style="width:${w}px; height:${h}px; transform: translateZ(${d/2}px); background-color: ${color};font-size: 12px;">${btnValue}</div>
-        <div class="face back" style="width:${w}px; height:${h}px; transform: rotateY(180deg) translateZ(${d / 2}px); background-color: ${color};font-size: 12px;">Posterior</div>
+        <div class="face front" style="width:${w}px; height:${h}px; transform: translateZ(${d/2}px); background-color: ${color};font-size: 12px;">Derecha</div>
+        <div class="face back" style="width:${w}px; height:${h}px; transform: rotateY(180deg) translateZ(${d / 2}px); background-color: ${color};font-size: 12px;">Izquierda</div>
         <div class="face right" style="width:${d}px; height:${h}px; transform: rotateY(90deg) translateZ(${zld}px); background-color: ${color};font-size: 12px;">Derecha</div>
-        <div class="face left" style="width:${d}px; height:${h}px; transform: rotateY(-90deg) translateZ(${zli}px); background-color: ${color};font-size: 12px;">Izquierda</div>
+        <div class="face left" style="width:${d}px; height:${h}px; transform: rotateY(-90deg) translateZ(${zli}px); background-color: ${color};font-size: 12px;">Frontal</div>
         <div class="face top" style="width:${w}px; height:${d}px; transform: rotateX(90deg) translateZ(${zts}px); background-color: ${color};font-size: 12px;">Superior</div>
         <div class="face bottom" style="width:${w}px; height:${d}px; transform: rotateX(-90deg) translateZ(${zti}px); background-color: ${color};font-size: 12px;">Inferior</div>
       `;
@@ -90,7 +90,8 @@
         height: clienteData[btnValue].UCCetiquetaHeight,
         cubeData: cubesData[name],
         x: clienteData[btnValue].UCCX,
-        y: clienteData[btnValue].UCCY
+        y: clienteData[btnValue].UCCY,
+        z: clienteData[btnValue].UCCZ
       });
 
       addExtraFace({
@@ -100,7 +101,8 @@
         height: clienteData[btnValue].etiquetaHeight,
         cubeData: cubesData[name],
         x: clienteData[btnValue].X,
-        y: clienteData[btnValue].Y
+        y: clienteData[btnValue].Y,
+        z: clienteData[btnValue].Z
       });
 
       addExtraFace2({
@@ -116,7 +118,7 @@
 
     // (Las funciones addExtraFaceUCC, addExtraFace, addExtraFace2 quedan igual)
 
-    function addExtraFaceUCC({ reference, offset, width, height, cubeData,x, y}) {
+    function addExtraFaceUCC({ reference, offset, width, height, cubeData,x, y,z}) {
       const { w, h, d } = cubeData;
 
       const extra = document.createElement('div');
@@ -143,7 +145,7 @@
           transform = `rotateY(-90deg) translateZ(${d / 2 + offset}px) translateX(${x}px) translateY(${y}px)`;
           break;
         case 'top':
-          transform = `rotateX(90deg) translateZ(${d / 2 + offset}px) translateX(${x}px) translateY(${y}px)`;
+          transform = `rotateX(90deg) translateZ(${z}px) translateX(${x}px) translateY(${y}px)`;
           break;
         case 'bottom':
           transform = `rotateX(-90deg) translateZ(${d / 2 + offset}px) translateX(${x}px) translateY(${y}px)`;
@@ -157,7 +159,7 @@
       cube.appendChild(extra);
     }
 
-    function addExtraFace({ reference, offset, width, height, cubeData,x, y}) {
+    function addExtraFace({ reference, offset, width, height, cubeData,x, y,z}) {
       const { w, h, d } = cubeData;
 
       const extra = document.createElement('div');
@@ -166,7 +168,7 @@
       extra.style.opacity = 0.9;
       extra.style.width = `${width}px`;
       extra.style.height = `${height}px`;
-      extra.textContent = 'Etiqueta';
+      extra.textContent = 'Shipping';
 
       let transform = '';
 
@@ -184,7 +186,7 @@
           transform = `rotateY(-90deg) translateZ(${d / 2 + offset}px) translateX(${x}px) translateY(${y}px)`;
           break;
         case 'top':
-          transform = `rotateX(90deg) translateZ(${d / 2 + offset}px) translateX(${x}px) translateY(${y}px)`;
+          transform = `rotateX(90deg) translateZ(${z}px) translateX(${x}px) translateY(${y}px)`;
           break;
         case 'bottom':
           transform = `rotateX(-90deg) translateZ(${d / 2 + offset}px) translateX(${x}px) translateY(${y}px)`;
@@ -239,38 +241,43 @@
       cube.appendChild(extra);
     }
 
-    function handleMouseDown(e) {
-      isDragging = true;
-      prevX = e.clientX;
-      prevY = e.clientY;
-    }
-
-    function handleMouseUp(e) {
-      isDragging = false;
-    }
-
-    function handleMouseMove(e) {
-      if (!isDragging) return;
-
-      const dx = e.clientX - prevX;
-      const dy = e.clientY - prevY;
-
-      rotX -= dy * 0.5;
-      rotY += dx * 0.5;
-
-      cube.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
-
-      prevX = e.clientX;
-      prevY = e.clientY;
-    }
+    function handlePointerDown(e) {
+  isDragging = true;
+  prevX = e.clientX ?? e.touches[0].clientX;
+  prevY = e.clientY ?? e.touches[0].clientY;
+  e.target.setPointerCapture?.(e.pointerId);
+}
+ 
+function handlePointerUp() {
+  isDragging = false;
+}
+ 
+function handlePointerMove(e) {
+  if (!isDragging) return;
+  const clientX = e.clientX ?? e.touches[0].clientX;
+  const clientY = e.clientY ?? e.touches[0].clientY;
+  const dx = clientX - prevX;
+  const dy = clientY - prevY;
+  rotX -= dy * 0.5;
+  rotY += dx * 0.5;
+  cube.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+  prevX = clientX;
+  prevY = clientY;
+}
 
     // Agrega los botones pero no crea ningún cubo al cargar
     createNav();
 
     // Eventos para rotar
-    cube.addEventListener('mousedown', handleMouseDown);
-    window.addEventListener('mouseup', handleMouseUp);
-    window.addEventListener('mousemove', handleMouseMove);
+const mainArea = document.querySelector("main");
+mainArea.addEventListener('pointerdown', handlePointerDown);
+mainArea.addEventListener('pointerup', handlePointerUp);
+mainArea.addEventListener('pointermove', handlePointerMove);
+ 
+// Compatibilidad táctil antigua
+mainArea.addEventListener('touchstart', handlePointerDown, { passive: true });
+mainArea.addEventListener('touchmove', handlePointerMove, { passive: true });
+mainArea.addEventListener('touchend', handlePointerUp);
   </script>
 </body>
 </html>

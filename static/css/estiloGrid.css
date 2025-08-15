@@ -13,6 +13,26 @@ body {
   margin: auto;
 }
 
+/* Tablets (pantallas menores a 1024px) */
+@media (max-width: 1024px) {
+  .grid-container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Móviles en horizontal (pantallas menores a 768px) */
+@media (max-width: 768px) {
+  .grid-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Móviles en vertical (pantallas menores a 480px) */
+@media (max-width: 480px) 
+  .grid-container {
+    grid-template-columns: 1fr;
+  }
+
 /* Estilo del campo de búsqueda */
 #busqueda {
   width: 100%;
@@ -27,16 +47,16 @@ body {
 /* Contenedor con grid */
 .grid-container {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20px 15px; /* 20px entre filas (vertical), 10px entre columnas (horizontal) */
 }
 
 /* Estilo de cada tarjeta */
 .item {
-  background-color: #505050;
+
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
   transition: transform 0.3s;
   color: aliceblue;
   display: block;
@@ -50,9 +70,9 @@ body {
 }
 
 .item img {
-  width: 100%;
-  height: 100%;
+  width: 75%;
+  height: 75%;
   object-fit: cover;
-  display: block;
+  display: -moz-grid;
   border-radius: 8px;
 }
