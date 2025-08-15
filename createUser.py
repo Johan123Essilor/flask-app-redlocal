@@ -1,3 +1,6 @@
-from apps.auth.models import add_user
-add_user('admin', 'ELMPass2025')  # O la contraseña que elijas
+from apps.auth.models import init_users, add_user
+
+# Crear usuario con área
+add_user('admin', 'ELMPass2025', 'admin')  # 'admin' es el área
+
 print("Usuario creado.")
