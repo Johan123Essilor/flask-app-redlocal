@@ -22,6 +22,7 @@ def index():
         sellos = request.form.get('sellos') or 0
         completo = request.form.get('completo')
         dest = request.form.get('dest')
+        caja_pacas = request.form.get('caja_pacas') 
         comentarios = request.form.get('comentarios')
 
         # Validación simple
@@ -45,6 +46,7 @@ def index():
             completo=completo,
             destino=dest,
             comentarios=comentarios,
+            caja_pacas=caja_pacas,
             usuario=usuario  # PASAMOS el usuario aquí
         )
         flash('Registro guardado correctamente')

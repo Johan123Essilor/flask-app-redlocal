@@ -1,198 +1,141 @@
-/* estiloSOPIndex.css */
-
-/* Contenedor principal del contenido SOP */
+/* Contenedor principal del formulario y tabla */
 .sop-container {
-  padding: 2rem;
-  background-color: rgba(0, 0, 0, 0.6); /* Transparente para integrarse con el fondo global */
-  border-radius: 10px;
-  max-width: 900px;
-  margin: 0 auto;
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 10px;
+
+    /* Recuadro negro semitransparente */
+    background-color: rgba(0, 0, 0, 0.7);
+
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
 }
 
-/* Encabezado */
-.sop-container h1 {
-  text-align: center;
-  font-size: 2rem;
-  margin-bottom: 2rem;
-  color: #fff;
-}
-
-/* Formulario de carga */
-.sop-container form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 2rem;
-}
-
-.sop-container input[type="file"],
-.sop-container input[type="text"],
-.sop-container input[type="number"] {
-  padding: 10px;
-  font-family: 'Poppins', sans-serif;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background-color: #222;
-  color: #fff;
-}
-.sop-form textarea {
-  padding: 10px;
-  font-family: 'Poppins', sans-serif;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background-color: #222;
-  color: #fff;
-  width: 100%;
-  resize: vertical; /* Para que el usuario pueda cambiar la altura */
-  font-size: 14px;
-}
-
-/* Para que la celda comentarios tenga ancho máximo y haga salto de línea */
-.sop-container td.comentarios {
-  max-width: 80px; /* ajusta el ancho máximo que quieras */
-  white-space: normal;  /* permitir salto de línea */
-  word-wrap: break-word; /* fuerza el salto de línea en palabras largas */
-  vertical-align: top; /* la fila crecerá en altura según contenido */
-}
-
-
-.sop-form input[type="text"],
-.sop-form input[type="file"],
-.sop-form input[type="number"],
-.sop-form select {
-  padding: 6px;
-  font-size: 14px;
-}
-
-
-.sop-container button {
-  padding: 10px;
-  background-color: #ffffff;
-  color: #000000;
-  border: none;
-  font-weight: bold;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: 0.3s ease;
-}
-
-.sop-container button:hover {
-  background-color: #ccc;
-  color: #000;
-}
-
-/* Tabla de archivos */
-.sop-container table {
-  width: 100%;
-  border-collapse: collapse;
-  background-color: rgba(255, 255, 255, 0.05);
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-.sop-container th,
-.sop-container td {
-  padding: 12px;
-  text-align: left;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  color: #fff;
-}
-.sop-form {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  align-items: flex-end;
-  margin-bottom: 2rem;
-}
-
+/* Estilos para el formulario */
 .sop-form div {
-  display: flex;
-  flex-direction: column;
-  min-width: 180px;
+    margin-bottom: 15px;
 }
 
-.sop-form input[type="text"],
-.sop-form input[type="file"],
-.sop-form select {
-  padding: 6px;
-  font-size: 14px;
+.sop-form label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.sop-form input,
+.sop-form select,
+.sop-form textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid rgba(255,255,255,0.5);
+    border-radius: 5px;
+    background: transparent;
+    color: #fff; /* mantiene texto blanco */
+    box-sizing: border-box;
 }
 
 .sop-form button {
-  padding: 8px 16px;
-  font-size: 14px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-.sop-form {
-  display: flex !important;
-  flex-wrap: wrap !important;
-  flex-direction: row !important;
-  gap: 1rem;
-  align-items: flex-end;
-  margin-bottom: 2rem;
+    background: transparent;
+    color: #fff;
+    border: 1px solid #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease, color 0.3s ease;
 }
 
 .sop-form button:hover {
-  background-color: #45a049;
+    background-color: #fff;
+    color: #000;
 }
 
+/* Información del encargado */
 .autor-info {
-  padding-top: 1.6rem;
-  font-size: 14px;
+    margin-top: 10px;
+    margin-bottom: 20px;
 }
 
-.sop-container th {
-  background-color: rgba(255, 255, 255, 0.1);
-  font-weight: bold;
+/* Contenedor de la tabla con scroll */
+.table-container {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-top: 20px;
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 5px;
+
+    /* Recuadro negro semitransparente */
+    background-color: rgba(0, 0, 0, 0.6);
 }
 
-.sop-container a {
-  color: #00bfff;
-  text-decoration: none;
+/* Estilo de la tabla */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
 }
 
-.sop-container a:hover {
-  text-decoration: underline;
+table th,
+table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    color: #fff; /* texto blanco */
 }
 
-/* Mensaje si no hay sesión */
-.sop-container p em {
-  color: #ddd;
-  font-style: italic;
-  display: block;
-  text-align: center;
+table th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
 }
+
+/* Formulario de filtro */
 .filter-form {
-  display: flex;
-  flex-direction: row !important;  /* Forzar dirección horizontal */
-  gap: 10px;
-  align-items: center;
-  margin-bottom: 20px;
+    margin-bottom: 10px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
 }
-
 
 .filter-form select,
-.filter-form input[type="text"],
-.filter-form input[type="number"] {
-  padding: 5px 10px;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-.nu
 .filter-form button {
-  padding: 6px 15px;
-  font-size: 1rem;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 5px;
+    border: 1px solid rgba(255,255,255,0.5);
+    background: transparent;
+    color: #fff;
+    cursor: pointer;
 }
 
 .filter-form button:hover {
-  background-color: #0056b3;
+    background-color: #fff;
+    color: #000;
+}
+
+/* Scroll estilizado (opcional) */
+.table-container::-webkit-scrollbar {
+    width: 10px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+    background-color: rgba(255,255,255,0.3);
+    border-radius: 5px;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255,255,255,0.6);
+}
+/* Estilo de dropdowns dentro del recuadro */
+.sop-form select {
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.5);
+    appearance: none; /* Quita estilo nativo en algunos navegadores */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding: 8px;
+}
+
+/* Flecha del select (opcional) */
+.sop-form select::-ms-expand {
+    display: none; /* IE10+ */
 }
