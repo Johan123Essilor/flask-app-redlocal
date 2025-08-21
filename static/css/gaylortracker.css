@@ -1,0 +1,96 @@
+/* ==============================
+   GaylorTracker Styles
+============================== */
+
+/* Contenedor principal */
+.sop-container {
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 10px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+}
+
+/* Formulario de búsqueda */
+.filter-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.filter-form input[type="text"] {
+    flex: 1;
+    padding: 10px 15px;
+    border-radius: 6px;
+    border: none;
+    font-size: 1rem;
+}
+
+.filter-form button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.filter-form button:hover {
+    background-color: #45a049;
+}
+
+/* Contadores de resultados */
+.sop-container p {
+    font-size: 1rem;
+    font-weight: 500;
+    margin: 5px 0;
+}
+
+/* Tabla */
+.table-container {
+    overflow-x: auto;
+}
+
+.table-container table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.table-container th,
+.table-container td {
+    padding: 12px 15px;
+    text-align: left;
+}
+
+.table-container th {
+    background-color: #222;
+    color: #fff;
+    font-weight: 600;
+}
+
+.table-container tr:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.table-container tr:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+    .filter-form {
+        flex-direction: column;
+    }
+
+    .filter-form input[type="text"], .filter-form button {
+        width: 100%;
+    }
+
+    .table-container table, .table-container th, .table-container td {
+        font-size: 0.9rem;
+    }
+}
