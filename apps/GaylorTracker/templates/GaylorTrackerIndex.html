@@ -1,0 +1,43 @@
+{% extends "index.html" %}
+{% block title %}GaylorTracker{% endblock %}
+{% block header_title %}GaylorTracker{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/gaylortracker.css') }}">
+
+<div class="sop-container">
+
+  <!-- Formulario de búsqueda -->
+  <form method="GET" action="{{ url_for('gaylorTracker.index') }}" class="filter-form">
+    <input type="text" name="packing_object" placeholder="Buscar Packing Object" value="{{ filter_packing or '' }}">
+    <button type="submit">Buscar</button>
+  </form>
+
+  {% if filter_packing %}
+    <p><strong>Total resultados:</strong> {{ total_resultados }}</p>
+    <p><strong>Handling Units únicas:</strong> {{ handling_units_unicas }}</p>
+  {% endif %}
+
+  <!-- Tabla de resultados -->
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Packing Object</th>
+          <th>Handling Unit</th>
+          <th>Ubicación</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in registros %}
+          <tr>
+            <td>{{ r.packing_object }}</td>
+            <td>{{ r.handling_unit }}</td>
+            <td>{{ r.ubicacion }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

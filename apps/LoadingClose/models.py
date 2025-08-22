@@ -16,18 +16,19 @@ def init_db():
                 completo TEXT,
                 destino TEXT,
                 comentarios TEXT,
-                usuario TEXT,              -- NUEVO campo para usuario/autor
+                caja_pacas TEXT,       -- NUEVO CAMPO
+                usuario TEXT,
                 fecha_registro TEXT
             )
         ''')
         conn.commit()
 
-def insert_shipping(andenNo, tipo, qty, sellos, completo, destino, comentarios, usuario):
+def insert_shipping(andenNo, tipo, qty, sellos, completo, destino, comentarios, caja_pacas, usuario):
     with sqlite3.connect(DB_PATH) as conn:
         cursor = conn.cursor()
         cursor.execute('''
-            INSERT INTO shippingClose (andenNo, type, qty, sellos, completo, destino, comentarios, usuario, fecha_registro)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO shippingClose (andenNo, type, qty, sellos, completo, destino, comentarios, caja_pacas, usuario, fecha_registro)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
             andenNo,
             tipo,
@@ -36,10 +37,12 @@ def insert_shipping(andenNo, tipo, qty, sellos, completo, destino, comentarios, 
             completo,
             destino,
             comentarios,
-            usuario,  # Insertamos el usuario aquí
+            caja_pacas,  # Pasamos el nuevo campo
+            usuario,
             datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         ))
         conn.commit()
+
 
 def get_all_shipping(filter_type=None, filter_destino=None, filter_completo=None):
     with sqlite3.connect(DB_PATH) as conn:
@@ -61,9 +64,13 @@ def get_all_shipping(filter_type=None, filter_destino=None, filter_completo=None
         cursor.execute(query, params)
         rows = cursor.fetchall()
         return [
-            dict(zip(['id', 'andenNo', 'type', 'qty', 'sellos', 'completo', 'destino', 'comentarios', 'usuario', 'fecha_registro'], row))
+            dict(zip(
+                ['id', 'anden', 'tipo', 'cantidad', 'sellos', 'completo', 'destino', 'comentarios', 'encargado', 'fecha', 'caja_pacas'],
+                row
+            ))
             for row in rows
         ]
+
 
 def delete_shipping(record_id):
     with sqlite3.connect(DB_PATH) as conn:

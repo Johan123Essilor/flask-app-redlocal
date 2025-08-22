@@ -28,10 +28,10 @@ body {
 }
 
 /* Móviles en vertical (pantallas menores a 480px) */
-@media (max-width: 480px) 
-  .grid-container {
+/* @media (max-width: 480px) 
+.grid-container {
     grid-template-columns: 1fr;
-  }
+  } */
 
 /* Estilo del campo de búsqueda */
 #busqueda {
