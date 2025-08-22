@@ -72,8 +72,8 @@ app.register_blueprint(ShippingClose_bp, url_prefix='/LoadingCloseSite')
 app.register_blueprint(gaylorTracker_bp, url_prefix='/GaylorTracker')
 
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=9818, debug=False, use_reloader=False)
+# if __name__ == "__main__":
+#     app.run(host="0.0.0.0", port=9818, debug=False, use_reloader=False)
 
 
 
