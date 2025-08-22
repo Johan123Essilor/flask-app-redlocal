@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <title>3D Box Viewer</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/estilo3D.css') }}">
   <style>
@@ -10,16 +10,19 @@
       display: none;
     }
   </style>
-</head>
-<body>
+  </head>
+  <body>
   <header>
-    <h1>{{ cliente.name }} </h1>
+  <h1>{{ cliente.name }} </h1>
     
-    <nav id="cubeSelector"></nav>
+  <nav id="cubeSelector"></nav>
   </header>
   <div id="btnSelected"></div>
   <main>
-    <div class="container" id="cube"></div>
+      
+ <div class="container" id="comments"></div>
+  <div class="container" id="cube"></div>
+
   </main>
 
   <script>
@@ -28,6 +31,8 @@
     const clienteData = {{cliente|tojson}};
     const cube = document.getElementById('cube');
     const nav = document.getElementById('cubeSelector');
+    var commentsContainer = document.getElementById("comments");
+    
     let isDragging = false;
     let prevX, prevY;
     let rotX = -10, rotY = 20;
@@ -52,6 +57,7 @@
         btn.addEventListener('click', () => {
           document.getElementById("btnSelected").textContent = cubesData[key].label;
           btnValue = cubesData[key].label;
+          commentsContainer.textContent = clienteData.comments; 
           setActiveButton(btn);
           setCube(key);
         });
@@ -104,7 +110,6 @@
         y: clienteData[btnValue].Y,
         z: clienteData[btnValue].Z
       });
-
       addExtraFace2({
         reference: clienteData[btnValue].face2,
         offset: clienteData[btnValue].offset2,
@@ -112,14 +117,46 @@
         height: clienteData[btnValue].etiquetaHeight2,
         cubeData: cubesData[name],
         x: clienteData[btnValue].X2,
-        y: clienteData[btnValue].Y2
+        y: clienteData[btnValue].Y2,
+        z: clienteData[btnValue].Z2
       });
+      addExtraFace3({
+        reference: clienteData[btnValue].face3,
+        offset: clienteData[btnValue].offset3,
+        width: clienteData[btnValue].etiquetaWidth3,
+        height: clienteData[btnValue].etiquetaHeight3,
+        cubeData: cubesData[name],
+        x: clienteData[btnValue].X3,
+        y: clienteData[btnValue].Y3,
+        z: clienteData[btnValue].Z3
+      });
+      addExtraFace4({
+      reference: clienteData[btnValue].face4,
+      offset: clienteData[btnValue].offset4,
+      width: clienteData[btnValue].etiquetaWidth4,
+      height: clienteData[btnValue].etiquetaHeight4,
+      cubeData: cubesData[name],
+      x: clienteData[btnValue].X4,
+      y: clienteData[btnValue].Y4,
+      z: clienteData[btnValue].Z4
+      });
+      addExtraFace5({
+      reference: clienteData[btnValue].face5,
+      offset: clienteData[btnValue].offset5,
+      width: clienteData[btnValue].etiquetaWidth5,
+      height: clienteData[btnValue].etiquetaHeight5,
+      cubeData: cubesData[name],
+      x: clienteData[btnValue].X5,
+      y: clienteData[btnValue].Y5,
+      z: clienteData[btnValue].Z5
+      });
+ 
     }
 
     // (Las funciones addExtraFaceUCC, addExtraFace, addExtraFace2 quedan igual)
 
     function addExtraFaceUCC({ reference, offset, width, height, cubeData,x, y,z}) {
-      const { w, h, d } = cubeData;
+const { w, h, d } = cubeData;
 
       const extra = document.createElement('div');
       extra.className = 'face';
@@ -133,16 +170,16 @@
 
       switch (reference) {
         case 'front':
-          transform = `translateZ(${d / 2 + offset}px) translateX(${x}px) translateY(${y}px)`;
+          transform = `translateZ(${z}px) translateX(${x}px) translateY(${y}px)`;
           break;
         case 'back':
-          transform = `rotateY(180deg) translateZ(${d / 2 + offset}px) translateX(${x}px) translateY(${y}px)`;
+          transform = `rotateY(180deg) translateZ(${z}px) translateX(${x}px) translateY(${y}px)`;
           break;
         case 'right':
           transform = `rotateY(90deg) translateZ(${d / 2 + offset}px) translateX(${x}px) translateY(${y}px)`;
           break;
         case 'left':
-          transform = `rotateY(-90deg) translateZ(${d / 2 + offset}px) translateX(${x}px) translateY(${y}px)`;
+          transform = `rotateY(-90deg) translateZ(${z}px) translateX(${x}px) translateY(${y}px)`;
           break;
         case 'top':
           transform = `rotateX(90deg) translateZ(${z}px) translateX(${x}px) translateY(${y}px)`;
@@ -174,7 +211,48 @@
 
       switch (reference) {
         case 'front':
-          transform = `translateZ(${d / 2 + offset}px) translateX(${x}px) translateY(${y}px)`;
+          transform = `translateZ(${z}px) translateX(${x}px) translateY(${y}px)`;
+          break;
+        case 'back':
+          transform = `rotateY(180deg) translateZ(${z}px) translateX(${x}px) translateY(${y}px)`;
+          break;
+        case 'right':
+          transform = `rotateY(90deg) translateZ(${z}px) translateX(${x}px) translateY(${y}px)`;
+          break;
+        case 'left':
+          transform = `rotateY(-90deg) translateZ(${z}px) translateX(${x}px) translateY(${y}px)`;
+          break;
+        case 'top':
+          transform = `rotateX(90deg) translateZ(${z}px) translateX(${x}px) translateY(${y}px)`;
+          break;
+        case 'bottom':
+          transform = `rotateX(-90deg) translateZ(${z}px) translateX(${x}px) translateY(${y}px)`;
+          break;
+        default:
+          console.warn('Referencia no válida');
+          return;
+      }
+
+      extra.style.transform = transform;
+      cube.appendChild(extra);
+    }
+
+    function addExtraFace2({ reference, offset, width, height, cubeData,x, y, z}) {
+      const { w, h, d } = cubeData;
+
+      const extra = document.createElement('div');
+      extra.className = 'face';
+      extra.style.background = 'white';
+      extra.style.opacity = 0.9;
+      extra.style.width = `${width}px`;
+      extra.style.height = `${height}px`;
+      extra.textContent = '';
+
+      let transform = '';
+
+      switch (reference) {
+        case 'front':
+          transform = `translateZ(${z}px) translateX(${x}px) translateY(${y}px)`;
           break;
         case 'back':
           transform = `rotateY(180deg) translateZ(${d / 2 + offset}px) translateX(${x}px) translateY(${y}px)`;
@@ -183,7 +261,7 @@
           transform = `rotateY(90deg) translateZ(${d / 2 + offset}px) translateX(${x}px) translateY(${y}px)`;
           break;
         case 'left':
-          transform = `rotateY(-90deg) translateZ(${d / 2 + offset}px) translateX(${x}px) translateY(${y}px)`;
+          transform = `rotateY(-90deg) translateZ(${z}px) translateX(${x}px) translateY(${y}px)`;
           break;
         case 'top':
           transform = `rotateX(90deg) translateZ(${z}px) translateX(${x}px) translateY(${y}px)`;
@@ -199,8 +277,7 @@
       extra.style.transform = transform;
       cube.appendChild(extra);
     }
-
-    function addExtraFace2({ reference, offset, width, height, cubeData,x, y}) {
+        function addExtraFace3({ reference, offset, width, height, cubeData,x, y, z}) {
       const { w, h, d } = cubeData;
 
       const extra = document.createElement('div');
@@ -209,13 +286,53 @@
       extra.style.opacity = 0.9;
       extra.style.width = `${width}px`;
       extra.style.height = `${height}px`;
-      extra.textContent = 'Etiqueta2';
+      extra.textContent = '';
 
       let transform = '';
 
       switch (reference) {
         case 'front':
-          transform = `translateZ(${d / 2 + offset}px) translateX(${x}px) translateY(${y}px)`;
+          transform = `translateZ(${z}px) translateX(${x}px) translateY(${y}px)`;
+          break;
+        case 'back':
+          transform = `rotateY(180deg) translateZ(${d / 2 + offset}px) translateX(${x}px) translateY(${y}px)`;
+          break;
+        case 'right':
+          transform = `rotateY(90deg) translateZ(${d / 2 + offset}px) translateX(${x}px) translateY(${y}px)`;
+          break;
+        case 'left':
+          transform = `rotateY(-90deg) translateZ(${z}px) translateX(${x}px) translateY(${y}px)`;
+          break;
+        case 'top':
+          transform = `rotateX(90deg) translateZ(${z}px) translateX(${x}px) translateY(${y}px)`;
+          break;
+        case 'bottom':
+          transform = `rotateX(-90deg) translateZ(${z}px) translateX(${x}px) translateY(${y}px)`;
+          break;
+        default:
+          console.warn('Referencia no válida');
+          return;
+      }
+
+      extra.style.transform = transform;
+      cube.appendChild(extra);
+    }
+    function addExtraFace4({ reference, offset, width, height, cubeData,x, y, z}) {
+      const { w, h, d } = cubeData;
+
+      const extra = document.createElement('div');
+      extra.className = 'face';
+      extra.style.background = 'white';
+      extra.style.opacity = 0.9;
+      extra.style.width = `${width}px`;
+      extra.style.height = `${height}px`;
+      extra.textContent = '';
+
+      let transform = '';
+
+      switch (reference) {
+        case 'front':
+          transform = `translateZ(${z}px) translateX(${x}px) translateY(${y}px)`;
           break;
         case 'back':
           transform = `rotateY(180deg) translateZ(${d / 2 + offset}px) translateX(${x}px) translateY(${y}px)`;
@@ -227,10 +344,10 @@
           transform = `rotateY(-90deg) translateZ(${d / 2 + offset}px) translateX(${x}px) translateY(${y}px)`;
           break;
         case 'top':
-          transform = `rotateX(90deg) translateZ(${d / 2 + offset}px) translateX(${x}px) translateY(${y}px)`;
+          transform = `rotateX(90deg) translateZ(${z}px) translateX(${x}px) translateY(${y}px)`;
           break;
         case 'bottom':
-          transform = `rotateX(-90deg) translateZ(${d / 2 + offset}px) translateX(${x}px) translateY(${y}px)`;
+          transform = `rotateX(-90deg) translateZ(${z}px) translateX(${x}px) translateY(${y}px)`;
           break;
         default:
           console.warn('Referencia no válida');
@@ -240,6 +357,47 @@
       extra.style.transform = transform;
       cube.appendChild(extra);
     }
+    function addExtraFace5({ reference, offset, width, height, cubeData,x, y, z}) {
+      const { w, h, d } = cubeData;
+
+      const extra = document.createElement('div');
+      extra.className = 'face';
+      extra.style.background = 'white';
+      extra.style.opacity = 0.9;
+      extra.style.width = `${width}px`;
+      extra.style.height = `${height}px`;
+      extra.textContent = '';
+
+      let transform = '';
+
+      switch (reference) {
+        case 'front':
+          transform = `translateZ(${z}px) translateX(${x}px) translateY(${y}px)`;
+          break;
+        case 'back':
+          transform = `rotateY(180deg) translateZ(${d / 2 + offset}px) translateX(${x}px) translateY(${y}px)`;
+          break;
+        case 'right':
+          transform = `rotateY(90deg) translateZ(${d / 2 + offset}px) translateX(${x}px) translateY(${y}px)`;
+          break;
+        case 'left':
+          transform = `rotateY(-90deg) translateZ(${d / 2 + offset}px) translateX(${x}px) translateY(${y}px)`;
+          break;
+        case 'top':
+          transform = `rotateX(90deg) translateZ(${z}px) translateX(${x}px) translateY(${y}px)`;
+          break;
+        case 'bottom':
+          transform = `rotateX(-90deg) translateZ(${z}px) translateX(${x}px) translateY(${y}px)`;
+          break;
+        default:
+          console.warn('Referencia no válida');
+          return;
+      }
+
+      extra.style.transform = transform;
+      cube.appendChild(extra);
+    }
+
 
     function handlePointerDown(e) {
   isDragging = true;
@@ -280,4 +438,6 @@ mainArea.addEventListener('touchmove', handlePointerMove, { passive: true });
 mainArea.addEventListener('touchend', handlePointerUp);
   </script>
 </body>
+
+
 </html>
