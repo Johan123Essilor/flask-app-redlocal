@@ -1,0 +1,47 @@
+{% extends "index.html" %}
+{% block title %}GaylorTracker{% endblock %}
+{% block header_title %}GaylorTracker{% endblock %}
+
+{% block content %}
+<body>
+    <h1>Confirmation Tracker</h1>
+
+    <form method="get">
+        <label for="confirmation_nr">Confirmation Nr:</label>
+        <input type="text" name="confirmation_nr" id="confirmation_nr" value="{{ confirmation_nr or '' }}">
+        <button type="submit">Buscar</button>
+    </form>
+
+    {% if confirmation_nr %}
+        <h2>Resultados para: {{ confirmation_nr }}</h2>
+        <p>Total encontrados (solo excluyendo NO-TOTE en el conteo): {{ total_resultados }}</p>
+
+        <table border="1" cellpadding="5">
+            <tr>
+                <th>ID</th>
+                <th>ItemID</th>
+                <th>StockID</th>
+                <th>Delivery Nr</th>
+                <th>Qty</th>
+                <th>Bin</th>
+                <th>Tote</th>
+                <th>Timestamp</th>
+            </tr>
+            {% for r in registros %}
+            <tr>
+                <td>{{ r.id }}</td>
+                <td>{{ r.itemID }}</td>
+                <td>{{ r.stockID }}</td>
+                <td>{{ r.delivery_Nr }}</td>
+                <td>{{ r.qty }}</td>
+                <td>{{ r.bin_ID }}</td>
+                <td>{{ r.tote_ID }}</td>
+                <td>{{ r.insert_TS }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+</body>
+
+{% endblock %}
+{% set header_title = "Gaylor Tracker" %}
