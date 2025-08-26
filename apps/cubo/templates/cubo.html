@@ -2,63 +2,77 @@
 
 {% block title %}Labels position{% endblock %}
 
-
 {% block content %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/estiloGrid.css') }}">
 
+<h2 class="text-center mb-4"></h2>
 
-  <h2 class="text-center mb-4"></h2>
+<!-- Input de búsqueda -->
+<div class="mb-3">
+  <input type="text" id="busqueda" class="form-control" placeholder="Buscar..." />
+</div>
 
-  <!-- Input de búsqueda -->
-  <div class="mb-3">
-    <input type="text" id="busqueda" class="form-control" placeholder="Buscar..." />
-  </div>
-
-  <!-- Grid de tarjetas -->
-  <div class="grid-container d-flex flex-wrap gap-3 justify-content-center" id="contenedor">
-    <!-- Se llenará dinámicamente -->
-  </div>
+<!-- Grid de tarjetas -->
+<div class="grid-container d-flex flex-wrap gap-3 justify-content-center" id="contenedor">
+  <!-- Se llenará dinámicamente -->
+</div>
 
 <script>
   const contenedor = document.getElementById("contenedor");
   const input = document.getElementById("busqueda");
   let gridItems = [];
+  let filteredItems = [];
+  let currentIndex = 0;
+  const batchSize = 100;
 
-function renderGrid(items) {
-  contenedor.innerHTML = "";
-  items.forEach((item, index) => {
-    const imgPath = `/cubo/cubo_static/img/${item.img}`;
-    const card = document.createElement("a");
-    card.href = `/visor/${index}`;
-    card.className = "item text-center";
-    card.innerHTML = `
-      <img src="${imgPath}" alt="${item.alt}" />
-      <p>${item.name}</p>
-    `;
-    contenedor.appendChild(card);
-  });
-}
+  function renderBatch() {
+    const slice = filteredItems.slice(currentIndex, currentIndex + batchSize);
+    slice.forEach((item, index) => {
+      const imgPath = `/cubo/cubo_static/img/${item.img}`;
+      const card = document.createElement("a");
+      card.href = `/visor/${currentIndex + index}`;
+      card.className = "item text-center";
+      card.innerHTML = `
+        <img src="${imgPath}" alt="${item.alt}" />
+        <p>${item.name}</p>
+      `;
+      contenedor.appendChild(card);
+    });
+    currentIndex += batchSize;
+  }
 
-
+  function resetAndRender(items) {
+    contenedor.innerHTML = "";
+    filteredItems = items;
+    currentIndex = 0;
+    renderBatch();
+  }
 
   // Cargar desde archivo JSON en static
   fetch("{{ url_for('static', filename='data/clients.json') }}")
     .then(res => res.json())
     .then(data => {
       gridItems = data;
-      renderGrid(gridItems);
+      resetAndRender(gridItems);
     });
 
+  // Filtro de búsqueda
   input.addEventListener('input', () => {
     const filtro = input.value.toLowerCase();
     const filtrados = gridItems.filter(item =>
       item.name.toLowerCase().includes(filtro)
     );
-    renderGrid(filtrados);
+    resetAndRender(filtrados);
+  });
+
+  // Scroll infinito
+  window.addEventListener("scroll", () => {
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
+      renderBatch();
+    }
   });
 </script>
 
-
-  <!-- Aquí si quieres agregar más scripts específicos para esta página -->
+<!-- Aquí si quieres agregar más scripts específicos para esta página -->
 {% endblock %}
 {% set header_title = "Labels position" %}
