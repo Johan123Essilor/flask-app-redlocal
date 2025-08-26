@@ -73,10 +73,10 @@ app.register_blueprint(gaylorTracker_bp, url_prefix='/GaylorTracker')
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=9818, debug=False, use_reloader=False)
+#     app.run(host="0.0.0.0", port=9818, debug=False, use_reloader=False)
 
 
 
-    #app.run(debug=True)
+    app.run(debug=True)
 
 

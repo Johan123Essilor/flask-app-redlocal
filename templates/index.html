@@ -3,6 +3,395 @@
 {% block title %}ELM HOME{% endblock %}
 
 {% block content %}
-  <h2>Bienvenido a la página principal</h2>
-  <p>Contenido de la página aquí...</p>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Slider Corporativo EssilorLuxottica - Pantalla Completa</title>
+  <style>
+    :root {
+      --primary-color: #0066b3;
+      --bg-overlay: rgba(0, 0, 0, 0.5);
+      --text-light: #ffffff;
+      --text-dark: #000000;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f8f9fa;
+      color: var(--text-dark);
+      overflow-x: hidden;
+    }
+    .slider {
+      position: relative;
+      width: 100vw;
+      height: 100vh; /* pantalla completa */
+      overflow: hidden;
+    }
+    .slides {
+      display: flex;
+      transition: transform 0.6s ease-in-out;
+      height: 100%;
+    }
+    .slide {
+      min-width: 100%;
+      height: 99%;
+      position: relative;
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 0 5vw;
+      color: var(--text-light);
+    }
+    .slide::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: var(--bg-overlay);
+      z-index: 1;
+    }
+    .slide-content {
+      position: relative;
+      z-index: 2;
+      max-width: 450px;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeUp 1s ease-out forwards;
+      user-select: none;
+    }
+    .slide h2 {
+      font-size: 3rem;
+      margin-bottom: 15px;
+      font-weight: 700;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+    .slide p {
+      font-size: 1.5rem;
+      margin-bottom: 30px;
+      line-height: 1.5;
+    }
+    .slide a.button {
+      display: inline-block;
+      background: var(--primary-color);
+      color: #fff;
+      padding: 14px 26px;
+      text-decoration: none;
+      border-radius: 4px;
+      font-weight: 600;
+      transition: background 0.3s;
+      font-size: 1.2rem;
+    }
+    .slide a.button:hover,
+    .slide a.button:focus {
+      background: #004b80;
+      outline: none;
+    }
+    @keyframes fadeUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .nav, .play-pause {
+      position: absolute;
+      z-index: 3;
+    }
+    .nav {
+      top: 50%;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      transform: translateY(-50%);
+      padding: 0 10px;
+    }
+    .nav button {
+      background: rgba(0, 0, 0, 0.5);
+      border: none;
+      color: white;
+      padding: 14px 20px;
+      font-size: 36px;
+      cursor: pointer;
+      border-radius: 50%;
+      transition: background 0.3s;
+      user-select: none;
+    }
+    .nav button:hover,
+    .nav button:focus {
+      background: rgba(0, 0, 0, 0.8);
+      outline: none;
+    }
+    .play-pause {
+      bottom: 80px;
+      right: 30px;
+    }
+    .play-pause button {
+      background: var(--primary-color);
+      color: #fff;
+      border: none;
+      padding: 14px 24px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      user-select: none;
+      transition: background 0.3s;
+      font-size: 1.1rem;
+    }
+    .play-pause button:hover,
+    .play-pause button:focus {
+      background: #004b80;
+      outline: none;
+    }
+    .indicators {
+      position: absolute;
+      bottom: 30px;
+      width: 100%;
+      text-align: center;
+      z-index: 3;
+    }
+    .indicators button {
+      border: none;
+      width: 16px;
+      height: 16px;
+      margin: 0 8px;
+      background-color: #bbb;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .indicators button.active {
+      background-color: var(--primary-color);
+    }
+    .indicators button:hover,
+    .indicators button:focus {
+      background-color: #004b80;
+      outline: none;
+    }
+    @media (max-width: 1024px) {
+      .slide h2 {
+        font-size: 2.5rem;
+      }
+      .slide p {
+        font-size: 1.3rem;
+      }
+      .slide {
+        padding: 0 4vw;
+      }
+    }
+    @media (max-width: 768px) {
+      .slide h2 {
+        font-size: 2rem;
+      }
+      .slide p {
+        font-size: 1.1rem;
+      }
+      .slide {
+        padding: 0 3vw;
+      }
+    }
+    @media (max-width: 480px) {
+      .slide {
+        justify-content: center;
+        text-align: center;
+        padding: 0 2vw;
+      }
+      .slide h2 {
+        font-size: 1.6rem;
+      }
+      .slide p {
+        font-size: 1rem;
+      }
+      .nav button {
+        font-size: 28px;
+        padding: 10px 14px;
+      }
+      .play-pause button {
+        padding: 10px 18px;
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="slider" id="slider" role="region" aria-label="Carrusel corporativo EssilorLuxottica">
+  <div class="slides">
+    <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1920&q=80');" role="tabpanel" aria-hidden="false">
+      <div class="slide-content">
+        <h2>Innovación en Salud Visual</h2>
+        <p>EssilorLuxottica impulsa la innovación para mejorar la visión y calidad de vida en todo el mundo.</p>
+        <a href="https://www.essilorluxottica.com" class="button" role="button" target="_blank" rel="noopener noreferrer">Conoce más</a>
+      </div>
+    </div>
+    <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1556740738-b6a63e27c4df?auto=format&fit=crop&w=1920&q=80');" role="tabpanel" aria-hidden="true">
+      <div class="slide-content">
+        <h2>Diseño y Estilo Icónicos</h2>
+        <p>Nuestras marcas líderes ofrecen monturas y lentes que definen tendencias en todo el mundo.</p>
+        <a href="https://www.luxottica.com/brands" class="button" role="button" target="_blank" rel="noopener noreferrer">Explora nuestras marcas</a>
+      </div>
+    </div>
+    <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1499346030926-9a72daac6c63?auto=format&fit=crop&w=1920&q=80');" role="tabpanel" aria-hidden="true">
+      <div class="slide-content">
+        <h2>Compromiso con la Sostenibilidad</h2>
+        <p>Promovemos prácticas responsables para cuidar nuestro planeta y las comunidades donde operamos.</p>
+        <a href="https://www.essilorluxottica.com/sustainability" class="button" role="button" target="_blank" rel="noopener noreferrer">Ver iniciativas</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav">
+    <button id="prev" aria-label="Slide anterior">&#10094;</button>
+    <button id="next" aria-label="Slide siguiente">&#10095;</button>
+  </div>
+
+  <div class="play-pause">
+    <button id="togglePlay" aria-label="Pausar carrusel">⏸ Pausar</button>
+  </div>
+
+  <div class="indicators" id="indicators" role="tablist" aria-label="Navegación de diapositivas"></div>
+</div>
+
+<script>
+  const slider = document.getElementById('slider');
+  const slides = slider.querySelector('.slides');
+  const slideItems = slides.children;
+  const prevBtn = slider.querySelector('#prev');
+  const nextBtn = slider.querySelector('#next');
+  const togglePlayBtn = slider.querySelector('#togglePlay');
+  const indicators = slider.querySelector('#indicators');
+  const totalSlides = slideItems.length;
+
+  let index = 0;
+  let autoSlide;
+  let isPlaying = true;
+  const interval = 6000;
+
+  // Crear indicadores accesibles
+  for (let i = 0; i < totalSlides; i++) {
+    const dot = document.createElement('button');
+    dot.setAttribute('aria-label', `Ir a la diapositiva ${i + 1}`);
+    dot.setAttribute('role', 'tab');
+    dot.dataset.index = i;
+    if (i === 0) {
+      dot.classList.add('active');
+      slideItems[i].setAttribute('aria-hidden', 'false');
+      dot.setAttribute('aria-selected', 'true');
+      dot.setAttribute('tabindex', '0');
+    } else {
+      slideItems[i].setAttribute('aria-hidden', 'true');
+      dot.setAttribute('aria-selected', 'false');
+      dot.setAttribute('tabindex', '-1');
+    }
+    indicators.appendChild(dot);
+  }
+
+  const updateIndicators = () => {
+    [...indicators.children].forEach((btn, i) => {
+      btn.classList.remove('active');
+      btn.setAttribute('aria-selected', 'false');
+      btn.setAttribute('tabindex', '-1');
+      slideItems[i].setAttribute('aria-hidden', 'true');
+    });
+    indicators.children[index].classList.add('active');
+    indicators.children[index].setAttribute('aria-selected', 'true');
+    indicators.children[index].setAttribute('tabindex', '0');
+    slideItems[index].setAttribute('aria-hidden', 'false');
+  };
+
+  const animateSlideContent = () => {
+    const content = slideItems[index].querySelector('.slide-content');
+    content.style.animation = 'none';
+    content.offsetHeight; // trigger reflow
+    content.style.animation = '';
+  };
+
+  const goToSlide = (i) => {
+    index = (i + totalSlides) % totalSlides;
+    slides.style.transform = `translateX(-${index * 100}%)`;
+    updateIndicators();
+    animateSlideContent();
+  };
+
+  const nextSlide = () => goToSlide(index + 1);
+  const prevSlide = () => goToSlide(index - 1);
+
+  prevBtn.addEventListener('click', () => {
+    prevSlide();
+    if (isPlaying) restartAutoSlide();
+  });
+  nextBtn.addEventListener('click', () => {
+    nextSlide();
+    if (isPlaying) restartAutoSlide();
+  });
+
+  indicators.addEventListener('click', (e) => {
+    if (e.target.tagName === 'BUTTON') {
+      goToSlide(parseInt(e.target.dataset.index));
+      if (isPlaying) restartAutoSlide();
+    }
+  });
+
+  togglePlayBtn.addEventListener('click', () => {
+    isPlaying ? stopAutoSlide() : startAutoSlide();
+  });
+
+  const startAutoSlide = () => {
+    autoSlide = setInterval(nextSlide, interval);
+    isPlaying = true;
+    togglePlayBtn.textContent = '⏸ Pausar';
+  };
+
+  const stopAutoSlide = () => {
+    clearInterval(autoSlide);
+    isPlaying = false;
+    togglePlayBtn.textContent = '▶️ Reproducir';
+  };
+
+  const restartAutoSlide = () => {
+    stopAutoSlide();
+    startAutoSlide();
+  };
+
+  slider.addEventListener('mouseenter', stopAutoSlide);
+  slider.addEventListener('mouseleave', () => isPlaying && startAutoSlide());
+
+  // Swipe support (touch)
+  let startX = 0;
+  slider.addEventListener('touchstart', (e) => {
+    stopAutoSlide();
+    startX = e.touches[0].clientX;
+  });
+
+  slider.addEventListener('touchend', (e) => {
+    const endX = e.changedTouches[0].clientX;
+    if (startX - endX > 50) nextSlide();
+    else if (endX - startX > 50) prevSlide();
+    if (isPlaying) startAutoSlide();
+  });
+
+  // Keyboard navigation
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') {
+      nextSlide();
+      if (isPlaying) restartAutoSlide();
+    }
+    if (e.key === 'ArrowLeft') {
+      prevSlide();
+      if (isPlaying) restartAutoSlide();
+    }
+  });
+
+  startAutoSlide();
+</script>
+
+</body>
+</html>
+
 {% endblock %}
