@@ -4,6 +4,8 @@
 
 {% block content %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/gaylortracker.css') }}">
+<!-- SheetJS -->
+<script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 
 <div class="sop-container">
 
@@ -13,14 +15,29 @@
     <button type="submit">Buscar</button>
   </form>
 
-  {% if filter_packing %}
-    <p><strong>Total resultados:</strong> {{ total_resultados }}</p>
-    <p><strong>Handling Units únicas:</strong> {{ handling_units_unicas }}</p>
-  {% endif %}
+{% if filter_packing %}
+  <p><strong>Total resultados:</strong> {{ total_resultados }}</p>
+  <div id="alertBox" class="missing-alert"></div> <!-- 🔹 lo movemos aquí -->
+{% endif %}
+
+
+  <!-- Input para escanear HU + Botón Exportar alineado -->
+<div class="scan-hu">
+  <input type="text" id="huInput" placeholder="Escanear HU aquí" autofocus>
+  <button type="button" id="showOverBtn">Mostrar HUs Over</button>
+  <button type="button" id="markShortBtn">Marcar como Short</button>
+
+  <div class="spacer"></div> <!-- empuja el exportar a la derecha -->
+
+  <button type="button" id="exportExcel" class="export-btn">Exportar a Excel</button>
+  <!-- <div id="alertBox" class="missing-alert"></div> -->
+</div>
+
+
 
   <!-- Tabla de resultados -->
   <div class="table-container">
-    <table>
+    <table id="huTable">
       <thead>
         <tr>
           <th>Packing Object</th>
@@ -40,4 +57,149 @@
     </table>
   </div>
 </div>
+
+<!-- Modal HUs Over -->
+<div id="overModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h3>HUs Over (escaneados pero no encontrados)</h3>
+    <textarea id="overList" rows="10" style="width:100%;"></textarea>
+  </div>
+</div>
+
+<script>
+const huInput = document.getElementById('huInput');
+const huTable = document.getElementById('huTable');
+const alertBox = document.getElementById('alertBox');
+const showOverBtn = document.getElementById('showOverBtn');
+const markShortBtn = document.getElementById('markShortBtn');
+const modal = document.getElementById('overModal');
+const closeModal = document.querySelector('.close');
+const overList = document.getElementById('overList');
+const exportExcelBtn = document.getElementById('exportExcel');
+
+let overHUs = [];      // HUs que no están en tabla (Over)
+let shortHUs = [];     // HUs en tabla que no fueron escaneados
+let scannedHUs = new Set(); // Para control de escaneados
+
+// Escaneo de HU
+huInput.addEventListener('keydown', function(event) {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    const hu = huInput.value.trim();
+    if (!hu) return;
+
+    const rows = huTable.getElementsByTagName('tr');
+    let found = false;
+
+    for (let i = 1; i < rows.length; i++) {
+      const huCell = rows[i].cells[1];
+      if (huCell.textContent.trim() === hu) {
+        rows[i].style.backgroundColor = '#d4edda'; // verde
+        scannedHUs.add(hu);
+        found = true;
+        break;
+      }
+    }
+
+    if (!found) {
+      overHUs.push(hu); // HU extra
+      alertBox.textContent = 'HU Over: ' + hu;
+      alertBox.style.color = '#fff';
+      alertBox.style.backgroundColor = '#ff9800'; // naranja
+      alertBox.style.padding = '10px';
+      alertBox.style.borderRadius = '5px';
+      alertBox.style.marginTop = '10px';
+    }
+
+    huInput.value = '';
+  }
+});
+
+// Mostrar Over en modal
+showOverBtn.addEventListener('click', () => {
+  if (overHUs.length === 0) {
+    alert('No hay HUs Over.');
+    return;
+  }
+  overList.value = overHUs.join('\n');
+  modal.style.display = 'block';
+});
+
+// Cerrar modal
+closeModal.addEventListener('click', () => { modal.style.display = 'none'; });
+window.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
+
+// Marcar como Short
+markShortBtn.addEventListener('click', () => {
+  shortHUs = [];
+  const rows = huTable.getElementsByTagName('tr');
+  for (let i = 1; i < rows.length; i++) {
+    const huCell = rows[i].cells[1].textContent.trim();
+    if (!scannedHUs.has(huCell)) {
+      rows[i].style.backgroundColor = '#f8d7da'; // rojo
+      shortHUs.push([
+        rows[i].cells[0].textContent.trim(), // Packing Object
+        huCell,
+        rows[i].cells[2].textContent.trim()  // Ubicación
+      ]);
+    }
+  }
+  alert("Se marcaron " + shortHUs.length + " HUs como Short.");
+});
+
+// Exportar a Excel con SheetJS
+exportExcelBtn.addEventListener('click', () => {
+  const packingObject = document.querySelector('input[name="packing_object"]').value || 'PackingObject';
+  const timestamp = new Date().toISOString().replace(/[-:T]/g, '').split('.')[0];
+  const filename = `${packingObject}_scanResults_${timestamp}.xlsx`;
+
+  const wb = XLSX.utils.book_new();
+
+  // Hoja 1: Over HUs
+  const ws1_data = [["Packing Object","Handling Unit"]];
+  overHUs.forEach(hu => ws1_data.push([packingObject, hu]));
+  const ws1 = XLSX.utils.aoa_to_sheet(ws1_data);
+  XLSX.utils.book_append_sheet(wb, ws1, "Over HUs");
+
+  // Hoja 2: Encontrados
+  const ws2_data = [["Packing Object","Handling Unit","Ubicación"]];
+  const rows = huTable.getElementsByTagName('tr');
+  for(let i=1;i<rows.length;i++){
+    const huCell = rows[i].cells[1].textContent.trim();
+    if(scannedHUs.has(huCell)){
+      ws2_data.push([
+        rows[i].cells[0].textContent.trim(),
+        huCell,
+        rows[i].cells[2].textContent.trim()
+      ]);
+    }
+  }
+  const ws2 = XLSX.utils.aoa_to_sheet(ws2_data);
+  XLSX.utils.book_append_sheet(wb, ws2, "Encontrados");
+
+  // Hoja 3: Short HUs
+  const ws3_data = [["Packing Object","Handling Unit","Ubicación"]];
+  shortHUs.forEach(r => ws3_data.push(r));
+  const ws3 = XLSX.utils.aoa_to_sheet(ws3_data);
+  XLSX.utils.book_append_sheet(wb, ws3, "Short HUs");
+
+  // Hoja 4: Todos los HUs del PO (tabla completa)
+  const ws4_data = [["Packing Object","Handling Unit","Ubicación"]];
+  for(let i=1;i<rows.length;i++){
+    ws4_data.push([
+      rows[i].cells[0].textContent.trim(),
+      rows[i].cells[1].textContent.trim(),
+      rows[i].cells[2].textContent.trim()
+    ]);
+  }
+  const ws4 = XLSX.utils.aoa_to_sheet(ws4_data);
+  XLSX.utils.book_append_sheet(wb, ws4, "Todos HUs (PO)");
+
+  // Descargar archivo
+  XLSX.writeFile(wb, filename);
+});
+</script>
+
 {% endblock %}
+{% set header_title = "Gaylor Tracker" %}

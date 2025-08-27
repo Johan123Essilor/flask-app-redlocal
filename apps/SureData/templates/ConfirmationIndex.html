@@ -1,0 +1,210 @@
+{% extends "index.html" %}
+{% block title %}HU Scanner{% endblock %}
+{% block header_title %}HU Scanner{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/gaylortracker.css') }}">
+<script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+
+<div class="sop-container">
+
+    <!-- Formulario de búsqueda -->
+    <form method="get" class="filter-form">
+        <label for="confirmation_nr">Confirmation Nr:</label>
+        <input type="text" name="confirmation_nr" id="confirmation_nr" value="{{ confirmation_nr or '' }}">
+        <button type="submit">Buscar</button>
+        
+    </form>
+
+    {% if confirmation_nr %}
+        <h2>Resultados para: {{ confirmation_nr }}</h2>
+        <p>Total encontrados (solo excluyendo NO-TOTE en el conteo): {{ total_resultados }}</p>
+        <div id="alertBox" class="missing-alert"></div>
+
+        <!-- Input para escanear HU + botones -->
+        <div class="scan-hu">
+            <input type="text" id="huInput" placeholder="Escanear HU aquí" autofocus>
+            <button type="button" id="showOverBtn">Mostrar HUs Over</button>
+            <button type="button" id="markShortBtn">Marcar como Short</button>
+            <div class="spacer"></div>
+            <button type="button" id="exportExcel" class="export-btn">Exportar a Excel</button>
+            <!-- <div id="alertBox" class="missing-alert"></div> -->
+        </div>
+
+        <!-- Tabla de resultados -->
+        <div class="table-container">
+            <table id="huTable">
+            <thead>
+                <tr>
+                <th>Confirmation Nr</th>
+                <th>StockID</th>
+                <th>Bin</th>
+                <th>ItemID</th>
+                <th>Delivery Nr</th>
+                <th>Qty</th>
+                <th>Tote</th>
+                <th>Insert TS</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in registros %}
+                <tr>
+                <td>{{ r.confirmation_Nr }}</td>
+                <td>{{ r.stockID }}</td>  <!-- Esto es clave -->
+                <td>{{ r.bin_ID }}</td>
+                <td>{{ r.itemID }}</td>
+                <td>{{ r.delivery_Nr }}</td>
+                <td>{{ r.qty }}</td>
+                <td>{{ r.tote_ID }}</td>
+                <td>{{ r.insert_TS }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            </table>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Modal HUs Over -->
+<div id="overModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>HUs Over (escaneados pero no encontrados)</h3>
+        <textarea id="overList" rows="10" style="width:100%;"></textarea>
+    </div>
+</div>
+
+<script>
+const huInput = document.getElementById('huInput');
+const huTable = document.getElementById('huTable');
+const alertBox = document.getElementById('alertBox');
+const showOverBtn = document.getElementById('showOverBtn');
+const markShortBtn = document.getElementById('markShortBtn');
+const modal = document.getElementById('overModal');
+const closeModal = document.querySelector('.close');
+const overList = document.getElementById('overList');
+const exportExcelBtn = document.getElementById('exportExcel');
+
+let overHUs = [];
+let shortHUs = [];
+let scannedHUs = new Set();
+
+// Escaneo HU
+huInput.addEventListener('keydown', function(event){
+    if(event.key==='Enter'){
+        event.preventDefault();
+        const huVal = huInput.value.trim().toUpperCase();
+        if(!huVal) return;
+
+        const rows = huTable.getElementsByTagName('tr');
+        let found = false;
+
+        for(let i=1;i<rows.length;i++){
+            const huCellVal = rows[i].cells[1].textContent.trim().toUpperCase();
+            if(huCellVal === huVal){
+                rows[i].style.backgroundColor = '#d4edda'; // verde
+                scannedHUs.add(huVal);
+                found = true;
+                break;
+            }
+        }
+
+        if(!found){
+            overHUs.push(huVal);
+            alertBox.textContent = 'HU Over: ' + huVal;
+            alertBox.style.color = '#fff';
+            alertBox.style.backgroundColor = '#ff9800';
+            alertBox.style.padding = '10px';
+            alertBox.style.borderRadius = '5px';
+            alertBox.style.marginTop = '10px';
+        }
+        huInput.value='';
+    }
+});
+
+// Mostrar Over
+showOverBtn.addEventListener('click', ()=> {
+    if(overHUs.length===0){
+        alert('No hay HUs Over.');
+        return;
+    }
+    overList.value = overHUs.join('\n');
+    modal.style.display='block';
+});
+
+// Cerrar modal
+closeModal.addEventListener('click', ()=>{ modal.style.display='none'; });
+window.addEventListener('click', (e)=>{ if(e.target===modal) modal.style.display='none'; });
+
+// Marcar como Short
+markShortBtn.addEventListener('click', ()=> {
+    shortHUs = [];
+    const rows = huTable.getElementsByTagName('tr');
+    for(let i=1;i<rows.length;i++){
+        const huCellVal = rows[i].cells[1].textContent.trim().toUpperCase();
+        if(!scannedHUs.has(huCellVal)){
+            rows[i].style.backgroundColor='#f8d7da'; // rojo claro
+            shortHUs.push([
+                rows[i].cells[0].textContent.trim(),
+                rows[i].cells[1].textContent.trim(),
+                rows[i].cells[2].textContent.trim()
+            ]);
+        }
+    }
+    alert("Se marcaron "+shortHUs.length+" HUs como Short.");
+});
+
+// Exportar Excel
+exportExcelBtn.addEventListener('click', ()=> {
+    const po = document.querySelector('input[name="confirmation_nr"]').value || 'ConfirmationNr';
+    const timestamp = new Date().toISOString().replace(/[-:T]/g,'').split('.')[0];
+    const filename = `${po}_scanResults_${timestamp}.xlsx`;
+
+    const wb = XLSX.utils.book_new();
+
+    // Over HUs
+    const ws1_data=[["Confirmation Nr","StockID"]];
+    overHUs.forEach(hu=>ws1_data.push([po,hu]));
+    const ws1=XLSX.utils.aoa_to_sheet(ws1_data);
+    XLSX.utils.book_append_sheet(wb,ws1,"Over HUs");
+
+    // Encontrados
+    const ws2_data=[["Confirmation Nr","StockID","Ubicación"]];
+    const rows = huTable.getElementsByTagName('tr');
+    for(let i=1;i<rows.length;i++){
+        const huCellVal = rows[i].cells[1].textContent.trim();
+        if(scannedHUs.has(huCellVal.toUpperCase())){
+            ws2_data.push([
+                rows[i].cells[0].textContent.trim(),
+                huCellVal,
+                rows[i].cells[2].textContent.trim()
+            ]);
+        }
+    }
+    const ws2=XLSX.utils.aoa_to_sheet(ws2_data);
+    XLSX.utils.book_append_sheet(wb,ws2,"Encontrados");
+
+    // Shorts
+    const ws3_data=[["Confirmation Nr","StockID","Ubicación"]];
+    shortHUs.forEach(r=>ws3_data.push(r));
+    const ws3=XLSX.utils.aoa_to_sheet(ws3_data);
+    XLSX.utils.book_append_sheet(wb,ws3,"Short HUs");
+
+    // Todos
+    const ws4_data=[["Confirmation Nr","StockID","Ubicación"]];
+    for(let i=1;i<rows.length;i++){
+        ws4_data.push([
+            rows[i].cells[0].textContent.trim(),
+            rows[i].cells[1].textContent.trim(),
+            rows[i].cells[2].textContent.trim()
+        ]);
+    }
+    const ws4=XLSX.utils.aoa_to_sheet(ws4_data);
+    XLSX.utils.book_append_sheet(wb,ws4,"Todos HUs (PO)");
+
+    XLSX.writeFile(wb,filename);
+});
+</script>
+
+{% endblock %}
+{% set header_title = "HU Scanner" %}

@@ -6,3 +6,4 @@
 2025-08-15 17:34:38 | Usuario: Juan Cortes | Área: shipping
 2025-08-15 17:35:05 | Usuario: Luis Beltran | Área: shipping
 2025-08-15 17:35:22 | Usuario: Daniel Bellot | Área: shipping
+2025-08-26 11:54:28 | Usuario: Customer Service | Área: customer_service

@@ -5,6 +5,8 @@ from apps.cubo import cubo_bp
 from apps.auth.routes import auth_bp
 from apps.LoadingClose import ShippingClose_bp
 from apps.GaylorTracker import gaylorTracker_bp
+from apps.SureData import confirmationTracker_bp
+
 from datetime import timedelta
 from jinja2 import ChoiceLoader, FileSystemLoader
 import json
@@ -70,6 +72,9 @@ app.register_blueprint(ShippingClose_bp, url_prefix='/LoadingCloseSite')
 
 # registra el blueprint con prefijo
 app.register_blueprint(gaylorTracker_bp, url_prefix='/GaylorTracker')
+#---------------------------------Confirmation Tracker
+app.register_blueprint(confirmationTracker_bp, url_prefix='/confirmationTracker')
+
 
 
 if __name__ == "__main__":
