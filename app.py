@@ -77,11 +77,11 @@ app.register_blueprint(confirmationTracker_bp, url_prefix='/confirmationTracker'
 
 
 
-# if __name__ == "__main__":
+if __name__ == "__main__":
 #     app.run(host="0.0.0.0", port=9818, debug=False, use_reloader=False)
 
 
 
-    #app.run(debug=True)
+    app.run(debug=True)
 
 
