@@ -107,3 +107,20 @@
       text-shadow: 1px 1px 4px rgba(0,0,0,0.8);
       pointer-events: none;
     }
+        #comments {
+      width: 100%;
+      text-align: center; /* Centra el contenido dentro del div */
+      padding: 20px;
+      position: absolute;
+      top: 0; /* Pega al tope de la página */
+      left: 0;
+    }
+
+    #comments p {
+      display: inline-block;
+      font-size: 1.2em;
+      background-color: #f0f0f0;
+      padding: 10px 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
