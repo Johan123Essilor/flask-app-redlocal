@@ -9,7 +9,10 @@ def index():
     usuario = session.get('usuario')
     confirmation_nr = request.args.get('confirmation_nr')
 
+    # Obtener todos los registros que coincidan con confirmation_nr
     registros = get_by_confirmation(confirmation_nr=confirmation_nr)
+    
+    # Contar solo los registros donde tote_ID != "NO-TOTE"
     total_resultados = len([r for r in registros if r.get("tote_ID") != "NO-TOTE"])
 
     return render_template(
