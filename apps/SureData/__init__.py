@@ -1,4 +1,5 @@
 from flask import Blueprint
+from .models import init_db
 
 confirmationTracker_bp = Blueprint(
     'confirmationTracker', __name__,
@@ -6,4 +7,7 @@ confirmationTracker_bp = Blueprint(
     static_folder='static'
 )
 
-from . import routes  # aquí importas tus rutas
+# 🔹 Crear la tabla al iniciar el blueprint
+init_db()
+
+from . import routes
