@@ -13,7 +13,12 @@
         <li><a href="{{ url_for('confirmationTracker.index') }}">HU Scanner</a></li>
       </ul>
     </li>
-    
+    <!-- <li><a href="#">Contact</a>
+      <ul>
+        <li><a href="#">Map</a></li>
+        <li><a href="#">Form</a></li>
+      </ul>
+    </li> -->
 
     <!-- Este item se empuja a la derecha con margin-left auto -->
     <li style="margin-left: auto; position: relative;">
@@ -27,7 +32,7 @@
           </li>
         </ul>
       {% else %}
-        <a href="{{ url_for('auth.login') }}">Iniciar sesion</a>
+        <a href="{{ url_for('auth.login') }}">Iniciar sesión</a>
       {% endif %}
     </li>
 
