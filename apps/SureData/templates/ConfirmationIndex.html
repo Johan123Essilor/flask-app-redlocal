@@ -286,5 +286,24 @@ window.addEventListener('DOMContentLoaded', () => {
     if(searchInput) searchInput.focus();
 });
 </script>
+<script>
+window.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('confirmation_nr');
+    if(searchInput) searchInput.focus();
+
+    // 👇 Aquí pegamos tu listener
+    const filterForm = document.querySelector('.filter-form');
+    if(filterForm) {
+        filterForm.addEventListener('submit', (e) => {
+            e.preventDefault();  // evita doble petición
+            const val = document.getElementById('confirmation_nr').value.trim();
+            if(val) {
+                window.location.href = `?confirmation_nr=${encodeURIComponent(val)}`;
+            }
+        });
+    }
+});
+</script>
+
 {% endblock %}
 {% set header_title = "HU Scanner" %}
