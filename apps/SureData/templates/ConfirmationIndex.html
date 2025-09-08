@@ -13,12 +13,11 @@
         <label for="confirmation_nr">Confirmation Nr:</label>
         <input type="text" name="confirmation_nr" id="confirmation_nr" value="{{ confirmation_nr or '' }}">
         <button type="submit">Buscar</button>
-        
     </form>
 
     {% if confirmation_nr %}
         <h2>Resultados para: {{ confirmation_nr }}</h2>
-        <p>Total de encontrados (solo excluyendo NO-TOTE en el conteo): {{ total_resultados }}</p>
+        <p>Total encontrados (solo excluyendo NO-TOTE en el conteo): {{ total_resultados }}</p>
         <div id="alertBox" class="missing-alert"></div>
 
         <!-- Input para escanear HU + botones -->
@@ -28,7 +27,6 @@
             <button type="button" id="markShortBtn">Marcar como Short</button>
             <div class="spacer"></div>
             <button type="button" id="exportExcel" class="export-btn">Exportar a Excel</button>
-            <!-- <div id="alertBox" class="missing-alert"></div> -->
         </div>
 
         <!-- Tabla de resultados -->
@@ -50,7 +48,7 @@
                 {% for r in registros %}
                 <tr>
                 <td>{{ r.confirmation_Nr }}</td>
-                <td>{{ r.stockID }}</td>  <!-- Esto es clave -->
+                <td>{{ r.stockID }}</td>
                 <td>{{ r.bin_ID }}</td>
                 <td>{{ r.itemID }}</td>
                 <td>{{ r.delivery_Nr }}</td>
@@ -87,47 +85,82 @@ const exportExcelBtn = document.getElementById('exportExcel');
 
 let overHUs = [];
 let shortHUs = [];
-let scannedHUs = new Set();
+let scannedHUs = {};  // stockID -> cuántas veces fue escaneado
+let activeConfirmationNr = "{{ confirmation_nr or '' }}";
 
-// Escaneo HU
+// Mantener focus en el input
+window.addEventListener('load', ()=> huInput.focus());
+document.addEventListener('click', ()=> huInput.focus());
+
+// Escaneo de HU / StockID
 huInput.addEventListener('keydown', function(event){
     if(event.key==='Enter'){
         event.preventDefault();
-        const huVal = huInput.value.trim().toUpperCase();
-        if(!huVal) return;
+        const scannedVal = huInput.value.trim().toUpperCase();
+        if(!scannedVal) return;
 
+        // 🔹 Si se escanea el mismo Confirmation Nr → guardar resumen y reiniciar página
+        if(scannedVal === activeConfirmationNr) {
+            guardarResumen().finally(() => {
+                window.location.href = "{{ url_for('confirmationTracker.index') }}";
+            });
+            return;
+        }
+
+        // 🔹 Si no hay Confirmation Nr activo → este escaneo lo define
+        if(!activeConfirmationNr) {
+            activeConfirmationNr = scannedVal;
+            alertBox.textContent = "Confirmation Nr activo: " + activeConfirmationNr;
+            alertBox.style.backgroundColor = "#2196f3"; 
+            alertBox.style.color = "#fff";
+            scannedHUs = {}; 
+            overHUs = [];
+            shortHUs = [];
+            const rows = huTable.getElementsByTagName('tr');
+            for(let i=1;i<rows.length;i++){
+                rows[i].style.backgroundColor = '';
+            }
+            huInput.value = '';
+            return;
+        }
+
+        // 🔹 Buscar coincidencias y marcar SOLO la primera libre
         const rows = huTable.getElementsByTagName('tr');
-        let found = false;
+        let totalMatches = 0;
+        let marked = false;
 
         for(let i=1;i<rows.length;i++){
-            const huCellVal = rows[i].cells[1].textContent.trim().toUpperCase();
-            if(huCellVal === huVal){
-                rows[i].style.backgroundColor = '#d4edda'; // verde
-                scannedHUs.add(huVal);
-                found = true;
-                break;
+            const stockID = rows[i].cells[1].textContent.trim().toUpperCase();
+            if(stockID === scannedVal){
+                totalMatches++;
+                if(!marked && rows[i].style.backgroundColor !== 'rgb(212, 237, 218)'){ 
+                    rows[i].style.backgroundColor = '#fff3cd'; 
+                    setTimeout(()=>{ rows[i].style.backgroundColor = '#d4edda'; }, 400);
+                    marked = true;
+                }
             }
         }
 
-        if(!found){
-            overHUs.push(huVal);
-            alertBox.textContent = 'HU Over: ' + huVal;
-            alertBox.style.color = '#fff';
-            alertBox.style.backgroundColor = '#ff9800';
-            alertBox.style.padding = '10px';
-            alertBox.style.borderRadius = '5px';
-            alertBox.style.marginTop = '10px';
+        if(!(scannedVal in scannedHUs)) scannedHUs[scannedVal] = 0;
+
+        if(marked){
+            scannedHUs[scannedVal] += 1; 
+        } else {
+            if(scannedHUs[scannedVal] >= totalMatches){
+                overHUs.push(scannedVal);
+                alertBox.textContent = 'StockID Over: ' + scannedVal;
+                alertBox.style.color = '#fff';
+                alertBox.style.backgroundColor = '#ff9800';
+            }
         }
+
         huInput.value='';
     }
 });
 
-// Mostrar Over
+// Mostrar HUs Over
 showOverBtn.addEventListener('click', ()=> {
-    if(overHUs.length===0){
-        alert('No hay HUs Over.');
-        return;
-    }
+    if(overHUs.length===0) return;
     overList.value = overHUs.join('\n');
     modal.style.display='block';
 });
@@ -141,9 +174,10 @@ markShortBtn.addEventListener('click', ()=> {
     shortHUs = [];
     const rows = huTable.getElementsByTagName('tr');
     for(let i=1;i<rows.length;i++){
-        const huCellVal = rows[i].cells[1].textContent.trim().toUpperCase();
-        if(!scannedHUs.has(huCellVal)){
-            rows[i].style.backgroundColor='#f8d7da'; // rojo claro
+        const stockID = rows[i].cells[1].textContent.trim().toUpperCase();
+        const isScanned = (scannedHUs[stockID] && scannedHUs[stockID] > 0);
+        if(!isScanned){
+            rows[i].style.backgroundColor='#f8d7da'; 
             shortHUs.push([
                 rows[i].cells[0].textContent.trim(),
                 rows[i].cells[1].textContent.trim(),
@@ -151,46 +185,38 @@ markShortBtn.addEventListener('click', ()=> {
             ]);
         }
     }
-    alert("Se marcaron "+shortHUs.length+" HUs como Short.");
 });
 
 // Exportar Excel
 exportExcelBtn.addEventListener('click', ()=> {
-    const po = document.querySelector('input[name="confirmation_nr"]').value || 'ConfirmationNr';
+    const po = activeConfirmationNr || 'ConfirmationNr';
     const timestamp = new Date().toISOString().replace(/[-:T]/g,'').split('.')[0];
     const filename = `${po}_scanResults_${timestamp}.xlsx`;
 
     const wb = XLSX.utils.book_new();
 
-    // Over HUs
     const ws1_data=[["Confirmation Nr","StockID"]];
     overHUs.forEach(hu=>ws1_data.push([po,hu]));
-    const ws1=XLSX.utils.aoa_to_sheet(ws1_data);
-    XLSX.utils.book_append_sheet(wb,ws1,"Over HUs");
+    XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(ws1_data),"Over HUs");
 
-    // Encontrados
     const ws2_data=[["Confirmation Nr","StockID","Ubicación"]];
     const rows = huTable.getElementsByTagName('tr');
     for(let i=1;i<rows.length;i++){
-        const huCellVal = rows[i].cells[1].textContent.trim();
-        if(scannedHUs.has(huCellVal.toUpperCase())){
+        const stockID = rows[i].cells[1].textContent.trim().toUpperCase();
+        if(scannedHUs[stockID] && scannedHUs[stockID] > 0){
             ws2_data.push([
                 rows[i].cells[0].textContent.trim(),
-                huCellVal,
+                stockID,
                 rows[i].cells[2].textContent.trim()
             ]);
         }
     }
-    const ws2=XLSX.utils.aoa_to_sheet(ws2_data);
-    XLSX.utils.book_append_sheet(wb,ws2,"Encontrados");
+    XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(ws2_data),"Encontrados");
 
-    // Shorts
     const ws3_data=[["Confirmation Nr","StockID","Ubicación"]];
     shortHUs.forEach(r=>ws3_data.push(r));
-    const ws3=XLSX.utils.aoa_to_sheet(ws3_data);
-    XLSX.utils.book_append_sheet(wb,ws3,"Short HUs");
+    XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(ws3_data),"Short HUs");
 
-    // Todos
     const ws4_data=[["Confirmation Nr","StockID","Ubicación"]];
     for(let i=1;i<rows.length;i++){
         ws4_data.push([
@@ -199,10 +225,83 @@ exportExcelBtn.addEventListener('click', ()=> {
             rows[i].cells[2].textContent.trim()
         ]);
     }
-    const ws4=XLSX.utils.aoa_to_sheet(ws4_data);
-    XLSX.utils.book_append_sheet(wb,ws4,"Todos HUs (PO)");
+    XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(ws4_data),"Todos HUs (PO)");
 
     XLSX.writeFile(wb,filename);
+});
+
+// 🔹 Guardar resumen en SQLite (sin alert)
+function guardarResumen() {
+    const rows = huTable.getElementsByTagName('tr');
+    let totalHUs = 0;
+    let encontrados = 0;
+
+    for (let i = 1; i < rows.length; i++) {
+        const tote = rows[i].cells[6].textContent.trim();
+
+        if (tote !== "NO-TOTE") {
+            totalHUs++;
+
+            // ✅ Se considera "encontrado" si la fila está marcada en verde
+            if (rows[i].style.backgroundColor === 'rgb(212, 237, 218)') {
+                encontrados++;
+            }
+        }
+    }
+
+    // shorts = total_hus - encontrados
+    const shortsCount = totalHUs - encontrados;
+
+    // 👇 Tomamos SOLO el primer bin_Id de la tabla
+    let firstBinId = null;
+    if (rows.length > 1) {
+        firstBinId = rows[1].cells[2].textContent.trim();
+    }
+
+    const resumen = {
+        confirmation_nr: activeConfirmationNr,
+        bin_Id: firstBinId,   // 👈 nuevo campo
+        total_hus: totalHUs,
+        encontrados: encontrados,
+        overs: overHUs.length,
+        shorts: shortsCount
+    };
+
+    return fetch("/confirmationTracker/save_summary", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify(resumen)
+    })
+    .then(r => r.json())
+    .then(resp => console.log("Guardado en DB:", resp))
+    .catch(err => console.error("Error al guardar resumen:", err));
+}
+
+
+
+</script>
+<script>
+window.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('confirmation_nr');
+    if(searchInput) searchInput.focus();
+});
+</script>
+<script>
+window.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('confirmation_nr');
+    if(searchInput) searchInput.focus();
+
+    // 👇 Aquí pegamos tu listener
+    const filterForm = document.querySelector('.filter-form');
+    if(filterForm) {
+        filterForm.addEventListener('submit', (e) => {
+            e.preventDefault();  // evita doble petición
+            const val = document.getElementById('confirmation_nr').value.trim();
+            if(val) {
+                window.location.href = `?confirmation_nr=${encodeURIComponent(val)}`;
+            }
+        });
+    }
 });
 </script>
 

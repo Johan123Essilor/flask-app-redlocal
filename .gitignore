@@ -63,3 +63,5 @@ Thumbs.db
 
 # Archivos de logs
 *.log
+sop_files.db
+shippingClose.db
