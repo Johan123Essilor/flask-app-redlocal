@@ -2,6 +2,7 @@ from flask import Flask, render_template, abort
 from apps.infoshipDev import infoship_bp
 from apps.SOPSite import SOPSite_bp
 from apps.cubo import cubo_bp
+from apps.cubo2 import cubo_bp2
 from apps.auth.routes import auth_bp
 from apps.LoadingClose import ShippingClose_bp
 from apps.GaylorTracker import gaylorTracker_bp
@@ -43,6 +44,19 @@ app.register_blueprint(cubo_bp, url_prefix='/cubo')
 def cubo():
     return render_template('cubo.html')
 @app.route('/visor/<int:item_id>')
+def visor2(item_id):
+    clientes = cargar_datos()
+    if item_id < 0 or item_id >= len(clientes):
+        abort(404)
+    cliente = clientes[item_id]
+    return render_template('visor.html', cliente=cliente)
+
+#---------------------------------3D View2
+app.register_blueprint(cubo_bp2, url_prefix='/cubo2')
+@app.route('/cubo2')
+def cubo2():
+    return render_template('cubo.html')
+@app.route('/visor2/<int:item_id>')
 def visor(item_id):
     clientes = cargar_datos()
     if item_id < 0 or item_id >= len(clientes):
