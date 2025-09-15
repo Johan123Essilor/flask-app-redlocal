@@ -55,14 +55,14 @@ def visor2(item_id):
 app.register_blueprint(cubo_bp2, url_prefix='/cubo2')
 @app.route('/cubo2')
 def cubo2():
-    return render_template('cubo.html')
+    return render_template('cubo2.html')
 @app.route('/visor2/<int:item_id>')
 def visor(item_id):
     clientes = cargar_datos()
     if item_id < 0 or item_id >= len(clientes):
         abort(404)
     cliente = clientes[item_id]
-    return render_template('visor.html', cliente=cliente)
+    return render_template('visor2.html', cliente=cliente)
 
 #---------------------------------Infoship
 app.register_blueprint(infoship_bp, url_prefix='/infoship')
