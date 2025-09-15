@@ -26,6 +26,12 @@
             </select>
         </div>
 
+        <!-- 🔹 Nuevo campo: Código -->
+        <div>
+            <label for="codigo">Código:</label>
+            <input type="text" name="codigo" required>
+        </div>
+
         <div class="autor-info">
             <p><strong>Autor:</strong> {{ usuario }}</p>
         </div>
@@ -34,56 +40,127 @@
             <button type="submit">Subir</button>
         </div>
     </form>
-
   {% else %}
     <p><em>Inicia sesión para subir archivos</em></p>
   {% endif %}
-<form method="GET" action="{{ url_for('SOPSite.index') }}" class="filter-form">
-  <select name="filter_area">
-    <option value="">Todas las áreas</option>
-    {% for a in areas %}
-      <option value="{{ a }}" {% if request.args.get('filter_area') == a %}selected{% endif %}>{{ a }}</option>
-    {% endfor %}
-  </select>
 
-  <input type="text" name="filter_author" placeholder="Filtrar por autor" value="{{ request.args.get('filter_author', '') }}">
-
-  <input type="text" name="filter_name" placeholder="Filtrar por nombre" value="{{ request.args.get('filter_name', '') }}">
-
-  <button type="submit">Filtrar</button>
-</form>
-
-
-<div class="table-container">
-  <table>
-    <thead>
-      <tr>
-        <th>Nombre</th>
-        <th>Área</th>
-        <th>Fecha</th>
-        <th>Autor</th>
-        <th>Acción</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for file in files %}
-        <tr>
-          <td><a href="{{ url_for('SOPSite.static', filename='uploads/' + file.filename) }}" target="_blank">{{ file.original_name }}</a></td>
-          <td>{{ file.area }}</td>
-          <td>{{ file.upload_date }}</td>
-          <td>{{ file.creator }}</td>
-          <td>
-            {% if usuario %}
-              <a href="{{ url_for('SOPSite.delete', file_id=file.id) }}">Eliminar</a>
-            {% else %}
-              -
-            {% endif %}
-          </td>
-        </tr>
+  <!-- 🔹 Filtros -->
+  <form method="GET" action="{{ url_for('SOPSite.index') }}" class="filter-form">
+    <select name="filter_area">
+      <option value="">Todas las áreas</option>
+      {% for a in areas %}
+        <option value="{{ a }}" {% if request.args.get('filter_area') == a %}selected{% endif %}>{{ a }}</option>
       {% endfor %}
-    </tbody>
-  </table>
+    </select>
+
+    <input type="text" name="filter_author" placeholder="Filtrar por autor" value="{{ request.args.get('filter_author', '') }}">
+    <input type="text" name="filter_name" placeholder="Filtrar por nombre" value="{{ request.args.get('filter_name', '') }}">
+
+    <!-- 🔹 Nuevo filtro: Código -->
+    <input type="text" name="filter_codigo" placeholder="Filtrar por código" value="{{ request.args.get('filter_codigo', '') }}">
+
+    <button type="submit">Filtrar</button>
+  </form>
+
+  <!-- 🔹 Tabla -->
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Código</th> <!-- Nuevo -->
+          <th>Nombre</th>
+          <th>Área</th>
+          <th>Fecha</th>
+          <th>Autor</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for file in files %}
+          <tr>
+            <td>{{ file.codigo }}</td> <!-- Mostrar código -->
+            <td><a href="{{ url_for('SOPSite.static', filename='uploads/' + file.filename) }}" target="_blank">{{ file.original_name }}</a></td>
+            <td>{{ file.area }}</td>
+            <td>{{ file.upload_date }}</td>
+            <td>{{ file.creator }}</td>
+            <td>
+              {% if usuario %}
+                <a href="{{ url_for('SOPSite.delete', file_id=file.id) }}" 
+                  class="btn-action btn-delete" 
+                  title="Eliminar"
+                  onclick="return confirm('¿Estás seguro de que deseas eliminar este archivo?');">
+                  <i class="fas fa-trash"></i>
+                </a>
+                <button type="button" class="btn-action btn-edit" title="Editar"
+                        onclick="openEditModal('{{ file.id }}', '{{ file.original_name }}', '{{ file.area }}', '{{ file.codigo }}')">
+                  <i class="fas fa-edit"></i>
+                </button>
+              {% else %}
+                -
+              {% endif %}
+            </td>
+
+
+
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
+<!-- Modal Editar -->
+<div id="editModal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <span class="close" onclick="closeEditModal()">&times;</span>
+    <h2>Editar SOP</h2>
+    <form id="editForm" method="POST" enctype="multipart/form-data">
+      <div>
+        <label for="custom_name">Nombre:</label>
+        <input type="text" name="custom_name" id="edit_name" required>
+      </div>
+
+      <div>
+        <label for="area">Área:</label>
+        <select name="area" id="edit_area" required>
+          {% for a in areas %}
+            <option value="{{ a }}">{{ a }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div>
+        <label for="codigo">Código:</label>
+        <input type="text" name="codigo" id="edit_codigo" required>
+      </div>
+
+      <!-- 🔹 Nuevo: actualizar archivo -->
+      <div>
+        <label for="file">Archivo PDF (opcional):</label>
+        <input type="file" name="file" accept=".pdf">
+      </div>
+
+      <button type="submit">Guardar cambios</button>
+    </form>
+  </div>
+</div>
+
+<script>
+function openEditModal(id, name, area, codigo) {
+  const modal = document.getElementById("editModal");
+  const form = document.getElementById("editForm");
+
+  document.getElementById("edit_name").value = name;
+  document.getElementById("edit_area").value = area;
+  document.getElementById("edit_codigo").value = codigo;
+
+  form.action = `/SOPSite/update/${id}`;
+  modal.style.display = "block";
+}
+
+function closeEditModal() {
+  document.getElementById("editModal").style.display = "none";
+}
+</script>
+
 </div>
 {% endblock %}
 {% set header_title = "SOP" %}

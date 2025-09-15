@@ -13,31 +13,37 @@ def init_db():
                 original_name TEXT NOT NULL,
                 area TEXT NOT NULL,
                 upload_date TEXT NOT NULL,
-                creator TEXT NOT NULL
+                creator TEXT NOT NULL,
+                codigo TEXT NOT NULL
             )
         ''')
         conn.commit()
 
 
-def insert_file(filename, original_name, area, creator):
+def insert_file(filename, original_name, area, creator, codigo):
     with sqlite3.connect(DB_PATH) as conn:
         cursor = conn.cursor()
         cursor.execute('''
-            INSERT INTO sop_files (filename, original_name, area, upload_date, creator)
-            VALUES (?, ?, ?, ?, ?)
+            INSERT INTO sop_files (filename, original_name, area, upload_date, creator, codigo)
+            VALUES (?, ?, ?, ?, ?, ?)
         ''', (
             filename,
             original_name,
             area,
             datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-            creator
+            creator,
+            codigo
         ))
         conn.commit()
 
-def get_all_files(filter_area=None, filter_author=None, filter_name=None):
+def get_all_files(filter_area=None, filter_author=None, filter_name=None, filter_codigo=None):
     with sqlite3.connect(DB_PATH) as conn:
         cursor = conn.cursor()
-        query = 'SELECT id, filename, original_name, area, upload_date, creator FROM sop_files WHERE 1=1'
+        query = '''
+            SELECT id, filename, original_name, area, upload_date, creator, codigo 
+            FROM sop_files 
+            WHERE 1=1
+        '''
         params = []
 
         if filter_area:
@@ -49,12 +55,18 @@ def get_all_files(filter_area=None, filter_author=None, filter_name=None):
         if filter_name:
             query += ' AND original_name LIKE ?'
             params.append(f'%{filter_name}%')
+        if filter_codigo:
+            query += ' AND codigo LIKE ?'
+            params.append(f'%{filter_codigo}%')
 
         query += ' ORDER BY upload_date DESC'
 
         cursor.execute(query, params)
         rows = cursor.fetchall()
-        return [dict(zip(['id', 'filename', 'original_name', 'area', 'upload_date', 'creator'], row)) for row in rows]
+        return [dict(zip(
+            ['id', 'filename', 'original_name', 'area', 'upload_date', 'creator', 'codigo'],
+            row
+        )) for row in rows]
 
 def delete_file(file_id):
     with sqlite3.connect(DB_PATH) as conn:
@@ -67,3 +79,19 @@ def delete_file(file_id):
             conn.commit()
             return filename
         return None
+def update_file(file_id, new_name, new_area, new_codigo, new_filename=None):
+    with sqlite3.connect(DB_PATH) as conn:
+        cursor = conn.cursor()
+        if new_filename:
+            cursor.execute('''
+                UPDATE sop_files
+                SET original_name = ?, area = ?, codigo = ?, filename = ?
+                WHERE id = ?
+            ''', (new_name, new_area, new_codigo, new_filename, file_id))
+        else:
+            cursor.execute('''
+                UPDATE sop_files
+                SET original_name = ?, area = ?, codigo = ?
+                WHERE id = ?
+            ''', (new_name, new_area, new_codigo, file_id))
+        conn.commit()

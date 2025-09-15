@@ -1,6 +1,6 @@
 {% extends "index.html" %}
 
-{% block title %}InfoshipDev{% endblock %}
+{% block title %}Infoship{% endblock %}
 
 
 {% block content %} 
@@ -14,7 +14,7 @@
       <center> 
       <!-- Primera Imagen -->
         <div class="contenedor_imagen_texto">
-            <img src="{{ url_for('infoship.static', filename='img/INDEXDWP.png') }}" alt="Ejemplo">
+            <div class="imagen"><img src="{{ url_for('infoship.static', filename='img/INDEXDWP.png') }}" alt="Ejemplo" width="440" height="310"></div>
             <div><h3><center>Paso 1</center><br><center>Para realizar el cambio de direccion ingresar a DWP</center></h3></div>
         </div>
 
@@ -95,11 +95,11 @@
         Buscar Código Postal MX
     </a>
     
-<div class="container">
-  <a href="http://10.81.153.123:9818/infoship/carrierChange" target="_blank" class="btn-centro">
-    Clic aqui si tu problema sigue
+<center><div class="container">
+  <a href="http://127.0.0.1:5000/infoship/carrierChange" target="_blank" class="btn-centro">
+    Clic aqui si tu problema sigue</center>
   </a>
 </div>
 </body>
 {% endblock %}
-{% set header_title = "Infoship Dev" %}
+{% set header_title = "Cambio de direccion" %}
