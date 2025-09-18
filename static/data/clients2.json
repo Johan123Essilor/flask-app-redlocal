@@ -1,10 +1,10 @@
 [
   {
-    "name": "Hibbets",
+
     "label": "Caja Pequeña",
     "urlCaja": "https://example.com/1",
     "img": "Hibbets.png",
-    "D2":{
+    "Meta":{
       "UCCface": "top",
       "UCCoffset": 10,
       "UCCetiquetaWidth": 150,
@@ -22,7 +22,7 @@
       "Z": 40
 
     },
-    "D":{
+    "RB":{
       "UCCface": "top",
       "UCCoffset": 10,
       "UCCetiquetaWidth": 150,
@@ -40,7 +40,7 @@
       "Z": 40
       
     },
-    "C":{
+    "Nuance":{
       "UCCface": "top",
       "UCCoffset": 10,
       "UCCetiquetaWidth": 150,
@@ -56,92 +56,7 @@
       "X": 125,
       "Y": -80,
       "Z": 40
-    },
-    "B":{
-      "UCCface": "top",
-      "UCCoffset": 10,
-      "UCCetiquetaWidth": 145,
-      "UCCetiquetaHeight": 67,
-      "UCCX": 70,
-      "UCCY": 80,
-      "UCCZ": 35,
-
-      "face": "top",
-      "offset": 10,
-      "etiquetaWidth": 150,
-      "etiquetaHeight": 65,
-      "X": 70,
-      "Y": -80,
-      "Z": 35
-      },
-
-      "A":{
-      "UCCface": "top",
-      "UCCoffset": 10,
-      "UCCetiquetaWidth": 120,
-      "UCCetiquetaHeight": 45,
-      "UCCX": 45,
-      "UCCY": 43,
-      "UCCZ": 25,
-
-      "face": "top",
-      "offset": 10,
-      "etiquetaWidth": 120,
-      "etiquetaHeight": 45,
-      "X": 45,
-      "Y": -43,
-      "Z": 25
-      },
-      "DS":{
-      "UCCface": "front",
-      "UCCoffset": 10,
-      "UCCetiquetaWidth": 60,
-      "UCCetiquetaHeight": 102,
-      "UCCX": 130,
-      "UCCY": -1,
-      "UCCZ": 70,
-
-      "face2": "top",
-      "offset2": 10,
-      "etiquetaWidth2": 60,
-      "etiquetaHeight2": 29,
-      "X2": 130,
-      "Y2": 55,
-      "Z2": 15,
-
-      "face3": "bottom",
-      "offset3": 10,
-      "etiquetaWidth3": 60,
-      "etiquetaHeight3": 33,
-      "X3": 130,
-      "Y3": -53,
-      "Z3": 85,
-
-      "face4": "bottom",
-      "offset4": 10,
-      "etiquetaWidth4": 60,
-      "etiquetaHeight4": 33,
-      "X4": 10,
-      "Y4": -53,
-      "Z4": 85,
-
-      "face5": "top",
-      "offset5": 10,
-      "etiquetaWidth5": 60,
-      "etiquetaHeight5": 30,
-      "X5": 10,
-      "Y5": 55,
-      "Z5": 16,
-      
-      "face": "front",
-      "offset": 10,
-      "etiquetaWidth": 60,
-      "etiquetaHeight": 102,
-      "X": 10,
-      "Y": 0,
-      "Z": 70
-
-      },
-    "alt": "Hibbet"
     }
+      },
+    "alt","META"
 ]

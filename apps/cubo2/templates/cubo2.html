@@ -30,7 +30,7 @@
     slice.forEach((item, index) => {
       const imgPath = `/cubo/cubo_static/img/${item.img}`;
       const card = document.createElement("a");
-      card.href = `/visor/${currentIndex + index}`;
+      card.href = `/visor2/${currentIndex + index}`;
       card.className = "item text-center";
       card.innerHTML = `
         <img src="${imgPath}" alt="${item.alt}" />
