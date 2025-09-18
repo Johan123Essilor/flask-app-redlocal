@@ -142,6 +142,59 @@
       "Z": 70
 
       },
+      "Meta":{
+      "UCCface": "top",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 120,
+      "UCCetiquetaHeight": 45,
+      "UCCX": 30,
+      "UCCY": 43,
+      "UCCZ": 25,
+
+      "face": "top",
+      "offset": 10,
+      "etiquetaWidth": 120,
+      "etiquetaHeight": 45,
+      "X": 30,
+      "Y": -43,
+      "Z": 25
+      },
+
+      "RB":{
+      "UCCface": "top",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 120,
+      "UCCetiquetaHeight": 45,
+      "UCCX": 30,
+      "UCCY": 43,
+      "UCCZ": 25,
+
+      "face": "top",
+      "offset": 10,
+      "etiquetaWidth": 120,
+      "etiquetaHeight": 45,
+      "X": 30,
+      "Y": -43,
+      "Z": 25
+      },
+
+      "Nuance":{
+      "UCCface": "top",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 130,
+      "UCCetiquetaHeight": 55,
+      "UCCX": 40,
+      "UCCY": 43,
+      "UCCZ": 30,
+
+      "face": "top",
+      "offset": 10,
+      "etiquetaWidth": 130,
+      "etiquetaHeight": 55,
+      "X": 40,
+      "Y": -43,
+      "Z": 30
+      },
 
     "alt": "Hibbet"
     },
@@ -291,6 +344,60 @@
       "Y": 0,
       "Z": 70
   },
+
+      "Meta":{
+      "UCCface": "front",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 55,
+      "UCCetiquetaHeight": 90,
+      "UCCX": 95,
+      "UCCY": 8,
+      "UCCZ": 80,
+      
+      "face": "top",
+      "offset": 10,
+      "etiquetaWidth": 120,
+      "etiquetaHeight": 45,
+      "X": 20,
+      "Y": 10,
+      "Z": 25
+  },
+
+      "RB":{
+      "UCCface": "front",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 55,
+      "UCCetiquetaHeight": 90,
+      "UCCX": 100,
+      "UCCY": 8,
+      "UCCZ": 90,
+      
+      "face": "top",
+      "offset": 10,
+      "etiquetaWidth": 120,
+      "etiquetaHeight": 45,
+      "X": 20,
+      "Y": 10,
+      "Z": 25
+  },
+      "Nuance":{
+      "UCCface": "front",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 65,
+      "UCCetiquetaHeight": 105,
+      "UCCX": 120,
+      "UCCY": 8,
+      "UCCZ": 100,
+      
+      "face": "top",
+      "offset": 10,
+      "etiquetaWidth": 130,
+      "etiquetaHeight": 55,
+      "X": 33,
+      "Y": 10,
+      "Z": 30
+  },
+  
       "alt": "Academy"
   },
   
@@ -420,6 +527,59 @@
       "Y": 5,
       "Z": 40   
     },
+
+      "Meta":{
+      "UCCface": "front",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 55,
+      "UCCetiquetaHeight": 100,
+      "UCCX": 60,
+      "UCCY": 0,
+      "UCCZ": 80,
+      
+      "face": "top",
+      "offset": 10,
+      "etiquetaWidth": 130,
+      "etiquetaHeight": 55,
+      "X": 20,
+      "Y": 5,
+      "Z": 30 
+    },
+      "RB":{
+      "UCCface": "front",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 55,
+      "UCCetiquetaHeight": 100,
+      "UCCX": 60,
+      "UCCY": 4,
+      "UCCZ": 85,
+      
+      "face": "top",
+      "offset": 10,
+      "etiquetaWidth": 130,
+      "etiquetaHeight": 55,
+      "X": 20,
+      "Y": 5,
+      "Z": 30 
+    },
+      "Nuance":{
+      "UCCface": "front",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 60,
+      "UCCetiquetaHeight": 110,
+      "UCCX": 70,
+      "UCCY": 7,
+      "UCCZ": 100,
+      
+      "face": "top",
+      "offset": 10,
+      "etiquetaWidth": 135,
+      "etiquetaHeight": 60,
+      "X": 30,
+      "Y": 0,
+      "Z": 30 
+    },
+
   "alt": "Nordstrom"
   },
 {
@@ -620,6 +780,7 @@
   "name": "Vail Resort",
   "label": "Caja Mediana",
   "urlCaja": "https://example.com/2",
+  "comments":"UCC deben colocarse en la esquina inferior derecha de la caja",
   "img": "vail.png",
   "D2":{
       "UCCface": "front",
@@ -759,6 +920,58 @@
       "Y": 0,
       "Z": 70  
     },
+
+      "Meta":{
+      "UCCface": "front",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 45,
+      "UCCetiquetaHeight": 95,
+      "UCCX": 110,
+      "UCCY": 0,
+      "UCCZ": 80,
+      
+      "face": "top",
+      "offset": 10,
+      "etiquetaWidth": 130,
+      "etiquetaHeight": 55,
+      "X": 20,
+      "Y": 5,
+      "Z": 30   
+      },
+      "RB":{
+      "UCCface": "front",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 55,
+      "UCCetiquetaHeight": 100,
+      "UCCX": 110,
+      "UCCY": 4,
+      "UCCZ": 85,
+      
+      "face": "top",
+      "offset": 10,
+      "etiquetaWidth": 130,
+      "etiquetaHeight": 55,
+      "X": 20,
+      "Y": 5,
+      "Z": 30   
+      },
+      "Nuance":{
+      "UCCface": "front",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 55,
+      "UCCetiquetaHeight": 110,
+      "UCCX": 135,
+      "UCCY": 4,
+      "UCCZ": 105,
+      
+      "face": "top",
+      "offset": 10,
+      "etiquetaWidth": 135,
+      "etiquetaHeight": 55,
+      "X": 30,
+      "Y": 5,
+      "Z": 30   
+      },
   "alt": "Vail Resort"
 },
 {
@@ -905,6 +1118,58 @@
       "Y": 0,
       "Z": 70 
   },
+
+      "Meta":{
+      "UCCface": "front",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 50,
+      "UCCetiquetaHeight": 90,
+      "UCCX": 100,
+      "UCCY": 6,
+      "UCCZ": 80,
+      
+      "face": "top",
+      "offset": 10,
+      "etiquetaWidth": 130,
+      "etiquetaHeight": 65,
+      "X": 20,
+      "Y": 10,
+      "Z": 35
+  },
+      "RB":{
+      "UCCface": "front",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 50,
+      "UCCetiquetaHeight": 90,
+      "UCCX": 110,
+      "UCCY": 8,
+      "UCCZ": 90,
+      
+      "face": "top",
+      "offset": 10,
+      "etiquetaWidth": 130,
+      "etiquetaHeight": 65,
+      "X": 20,
+      "Y": 10,
+      "Z": 35
+  },
+      "Nuance":{
+      "UCCface": "front",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 60,
+      "UCCetiquetaHeight": 105,
+      "UCCX": 130,
+      "UCCY": 8,
+      "UCCZ": 100,
+      
+      "face": "top",
+      "offset": 10,
+      "etiquetaWidth": 130,
+      "etiquetaHeight": 65,
+      "X": 40,
+      "Y": 10,
+      "Z": 35
+  },
   "alt": "DSG"
 },
 {
@@ -1033,6 +1298,59 @@
       "Y": 0,
       "Z": 32  
     },
+
+      "Meta":{
+      "UCCface": "left",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 55,
+      "UCCetiquetaHeight": 100,
+      "UCCX": 0,
+      "UCCY": 0,
+      "UCCZ": 30,
+      
+      "face": "top",
+      "offset": 10,
+      "etiquetaWidth": 120,
+      "etiquetaHeight": 55,
+      "X": 25,
+      "Y": 5,
+      "Z": 30   
+    },
+
+      "RB":{
+      "UCCface": "left",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 55,
+      "UCCetiquetaHeight": 100,
+      "UCCX": 0,
+      "UCCY": 5,
+      "UCCZ": 30,
+      
+      "face": "top",
+      "offset": 10,
+      "etiquetaWidth": 120,
+      "etiquetaHeight": 55,
+      "X": 25,
+      "Y": 5,
+      "Z": 30  
+    },
+      "Nuance":{
+      "UCCface": "left",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 60,
+      "UCCetiquetaHeight": 115,
+      "UCCX": 0,
+      "UCCY": 0,
+      "UCCZ": 40,
+      
+      "face": "top",
+      "offset": 10,
+      "etiquetaWidth": 150,
+      "etiquetaHeight": 75,
+      "X": 25,
+      "Y": 5,
+      "Z": 40   
+    },
   "alt": "The buckle"
 },
 {
@@ -1157,6 +1475,57 @@
       "X": 40,
       "Y": -8,
       "Z": 32
+      },
+            "Meta":{
+      "UCCface": "back",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 45,
+      "UCCetiquetaHeight": 95,
+      "UCCX": -115,
+      "UCCY": 0,
+      "UCCZ": 80,
+      
+      "face": "top",
+      "offset": 10,
+      "etiquetaWidth": 130,
+      "etiquetaHeight": 55,
+      "X": 20,
+      "Y": 5,
+      "Z": 30   
+      },
+      "RB":{
+      "UCCface": "back",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 55,
+      "UCCetiquetaHeight": 100,
+      "UCCX": -115,
+      "UCCY": 2,
+      "UCCZ": 85,
+      
+      "face": "top",
+      "offset": 10,
+      "etiquetaWidth": 130,
+      "etiquetaHeight": 55,
+      "X": 20,
+      "Y": 5,
+      "Z": 30   
+      },
+      "Nuance":{
+      "UCCface": "back",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 55,
+      "UCCetiquetaHeight": 110,
+      "UCCX": -130,
+      "UCCY": 4,
+      "UCCZ": 105,
+      
+      "face": "top",
+      "offset": 10,
+      "etiquetaWidth": 135,
+      "etiquetaHeight": 55,
+      "X": 25,
+      "Y": 5,
+      "Z": 30   
       },
   "alt": "Dillards"
       },
@@ -1287,6 +1656,57 @@
       "X": 40,
       "Y": -8,
       "Z": 32
+  },
+        "Meta":{
+      "UCCface": "front",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 50,
+      "UCCetiquetaHeight": 90,
+      "UCCX": 100,
+      "UCCY": 6,
+      "UCCZ": 80,
+      
+      "face": "top",
+      "offset": 10,
+      "etiquetaWidth": 130,
+      "etiquetaHeight": 65,
+      "X": 20,
+      "Y": 10,
+      "Z": 35
+  },
+      "RB":{
+      "UCCface": "front",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 50,
+      "UCCetiquetaHeight": 90,
+      "UCCX": 110,
+      "UCCY": 8,
+      "UCCZ": 90,
+      
+      "face": "top",
+      "offset": 10,
+      "etiquetaWidth": 130,
+      "etiquetaHeight": 65,
+      "X": 20,
+      "Y": 10,
+      "Z": 35
+  },
+      "Nuance":{
+      "UCCface": "front",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 60,
+      "UCCetiquetaHeight": 105,
+      "UCCX": 130,
+      "UCCY": 8,
+      "UCCZ": 100,
+      
+      "face": "top",
+      "offset": 10,
+      "etiquetaWidth": 130,
+      "etiquetaHeight": 65,
+      "X": 40,
+      "Y": 10,
+      "Z": 35
   },
   "alt": "SCHEELS"
   },
@@ -1435,6 +1855,57 @@
       "X": 10,
       "Y": 0,
       "Z": 70
+  },
+        "Meta":{
+      "UCCface": "front",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 50,
+      "UCCetiquetaHeight": 90,
+      "UCCX": 100,
+      "UCCY": 6,
+      "UCCZ": 80,
+      
+      "face": "top",
+      "offset": 10,
+      "etiquetaWidth": 130,
+      "etiquetaHeight": 65,
+      "X": 20,
+      "Y": 10,
+      "Z": 35
+  },
+      "RB":{
+      "UCCface": "front",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 50,
+      "UCCetiquetaHeight": 90,
+      "UCCX": 110,
+      "UCCY": 8,
+      "UCCZ": 90,
+      
+      "face": "top",
+      "offset": 10,
+      "etiquetaWidth": 130,
+      "etiquetaHeight": 65,
+      "X": 20,
+      "Y": 10,
+      "Z": 35
+  },
+      "Nuance":{
+      "UCCface": "front",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 60,
+      "UCCetiquetaHeight": 105,
+      "UCCX": 130,
+      "UCCY": 8,
+      "UCCZ": 100,
+      
+      "face": "top",
+      "offset": 10,
+      "etiquetaWidth": 130,
+      "etiquetaHeight": 65,
+      "X": 40,
+      "Y": 10,
+      "Z": 35
   },
       "alt": "Big 5"
 }]
