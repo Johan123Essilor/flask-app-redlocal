@@ -791,13 +791,13 @@
       "UCCY": 145,
       "UCCZ": 130,
       
-       "face": "top",
+       "face": "front",
       "offset": 10,
-      "etiquetaWidth": 150,
-      "etiquetaHeight": 75,
-      "X": 110,
-      "Y": 15,
-      "Z": 40   
+      "etiquetaWidth": 75,
+      "etiquetaHeight": 140,
+      "X": 225,
+      "Y": 145,
+      "Z": 130   
     },
 
     "D":{
@@ -809,13 +809,13 @@
       "UCCY": 115,
       "UCCZ": 120,
       
-      "face": "top",
+      "face": "front",
       "offset": 10,
-      "etiquetaWidth": 150,
-      "etiquetaHeight": 75,
-      "X": 130,
-      "Y": 10,
-      "Z": 40
+      "etiquetaWidth": 75,
+      "etiquetaHeight": 140,
+      "X": 225,
+      "Y": 115,
+      "Z": 120
       
     },
     "C":{
@@ -827,13 +827,13 @@
       "UCCY": 8,
       "UCCZ": 130,
       
-      "face": "top",
+      "face": "front",
       "offset": 10,
-      "etiquetaWidth": 150,
-      "etiquetaHeight": 75,
-      "X": 130,
-      "Y": 10,
-      "Z": 40
+      "etiquetaWidth": 70,
+      "etiquetaHeight": 135,
+      "X": 245,
+      "Y": 8,
+      "Z": 130
     },
 
       "B":{
@@ -845,13 +845,13 @@
       "UCCY": 8,
       "UCCZ": 115,
       
-      "face": "top",
+      "face": "front",
       "offset": 10,
-      "etiquetaWidth": 150,
-      "etiquetaHeight": 75,
-      "X": 90,
-      "Y": 10,
-      "Z": 40
+      "etiquetaWidth": 70,
+      "etiquetaHeight": 135,
+      "X": 145,
+      "Y": 8,
+      "Z": 115
   },
     "A":{
       "UCCface": "front",
@@ -862,13 +862,13 @@
       "UCCY": 8,
       "UCCZ": 75,
       
-      "face": "top",
+      "face": "front",
       "offset": 10,
-      "etiquetaWidth": 150,
-      "etiquetaHeight": 75,
-      "X": 20,
+      "etiquetaWidth": 70,
+      "etiquetaHeight": 135,
+      "X": 40,
       "Y": 10,
-      "Z": 40
+      "Z": 75
   },
 
   "DS":{
@@ -924,19 +924,19 @@
       "Meta":{
       "UCCface": "front",
       "UCCoffset": 10,
-      "UCCetiquetaWidth": 45,
+      "UCCetiquetaWidth": 50,
       "UCCetiquetaHeight": 95,
-      "UCCX": 110,
+      "UCCX": 105,
       "UCCY": 0,
       "UCCZ": 80,
       
-      "face": "top",
+      "face": "front",
       "offset": 10,
-      "etiquetaWidth": 130,
-      "etiquetaHeight": 55,
-      "X": 20,
-      "Y": 5,
-      "Z": 30   
+      "etiquetaWidth": 50,
+      "etiquetaHeight": 95,
+      "X": 53,
+      "Y": 0,
+      "Z": 80  
       },
       "RB":{
       "UCCface": "front",
@@ -947,13 +947,13 @@
       "UCCY": 4,
       "UCCZ": 85,
       
-      "face": "top",
+      "face": "front",
       "offset": 10,
-      "etiquetaWidth": 130,
-      "etiquetaHeight": 55,
-      "X": 20,
+      "etiquetaWidth": 55,
+      "etiquetaHeight": 100,
+      "X": 53,
       "Y": 5,
-      "Z": 30   
+      "Z": 85   
       },
       "Nuance":{
       "UCCface": "front",
@@ -964,13 +964,13 @@
       "UCCY": 4,
       "UCCZ": 105,
       
-      "face": "top",
+      "face": "front",
       "offset": 10,
-      "etiquetaWidth": 135,
-      "etiquetaHeight": 55,
-      "X": 30,
+      "etiquetaWidth": 55,
+      "etiquetaHeight": 110,
+      "X": 78,
       "Y": 5,
-      "Z": 30   
+      "Z": 105   
       },
   "alt": "Vail Resort"
 },
