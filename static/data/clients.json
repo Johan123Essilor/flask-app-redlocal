@@ -1176,6 +1176,7 @@
   "name": "The buckle",
   "label": "Caja Mediana",
   "urlCaja": "https://example.com/2",
+  "comments":"NO uilizar caja DS Y A con este cliente",
   "img": "buckle.png",
     "D2":{
       "UCCface": "left",
@@ -1247,56 +1248,6 @@
       "X": 75,
       "Y": 5,
       "Z": 40   
-    },
-    "A":{
-      "UCCface": "left",
-      "UCCoffset": 10,
-      "UCCetiquetaWidth": 75,
-      "UCCetiquetaHeight": 140,
-      "UCCX": 0,
-      "UCCY": 5,
-      "UCCZ": 40,
-      
-      "face": "top",
-      "offset": 10,
-      "etiquetaWidth": 150,
-      "etiquetaHeight": 75,
-      "X": 25,
-      "Y": 5,
-      "Z": 40   
-    },
-    "DS":{
-      "UCCface": "left",
-      "UCCoffset": 10,
-      "UCCetiquetaWidth": 60,
-      "UCCetiquetaHeight": 102,
-      "UCCX": 0,
-      "UCCY": -1,
-      "UCCZ": 33,
-
-      "face3": "bottom",
-      "offset3": 10,
-      "etiquetaWidth3": 30,
-      "etiquetaHeight3": 61,
-      "X3": 0,
-      "Y3": 0,
-      "Z3": 70,
-
-      "face2": "top",
-      "offset2": 10,
-      "etiquetaWidth2": 30,
-      "etiquetaHeight2": 59,
-      "X2": -3,
-      "Y2": 0,
-      "Z2": 30,
-      
-      "face": "top",
-      "offset": 10,
-      "etiquetaWidth": 150,
-      "etiquetaHeight": 63,
-      "X": 25,
-      "Y": 0,
-      "Z": 32  
     },
 
       "Meta":{
