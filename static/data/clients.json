@@ -1859,4 +1859,186 @@
       "Z": 35
   },
       "alt": "Big 5"
-}]
+  },
+
+  {
+  "name": "REI",
+  "label": "Caja Mediana",
+  "urlCaja": "https://example.com/2",
+  "img": "rei.png",
+    "D2":{
+      "UCCface": "front",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 75,
+      "UCCetiquetaHeight": 140,
+      "UCCX": 305,
+      "UCCY": 145,
+      "UCCZ": 130,
+      
+       "face": "top",
+      "offset": 10,
+      "etiquetaWidth": 150,
+      "etiquetaHeight": 75,
+      "X": 110,
+      "Y": 15,
+      "Z": 40   
+    },
+
+    "D":{
+      "UCCface": "front",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 75,
+      "UCCetiquetaHeight": 140,
+      "UCCX": 305,
+      "UCCY": 115,
+      "UCCZ": 120,
+      
+      "face": "top",
+      "offset": 10,
+      "etiquetaWidth": 150,
+      "etiquetaHeight": 75,
+      "X": 130,
+      "Y": 10,
+      "Z": 40
+      
+    },
+    "C":{
+      "UCCface": "front",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 70,
+      "UCCetiquetaHeight": 135,
+      "UCCX": 318,
+      "UCCY": 8,
+      "UCCZ": 130,
+      
+      "face": "top",
+      "offset": 10,
+      "etiquetaWidth": 150,
+      "etiquetaHeight": 75,
+      "X": 130,
+      "Y": 10,
+      "Z": 40
+    },
+
+      "B":{
+      "UCCface": "front",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 70,
+      "UCCetiquetaHeight": 135,
+      "UCCX": 218,
+      "UCCY": 8,
+      "UCCZ": 115,
+      
+      "face": "top",
+      "offset": 10,
+      "etiquetaWidth": 150,
+      "etiquetaHeight": 75,
+      "X": 90,
+      "Y": 10,
+      "Z": 40
+  },
+    "A":{
+      "UCCface": "front",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 70,
+      "UCCetiquetaHeight": 135,
+      "UCCX": 118,
+      "UCCY": 8,
+      "UCCZ": 75,
+      
+      "face": "top",
+      "offset": 10, 
+      "etiquetaWidth": 150,
+      "etiquetaHeight": 75,
+      "X": 20,
+      "Y": 10,
+      "Z": 40
+  },
+
+  "DS":{
+      "UCCface": "front",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 60,
+      "UCCetiquetaHeight": 102,
+      "UCCX": 130,
+      "UCCY": -1,
+      "UCCZ": 70,
+
+      "face2": "top",
+      "offset2": 10,
+      "etiquetaWidth2": 60,
+      "etiquetaHeight2": 29,
+      "X2": 130,
+      "Y2": 55,
+      "Z2": 15,
+
+      "face3": "bottom",
+      "offset3": 10,
+      "etiquetaWidth3": 60,
+      "etiquetaHeight3": 33,
+      "X3": 130,
+      "Y3": -53,
+      "Z3": 85,
+      
+      "face": "top",
+      "offset": 10,
+      "etiquetaWidth": 120,
+      "etiquetaHeight": 60,
+      "X": 40,
+      "Y": -8,
+      "Z": 32
+  },
+        "Meta":{
+      "UCCface": "front",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 50,
+      "UCCetiquetaHeight": 90,
+      "UCCX": 100,
+      "UCCY": 6,
+      "UCCZ": 80,
+      
+      "face": "top",
+      "offset": 10,
+      "etiquetaWidth": 130,
+      "etiquetaHeight": 65,
+      "X": 20,
+      "Y": 10,
+      "Z": 35
+  },
+      "RB":{
+      "UCCface": "front",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 50,
+      "UCCetiquetaHeight": 90,
+      "UCCX": 110,
+      "UCCY": 8,
+      "UCCZ": 90,
+      
+      "face": "top",
+      "offset": 10,
+      "etiquetaWidth": 130,
+      "etiquetaHeight": 65,
+      "X": 20,
+      "Y": 10,
+      "Z": 35
+  },
+      "Nuance":{
+      "UCCface": "front",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 60,
+      "UCCetiquetaHeight": 105,
+      "UCCX": 130,
+      "UCCY": 8,
+      "UCCZ": 100,
+      
+      "face": "top",
+      "offset": 10,
+      "etiquetaWidth": 130,
+      "etiquetaHeight": 65,
+      "X": 40,
+      "Y": 10,
+      "Z": 35
+  },
+  "alt": "REI"
+  }
+]
