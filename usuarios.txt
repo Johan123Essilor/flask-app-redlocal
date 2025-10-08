@@ -8,3 +8,14 @@
 2025-08-15 17:35:22 | Usuario: Daniel Bellot | Área: shipping
 2025-08-26 11:54:28 | Usuario: Customer Service | Área: customer_service
 2025-08-26 14:07:48 | Usuario: Israel Lopez Padilla | Área: training
+2025-09-17 18:07:40 | Usuario: Guadalupe Griselda | Área: QA
+2025-09-17 18:08:00 | Usuario: Valeria Rosas | Área: QA
+2025-09-17 18:08:15 | Usuario: Jesus Ventura | Área: QA
+2025-09-17 18:08:25 | Usuario: Miguel Luna | Área: QA
+2025-09-17 18:08:43 | Usuario: Maria Fernandez | Área: QA
+2025-09-17 18:08:57 | Usuario: Jovana Soledad | Área: QA
+2025-09-17 18:09:21 | Usuario: Jose Pozos | Área: QA
+2025-09-17 18:09:37 | Usuario: Enrique Reyes | Área: QA
+2025-09-17 18:09:49 | Usuario: Jose Quiroz | Área: QA
+2025-09-19 14:06:44 | Usuario: Hector CS | Área: customer_service
+2025-09-19 17:43:48 | Usuario: Customer Service | Área: customer_service

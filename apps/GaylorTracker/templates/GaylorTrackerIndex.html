@@ -81,8 +81,15 @@
 
       <label>Carrier:</label>
       <select id="reportCarrier">
-        <option value="UPS">UPS</option>
-        <option value="DHL">DHL</option>
+        <option value="DHLINTL">DHLINTL</option>
+        <option value="DHL MX">DHL MX</option>
+        <option value="UPS NEXT DAY">UPS NEXT DAY</option>
+        <option value="DHL GLOBAL">DHL GLOBAL</option>
+        <option value="UPSG / UPS 2DAY">UPSG / UPS 2DAY</option>
+        <option value="UPS WORLD WIDE">UPS WORLD WIDE</option>
+        <option value="UPS AIR MX">UPS AIR MX</option>
+        <option value="DHL DOMESTIC MX">DHL DOMESTIC MX</option>
+        <option value="GLSSAT">GLSSAT</option>
       </select><br><br>
 
       <button type="submit">Enviar Reporte</button>
@@ -244,39 +251,33 @@ function countRegisteredHUs(){ return scannedHUs.size; }
 reportForm.addEventListener('submit', async function(e){
     e.preventDefault();
 
-    const packingObject = document.getElementById('reportPacking').value;
-    const huFisicos = document.getElementById('reportHUfisicos').value;
-    const huRegistrados = countRegisteredHUs();
-    const linea = document.getElementById('reportLinea').value;
-    const carrier = document.getElementById('reportCarrier').value;
-    const auditor = "{{ usuario or 'Desconocido' }}";
+    const submitBtn = reportForm.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;                       // 🔒 desactiva el botón
+    const originalText = submitBtn.textContent;
+    submitBtn.textContent = "Enviando...";           // cambia texto
 
-    const fechaHora = new Date().toLocaleString();
-    const subject = `Reporte de auditoría (${fechaHora})`;
-    const body = `
-Packing Object: ${packingObject}
-HU físicos: ${huFisicos}
-HU registrados: ${huRegistrados}
-Linea: ${linea}
-Carrier: ${carrier}
-Auditor: ${auditor}
-`;
+    try {
+        const packingObject = document.getElementById('reportPacking').value;
+        const huFisicos = document.getElementById('reportHUfisicos').value;
+        const huRegistrados = "{{ total_resultados or 0 }}";
+        const linea = document.getElementById('reportLinea').value;
+        const carrier = document.getElementById('reportCarrier').value;
+        const auditor = "{{ usuario or 'Desconocido' }}";
+        const fechaHora = new Date().toLocaleString();
 
-    // Generar Excel para enviar
-    const { blob, filename } = generateExcel();
+        const subject = `Reporte de auditoría (${fechaHora})`;
+        const body = `
+          Packing Object: ${packingObject}
+          HU físicos: ${huFisicos}
+          HU registrados: ${huRegistrados}
+          Linea: ${linea}
+          Carrier: ${carrier}
+          Auditor: ${auditor}
+        `;
 
-    const formData = new FormData();
-    formData.append('subject', subject);
-    formData.append('body', body);
-    formData.append('to', 'johan.lozoya@essilorluxottica.id');
-    formData.append('excel_file', blob, filename);
- try {
+        // Generar Excel
         const { blob, filename } = generateExcel();
-        
-        // Verificar que el blob no esté vacío
-        if (blob.size === 0) {
-            throw new Error('El archivo Excel está vacío');
-        }
+        if (blob.size === 0) throw new Error('El archivo Excel está vacío');
 
         const formData = new FormData();
         formData.append('subject', subject);
@@ -284,29 +285,29 @@ Auditor: ${auditor}
         formData.append('to', 'johan.lozoya@essilorluxottica.id');
         formData.append('excel_file', blob, filename);
 
-        const res = await fetch('/GaylorTracker/send_report', { 
-            method: 'POST', 
-            body: formData 
-        });
+        const res = await fetch('/GaylorTracker/send_report', { method: 'POST', body: formData });
         
-        // Verificar el tipo de contenido de la respuesta
         const contentType = res.headers.get('content-type');
         if (!contentType || !contentType.includes('application/json')) {
             const text = await res.text();
             throw new Error(`Respuesta inesperada del servidor: ${text.substring(0, 100)}...`);
         }
-        
+
         const data = await res.json();
         if (!res.ok) throw new Error(data.message || 'Error del servidor');
-        
+
         alert(data.message);
         reportModal.style.display = 'none';
         reportForm.reset();
     } catch(err) {
         alert('Error enviando reporte: ' + err.message);
         console.error('Error completo:', err);
+    } finally {
+        submitBtn.disabled = false;                 // 🔓 vuelve a habilitar
+        submitBtn.textContent = originalText;       // restaura el texto
     }
 });
+
 </script>
 
 

@@ -51,3 +51,16 @@ def update_password(username, new_password):
               (hashed_password, username))
     conn.commit()
     conn.close()
+def get_user_area(username):
+    user = get_user_by_username(username)
+    if user:
+        return user[3]  # user = (id, username, password, area, first_login)
+    return None
+
+def delete_user(user_id):
+    conn = sqlite3.connect('data.db')
+    c = conn.cursor()
+    c.execute('DELETE FROM users WHERE id = ?', (user_id,))
+    conn.commit()
+    conn.close()
+    print(f"Usuario con ID {user_id} eliminado.")

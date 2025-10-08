@@ -7,7 +7,7 @@ from . import gaylorTracker_bp  # Importar el Blueprint desde __init__.py
 
 # Ruta principal para mostrar el tracker
 @gaylorTracker_bp.route('/', methods=['GET'])
-# @login_required  # Descomentar si se quiere proteger
+@login_required  # Descomentar si se quiere proteger
 def index():
     usuario = session.get('usuario')
     filter_packing = request.args.get('packing_object')
@@ -30,30 +30,30 @@ def index():
         handling_units_unicas=handling_units_unicas
     )
 
-# Ruta para enviar el reporte por correo
 @gaylorTracker_bp.route('/send_report', methods=['POST'])
 @login_required
 def send_report():
     usuario = session.get('usuario', 'Desconocido')
 
     try:
-        # Usamos request.form y request.files porque enviaremos FormData
         subject = request.form.get('subject', 'Reporte sin asunto')
         body = request.form.get('body', '')
-        to_email = request.form.get('to', 'johan.lozoya@essilorluxottica.id')
         excel_file = request.files.get('excel_file')
 
-        # Agregar nombre del auditor al cuerpo
+        # Agregar auditor al cuerpo del mensaje
         body += f"\n\nAuditor: {usuario}"
+
+        # Destinatario fijo
+        to_email = ['MXSystemsSupport@essilorusa.com', 'Pcoverru@essilorluxottica.id','QualityDC@essilorusa.com','Customs-ELMTIJ@essilorluxottica.id','juan.vazquez@essilorusa.com','cesar.cortes@essilorusa.com','Erika.Gonzalez@essilorusa.com']
 
         # Crear el mensaje
         msg = EmailMessage()
         msg['Subject'] = subject
         msg['From'] = 'johan.lozoya@essilorluxottica.id'
-        msg['To'] = to_email
+        msg['To'] = ', '.join(to_email)  
         msg.set_content(body)
 
-        # Adjuntar el Excel si existe
+        # Adjuntar Excel si existe
         if excel_file:
             msg.add_attachment(
                 excel_file.read(),
@@ -62,13 +62,15 @@ def send_report():
                 filename=excel_file.filename
             )
 
-        # Configuración SMTP
+        # print("Enviando correo a:", to_email)  # DEBUG
+
+        # Enviar correo
         with smtplib.SMTP('smtp.office365.com', 587) as smtp:
             smtp.starttls()
-            smtp.login('johan.lozoya@essilorluxottica.id', 'Tiernoperogangsta!')
+            smtp.login('johan.lozoya@essilorluxottica.id', 'elpepeBot123!')
             smtp.send_message(msg)
 
-        return jsonify({'message': 'Reporte enviado con Excel adjunto correctamente.'})
+        return jsonify({'message': f'Reporte enviado correctamente a {to_email}.'})
     
     except smtplib.SMTPAuthenticationError:
         return jsonify({'message': 'Error de autenticación SMTP. Verifica las credenciales.'}), 500
