@@ -2040,5 +2040,199 @@
       "Z": 35
   },
   "alt": "REI"
-  }
+  },
+
+  {
+  "name": "Dunham's",
+  "label": "Caja Mediana",
+  "urlCaja": "https://example.com/2",
+  "img": "dunahm's sports.png",
+   "D2":{
+      "UCCface": "back",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 75,
+      "UCCetiquetaHeight": 140,
+      "UCCX": -315,
+      "UCCY": 150,
+      "UCCZ": 130,
+
+      "face": "top",
+      "offset": 10,
+      "etiquetaWidth": 150,
+      "etiquetaHeight": 75,
+      "X": 125,
+      "Y": 10,
+      "Z": 40   
+    },
+    "D":{
+      "UCCface": "back",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 75,
+      "UCCetiquetaHeight": 140,
+      "UCCX": -315,
+      "UCCY": 125,
+      "UCCZ": 120,
+
+      
+      "face": "top",
+      "offset": 10,
+      "etiquetaWidth": 150,
+      "etiquetaHeight": 75,
+      "X": 125,
+      "Y": 10,
+      "Z": 40   
+    },
+    "C":{
+      "UCCface": "back",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 75,
+      "UCCetiquetaHeight": 140,
+      "UCCX": -315,
+      "UCCY": 5,
+      "UCCZ": 130,
+      
+      "face": "top",
+      "offset": 10,
+      "etiquetaWidth": 150,
+      "etiquetaHeight": 75,
+      "X": 125,
+      "Y": 10,
+      "Z": 40   
+    },
+    "B":{
+      "UCCface": "back",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 75,
+      "UCCetiquetaHeight": 140,
+      "UCCX": -215,
+      "UCCY": 5,
+      "UCCZ": 115,
+
+      "face": "top",
+      "offset": 10,
+      "etiquetaWidth": 150,
+      "etiquetaHeight": 75,
+      "X": 75,
+      "Y": 10,
+      "Z": 40   
+    },
+    "A":{
+      "UCCface": "back",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 75,
+      "UCCetiquetaHeight": 140,
+      "UCCX": -115,
+      "UCCY": 5,
+      "UCCZ": 75,
+      
+      "face": "top",
+      "offset": 10,
+      "etiquetaWidth": 150,
+      "etiquetaHeight": 75,
+      "X": 27,
+      "Y": 10,
+      "Z": 40   
+    },
+    "DS":{
+      "UCCface": "front",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 60,
+      "UCCetiquetaHeight": 102,
+      "UCCX": 10,
+      "UCCY": -1,
+      "UCCZ": 70,
+
+      "face2": "top",
+      "offset2": 10,
+      "etiquetaWidth2": 60,
+      "etiquetaHeight2": 29,
+      "X2": 130,
+      "Y2": 55,
+      "Z2": 15,
+
+      "face3": "bottom",
+      "offset3": 10,
+      "etiquetaWidth3": 60,
+      "etiquetaHeight3": 33,
+      "X3": 130,
+      "Y3": -53,
+      "Z3": 85,
+
+      "face4": "bottom",
+      "offset4": 10,
+      "etiquetaWidth4": 60,
+      "etiquetaHeight4": 33,
+      "X4": 10,
+      "Y4": -53,
+      "Z4": 85,
+
+      "face5": "top",
+      "offset5": 10,
+      "etiquetaWidth5": 60,
+      "etiquetaHeight5": 30,
+      "X5": 10,
+      "Y5": 55,
+      "Z5": 16,
+      
+      "face": "front",
+      "offset": 10,
+      "etiquetaWidth": 60,
+      "etiquetaHeight": 102,
+      "X": 130,
+      "Y": 0,
+      "Z": 70
+      },
+      "Meta":{
+      "UCCface": "back",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 45,
+      "UCCetiquetaHeight": 95,
+      "UCCX": -115,
+      "UCCY": 0,
+      "UCCZ": 80,
+      
+      "face": "top",
+      "offset": 10,
+      "etiquetaWidth": 130,
+      "etiquetaHeight": 55,
+      "X": 20,
+      "Y": 5,
+      "Z": 30   
+      },
+      "RB":{
+      "UCCface": "back",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 55,
+      "UCCetiquetaHeight": 100,
+      "UCCX": -115,
+      "UCCY": 2,
+      "UCCZ": 85,
+      
+      "face": "top",
+      "offset": 10,
+      "etiquetaWidth": 130,
+      "etiquetaHeight": 55,
+      "X": 20,
+      "Y": 5,
+      "Z": 30   
+      },
+      "Nuance":{
+      "UCCface": "back",
+      "UCCoffset": 10,
+      "UCCetiquetaWidth": 55,
+      "UCCetiquetaHeight": 110,
+      "UCCX": -130,
+      "UCCY": 4,
+      "UCCZ": 105,
+      
+      "face": "top",
+      "offset": 10,
+      "etiquetaWidth": 135,
+      "etiquetaHeight": 55,
+      "X": 30,
+      "Y": 5,
+      "Z": 30   
+      },
+  "alt": "FGL"
+}
 ]
