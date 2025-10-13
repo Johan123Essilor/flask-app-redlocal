@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gestor de Archivos - VisualAID</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/visualaid.css') }}">
+</head>
+<body>
+
+<header class="main-header">
+  <h1>📁 VisualAID</h1>
+</header>
+
+<main class="container">
+
+  {% if usuario %}
+  <section class="form-section">
+    <h2>Subir Archivo</h2>
+    <form method="POST" enctype="multipart/form-data">
+      <div class="form-group">
+        <label for="file">Archivo PDF</label>
+        <input type="file" name="file" id="file" accept=".pdf" required />
+      </div>
+      <div class="form-group">
+        <label for="custom_name">Nombre</label>
+        <input type="text" name="custom_name" id="custom_name" placeholder="Nombre del archivo" required />
+      </div>
+      <div class="form-group">
+        <label for="cliente">Cliente</label>
+        <select name="cliente" id="cliente" required>
+          <option value="" disabled selected>Seleccionar cliente</option>
+          {% for a in clientes %}
+          <option value="{{ a }}">{{ a }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="codigo">Código</label>
+        <select name="codigo" id="codigo" required>
+          <option value="" disabled selected>Seleccionar código</option>
+          {% for c in codigos %}
+          <option value="{{ c }}">{{ c }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <p><strong>Autor:</strong> {{ usuario }}</p>
+      </div>
+      <button type="submit" class="btn">Subir</button>
+    </form>
+  </section>
+  {% else %}
+  <p class="auth-warning">⚠️ Inicia sesión para subir archivos.</p>
+  {% endif %}
+
+  <section class="filter-section">
+    <h2>Filtros</h2>
+    <form method="GET" action="{{ url_for('VisualAID.index') }}">
+      <input type="text" name="filter_name" placeholder="Filtrar por nombre" value="{{ request.args.get('filter_name', '') }}">
+      <input type="text" name="filter_author" placeholder="Filtrar por autor" value="{{ request.args.get('filter_author', '') }}">
+      <input type="text" name="filter_codigo" placeholder="Filtrar por código" value="{{ request.args.get('filter_codigo', '') }}">
+      <select name="filter_cliente">
+        <option value="">clientes</option>
+        {% for a in clientes %}
+        <option value="{{ a }}" {% if request.args.get('filter_cliente') == a %}selected{% endif %}>{{ a }}</option>
+        {% endfor %}
+      </select>
+      <button type="submit" class="btn">Aplicar Filtros</button>
+      <button type="button" id="clearFiltersBtn" class="btn btn-secondary">Limpiar Filtros</button>
+    </form>
+  </section>
+
+  <section class="table-section">
+    <h2>Archivos Subidos</h2>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Nombre</th>
+            <th>Cliente</th>
+            <th>Fecha</th>
+            <th>Autor</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for file in files %}
+          <tr>
+            <td>{{ file.codigo }}</td>
+            <td>
+              <a href="{{ url_for('VisualAID.static', filename='uploads/' + file.filename) }}"
+                 class="file-link" target="_blank">{{ file.original_name }}</a>
+            </td>
+            <td>{{ file.cliente }}</td>
+            <td>{{ file.upload_date }}</td>
+            <td>{{ file.creator }}</td>
+            <td class="action-buttons">
+              {% if usuario %}
+              <button class="btn-icon btn-edit" title="Editar"
+                onclick="openEditModal('{{ file.id }}', '{{ file.original_name }}', '{{ file.cliente }}', '{{ file.codigo }}')">✏️</button>
+
+              <form method="POST" action="{{ url_for('VisualAID.delete', file_id=file.id) }}"
+                    style="display:inline;" onsubmit="return confirm('¿Eliminar este archivo?')">
+                <button type="submit" class="btn-icon btn-delete" title="Eliminar">🗑️</button>
+              </form>
+              {% else %}
+              <span class="no-access">-</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+
+<div id="editModal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <span class="close" onclick="closeEditModal()">&times;</span>
+    <h2>Editar Archivo</h2>
+    <form id="editForm" method="POST" enctype="multipart/form-data">
+      <div class="form-group">
+        <label for="edit_name">Nuevo nombre</label>
+        <input type="text" name="custom_name" id="edit_name" placeholder="Nuevo nombre" required />
+      </div>
+      <div class="form-group">
+        <label for="edit_cliente">Cliente</label>
+        <select name="cliente" id="edit_cliente" required>
+          {% for a in clientes %}
+          <option value="{{ a }}">{{ a }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="edit_codigo">Código</label>
+        <select name="codigo" id="edit_codigo" required>
+          {% for c in codigos %}
+          <option value="{{ c }}">{{ c }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="edit_file">Nuevo archivo (opcional)</label>
+        <input type="file" name="file" accept=".pdf" />
+      </div>
+      <button type="submit" class="btn">Guardar Cambios</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  function openEditModal(id, name, cliente, codigo) {
+    document.getElementById("edit_name").value = name;
+    document.getElementById("edit_cliente").value = cliente;
+    document.getElementById("edit_codigo").value = codigo;
+    document.getElementById("editForm").action = `/VisualAID/update/${id}`;
+    document.getElementById("editModal").style.display = "flex";
+  }
+
+  function closeEditModal() {
+    document.getElementById("editModal").style.display = "none";
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === "Escape") {
+      closeEditModal();
+    }
+  });
+
+
+  document.getElementById('clearFiltersBtn').addEventListener('click', function() {
+    const form = this.closest('form');
+    form.querySelectorAll('input[type="text"], select').forEach(input => {
+      input.value = '';
+    });
+    form.submit();
+  });
+</script>
+
+</body>
+</html>

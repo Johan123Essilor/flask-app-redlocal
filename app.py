@@ -9,6 +9,7 @@ from apps.GaylorTracker import gaylorTracker_bp
 from apps.SureData import confirmationTracker_bp
 from datetime import timedelta
 from jinja2 import ChoiceLoader, FileSystemLoader
+from apps.VisualAID import VisualAID_bp
 import json
 from waitress import serve
 import os
@@ -93,6 +94,10 @@ app.register_blueprint(gaylorTracker_bp, url_prefix='/GaylorTracker')
 
 app.register_blueprint(confirmationTracker_bp, url_prefix='/confirmationTracker')
 
+#---------------------------------Visual IAD
+
+app.register_blueprint(VisualAID_bp, url_prefix='/VisualAID')
+
 
 
 if __name__ == "__main__":
@@ -100,6 +105,6 @@ if __name__ == "__main__":
 
 
 
-    app.run(debug=True)
+    app.run(debug=False)
 
 

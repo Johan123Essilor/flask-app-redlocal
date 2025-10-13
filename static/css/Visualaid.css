@@ -1,0 +1,263 @@
+:root {
+    --color-bg: #ffffff;
+    --color-text: #111111;
+    --color-border: #dcdcdc;
+    --color-accent: #333333;
+    --color-accent-light: #666666;
+    --color-danger: #e74c3c;
+    --color-danger-hover: #c0392b;
+    --font-family: 'Segoe UI', Tahoma, sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: #f9f9f9;
+    color: var(--color-text);
+    line-height: 1.6;
+    font-size: 16px;
+}
+
+.main-header {
+    background-color: var(--color-accent);
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.container {
+    max-width: 1100px;
+    width: 100%;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: var(--color-bg);
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.05);
+}
+
+h1, h2 {
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+
+.form-section,
+.filter-section,
+.table-section {
+    margin-bottom: 40px;
+}
+
+form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.form-group {
+    flex: 1 1 45%;
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="file"],
+select {
+    padding: 10px;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    font-size: 15px;
+}
+
+input:focus, select:focus {
+    outline: 2px solid var(--color-accent);
+}
+
+button.btn {
+    padding: 10px 20px;
+    background-color: var(--color-accent);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+button.btn:hover {
+    background-color: var(--color-accent-light);
+}
+
+.btn-danger {
+    background-color: var(--color-danger);
+}
+
+.btn-danger:hover {
+    background-color: var(--color-danger-hover);
+}
+
+.btn-secondary {
+    background-color: var(--color-accent-light);
+}
+
+.btn-secondary:hover {
+    background-color: var(--color-accent);
+    color: white;
+}
+
+.auth-warning {
+    color: var(--color-danger);
+    font-weight: bold;
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th, td {
+    padding: 12px;
+    border-bottom: 1px solid #ccc;
+    text-align: left;
+}
+
+th {
+    background-color: var(--color-accent);
+    color: white;
+}
+
+tr:hover td {
+    background-color: #f0f0f0;
+}
+
+.file-link {
+    color: var(--color-accent);
+    text-decoration: none;
+}
+
+.file-link:hover {
+    text-decoration: underline;
+}
+
+.action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* Modal */
+.modal {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-content input,
+.modal-content select {
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.modal-content button {
+    width: 100%;
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--color-accent-light);
+}
+
+.close:hover {
+    color: var(--color-danger);
+}
+
+/* Responsive */
+
+@media (max-width: 768px) {
+    body {
+        font-size: 16px;
+    }
+
+    h1, h2 {
+        font-size: 1.5em;
+    }
+
+    .main-header {
+        padding: 15px 10px;
+    }
+
+    .container {
+        margin: 20px 10px;
+        padding: 15px;
+    }
+
+    .form-group {
+        flex: 1 1 100%;
+    }
+
+    form {
+        flex-direction: column;
+    }
+
+    button.btn {
+        width: 100%;
+    }
+
+    .modal-content {
+        width: 95%;
+        padding: 20px;
+    }
+}
+
+@media (max-width: 600px) {
+    th, td {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    table {
+        font-size: 14px;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .modal-content {
+        padding: 15px;
+    }
+}
