@@ -2,9 +2,9 @@ from apps.auth.models import init_users, add_user
 from datetime import datetime
 
 # Crear usuario con área
-username = 'Israel Lopez Padilla'
+username = 'Customer Service'
 password = 'ELMPass2025'
-area = 'training'
+area = 'customer_service'
 
 # Llamada a la función original
 add_user(username, password, area)

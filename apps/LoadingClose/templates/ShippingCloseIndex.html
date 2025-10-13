@@ -49,12 +49,31 @@
       </div>
 
       <div>
+        <label for="gaylord">Gaylord:</label>
+        <input type="text" name="gaylord" id="gaylord" placeholder="Número de Gaylord" required>
+      </div>
+
+      <div>
+        <label for="truck_id">Truck ID:</label>
+        <input type="text" name="truck_id" id="truck_id" placeholder="ID del camión" required>
+      </div>
+
+      <div>
+        <label for="vuelta_en_u">Vuelta en U:</label>
+        <select name="vuelta_en_u" id="vuelta_en_u" required>
+          <option value="true">Sí</option>
+          <option value="false">No</option>
+        </select>
+      </div>
+
+      <div>
         <label for="comentarios">Comentarios:</label>
         <textarea name="comentarios" id="comentarios" placeholder="Escribe un comentario..." rows="4" style="width: 100%; resize: vertical;"></textarea>
       </div>
+
       <div>
         <label for="caja_pacas">Número de caja y pacas:</label>
-        <textarea name="caja_pacas" id="caja_pacas" placeholder="" rows="2" style="width: 100%; resize: vertical;"></textarea>
+        <textarea name="caja_pacas" id="caja_pacas" rows="2" style="width: 100%; resize: vertical;"></textarea>
       </div>
 
       <div class="autor-info">
@@ -78,50 +97,80 @@
     </select>
     <button type="submit">Filtrar</button>
   </form>
-<div class="table-container">
-<table>
-  <thead>
-    <tr>
-      <th>Andén</th>
-      <th>Tipo de envío</th>
-      <th>Pallets</th>
-      <th>Sellos</th>
-      <th>Carga completa</th>
-      <th>Destino</th>
-      <th>Comentarios</th>
-      <th>Caja y pacas</th>
-      <th>Encargado</th>
-      <th>Fecha</th>
-      <th>Acción</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for registro in registros %}
-      <tr>
-<td>{{ registro.anden }}</td>
-<td>{{ registro.tipo }}</td>
-<td>{{ registro.cantidad }}</td>
-<td>{{ registro.sellos }}</td>
-<td>{{ registro.completo }}</td>
-<td>{{ registro.destino }}</td>
-<td>{{ registro.comentarios }}</td>
-<td>{{ registro.caja_pacas }}</td>
-<td>{{ registro.encargado }}</td>
-<td>{{ registro.fecha }}</td>
 
-        <td>
-          {% if usuario %}
-            <a href="{{ url_for('ShippingClose.delete', registro_id=registro.id) }}">Eliminar</a>
-          {% else %}
-            -
-          {% endif %}
-        </td>
-      </tr>
-    {% endfor %}
-  </tbody>
-</table>
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Andén</th>
+          <th>Tipo de envío</th>
+          <th>Pallets</th>
+          <th>Sellos</th>
+          <th>Carga completa</th>
+          <th>Destino</th>
+          <th>Gaylord</th>
+          <th>Truck ID</th>
+          <th>Vuelta en U</th>
+          <th>Comentarios</th>
+          <th>Caja y pacas</th>
+          <th>Encargado</th>
+          <th>Fecha</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for registro in registros %}
+          <tr>
+            <td>{{ registro.anden }}</td>
+            <td>{{ registro.tipo }}</td>
+            <td>{{ registro.cantidad }}</td>
+            <td>{{ registro.sellos }}</td>
+            <td>{{ registro.completo }}</td>
+            <td>{{ registro.destino }}</td>
+            <td>{{ registro.gaylord }}</td>
+            <td>{{ registro.truck_id }}</td>
+          <td>
+          {% set user_area = session.get('area', '') %}
+          <form method="POST" action="{{ url_for('ShippingClose.toggle_vuelta_en_u', registro_id=registro.id) }}">
+            {% if registro.vuelta_en_u %}
+              <button type="submit" 
+                      class="btn btn-sm" 
+                      style="background-color: green; color: white;"
+                      {% if user_area != "customer_service" %}disabled{% endif %}>
+                True
+              </button>
+            {% else %}
+              <button type="submit" 
+                      class="btn btn-sm" 
+                      style="background-color: red; color: white;"
+                      {% if user_area != "customer_service" %}disabled{% endif %}>
+                False
+              </button>
+            {% endif %}
+          </form>
+
+          </td>
+
+
+
+
+            <td>{{ registro.comentarios }}</td>
+            <td>{{ registro.caja_pacas }}</td>
+            <td>{{ registro.encargado }}</td>
+            <td>{{ registro.fecha }}</td>
+            <td>
+              {% if usuario %}
+                <a href="{{ url_for('ShippingClose.delete', registro_id=registro.id) }}">Eliminar</a>
+              {% else %}
+                -
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 </div>
-
 
 {% endblock %}
 {% set header_title = "ShippingClose" %}

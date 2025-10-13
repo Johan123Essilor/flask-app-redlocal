@@ -223,6 +223,11 @@ select option {
 .close:hover {
   color: #ff4444;
 }
+table th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
 
 /* Inputs y selects en modal */
 .modal-content input,

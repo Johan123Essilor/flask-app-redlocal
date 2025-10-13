@@ -19,7 +19,7 @@ import os
 
 app = Flask(__name__)
 app.secret_key = 'una_clave_super_secreta'
-app.permanent_session_lifetime = timedelta(minutes=30)
+app.permanent_session_lifetime = timedelta(weeks=1)
 app.jinja_loader = ChoiceLoader([
     app.jinja_loader,
     FileSystemLoader('apps/cubo/templates'),

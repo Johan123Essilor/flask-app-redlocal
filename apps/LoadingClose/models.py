@@ -16,19 +16,28 @@ def init_db():
                 completo TEXT,
                 destino TEXT,
                 comentarios TEXT,
-                caja_pacas TEXT,       -- NUEVO CAMPO
+                caja_pacas TEXT,
+                gaylord TEXT,
+                truck_id TEXT,
+                vuelta_en_u INTEGER DEFAULT 0,
                 usuario TEXT,
                 fecha_registro TEXT
             )
         ''')
         conn.commit()
 
-def insert_shipping(andenNo, tipo, qty, sellos, completo, destino, comentarios, caja_pacas, usuario):
+def insert_shipping(andenNo, tipo, qty, sellos, completo, destino,
+                    comentarios, caja_pacas, gaylord, truck_id,
+                    vuelta_en_u, usuario):
     with sqlite3.connect(DB_PATH) as conn:
         cursor = conn.cursor()
         cursor.execute('''
-            INSERT INTO shippingClose (andenNo, type, qty, sellos, completo, destino, comentarios, caja_pacas, usuario, fecha_registro)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO shippingClose (
+                andenNo, type, qty, sellos, completo, destino,
+                comentarios, caja_pacas, gaylord, truck_id, vuelta_en_u,
+                usuario, fecha_registro
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
             andenNo,
             tipo,
@@ -37,12 +46,14 @@ def insert_shipping(andenNo, tipo, qty, sellos, completo, destino, comentarios, 
             completo,
             destino,
             comentarios,
-            caja_pacas,  # Pasamos el nuevo campo
+            caja_pacas,
+            gaylord,
+            truck_id,
+            1 if vuelta_en_u else 0,   # Guardamos como 0/1
             usuario,
             datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         ))
         conn.commit()
-
 
 def get_all_shipping(filter_type=None, filter_destino=None, filter_completo=None):
     with sqlite3.connect(DB_PATH) as conn:
@@ -65,12 +76,15 @@ def get_all_shipping(filter_type=None, filter_destino=None, filter_completo=None
         rows = cursor.fetchall()
         return [
             dict(zip(
-                ['id', 'anden', 'tipo', 'cantidad', 'sellos', 'completo', 'destino', 'comentarios', 'encargado', 'fecha', 'caja_pacas'],
+                [
+                    'id', 'anden', 'tipo', 'cantidad', 'sellos',
+                    'completo', 'destino', 'comentarios', 'encargado', 'fecha','caja_pacas',
+                    'gaylord', 'truck_id', 'vuelta_en_u'
+                ],
                 row
             ))
             for row in rows
         ]
-
 
 def delete_shipping(record_id):
     with sqlite3.connect(DB_PATH) as conn:
@@ -78,3 +92,12 @@ def delete_shipping(record_id):
         cursor.execute('DELETE FROM shippingClose WHERE id = ?', (record_id,))
         conn.commit()
         return cursor.rowcount > 0
+def toggle_vuelta_en_u_db(registro_id, nuevo_valor):
+    """Actualiza el valor de vuelta_en_u de un registro específico"""
+    with sqlite3.connect(DB_PATH) as conn:
+        cursor = conn.cursor()
+        cursor.execute(
+            "UPDATE shippingClose SET vuelta_en_u = ? WHERE id = ?",
+            (1 if nuevo_valor else 0, registro_id)
+        )
+        conn.commit()
