@@ -24,6 +24,7 @@ body {
 }
 
 .main-header {
+    position: relative; /* Necesario para posicionar el botón dentro */
     background-color: var(--color-accent);
     color: white;
     padding: 20px 0;
@@ -202,6 +203,25 @@ tr:hover td {
 
 .close:hover {
     color: var(--color-danger);
+}
+
+/* Estilos para el botón de hipervinculo */
+.top-left-button {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background-color: var(--color-accent);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 18px;
+    text-decoration: none;
+    box-shadow: 0 4px 6px rgba(255, 255, 255, 0.1);
+    transition: background-color 0.3s;
+}
+
+.top-left-button:hover {
+    background-color: var(--color-accent-light);
 }
 
 /* Responsive */
