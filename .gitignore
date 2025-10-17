@@ -3,6 +3,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+
+*.sqlite3
+
 # Caches and logs
 *.log
 *.cache
@@ -65,3 +68,4 @@ Thumbs.db
 *.log
 sop_files.db
 shippingClose.db
+VisualAID.db
