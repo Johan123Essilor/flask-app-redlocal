@@ -1,16 +1,20 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+<head>
   <meta charset="UTF-8"/>
   <title>Labels position</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/estilo3D.css') }}">
   <style>
-    /* Opcional: Ocultar cubo vacío para que no ocupe espacio */
+    /* Ocultar cubo vacío para que no ocupe espacio */
     #cube:empty {
       display: none;
     }
   </style>
-  </head>
+
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+</head>
+
   <body>
   <header>
   <h1>{{ cliente.name }} </h1>
@@ -45,9 +49,10 @@
       cube5: { w: 400, h: 150, d: 260, zli:130, zld:270, zts: 130, zti: 20, color: '#C2A073', label: 'C' },
       cube6: { w: 400, h: 275, d: 240, zli:120, zld:280, zts: 120, zti: 155, color: '#C2A073', label: 'D' },
       cube7: { w: 400, h: 300, d: 260, zli:130, zld:270, zts: 130, zti: 170, color: '#C2A073', label: 'D2' },
-      cube8: { w: 160, h: 100, d: 160, zli: 80, zld: 80, zts: 80, zti: 20, color: '#C2A073', label: 'Meta' },
-      cube9: { w: 170, h: 110, d: 170, zli: 85, zld: 85, zts: 85, zti: 23, zf: 0,color: '#C2A073', label: 'RB' },
-      cube10: { w: 200, h: 122.5, d: 200, zli: 100, zld: 100, zts: 100, zti: 24, zf: 0, color: '#C2A073', label: 'Nuance' }
+      cube8: { w: 500, h: 100, d: 400, zli: 200, zld: 300, zts: 200, zti: -100, color: '#C2A073', label: 'Goggle' },
+      cube9: { w: 160, h: 100, d: 160, zli: 80, zld: 80, zts: 80, zti: 20, color: '#C2A073', label: 'Meta' },
+      cube10: { w: 170, h: 110, d: 170, zli: 85, zld: 85, zts: 85, zti: 23, zf: 0,color: '#C2A073', label: 'RB' },
+      cube11: { w: 200, h: 122.5, d: 200, zli: 100, zld: 100, zts: 100, zti: 24, zf: 0, color: '#C2A073', label: 'Nuance' }
     };
 
     function createNav() {
