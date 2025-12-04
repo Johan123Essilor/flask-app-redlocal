@@ -140,7 +140,7 @@
   padding: 10px;
   resize: none;
 }
-#exportExcel {
+/* #exportExcel {
   margin-top: 10px;
   padding: 10px 15px;
   background-color: #4CAF50;
@@ -151,7 +151,7 @@
 }
 #exportExcel:hover {
   background-color: #45a049;
-}
+} */
 
 .scan-hu {
   display: flex;
@@ -167,4 +167,88 @@
   display: flex;
   align-items: center;
   gap: 10px;
+}
+.report-btn {
+    background-color:#ffb300; /* Púrpura para diferenciar */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 10px;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+
+.report-btn:hover {
+    background-color:#ffb300;
+}
+
+.report-btn:disabled {
+    background-color: #9e9e9e;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+.export-historical-btn {
+    background-color:#5a6268; /* Púrpura para diferenciar */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 10px;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+
+.export-historical-btn:hover {
+    background-color: #5a6268;
+}
+
+.export-historical-btn:disabled {
+    background-color: #9e9e9e;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+.save-audit-btn {
+    background-color:#42a5f5; /* Púrpura para diferenciar */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 10px;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+
+.save-audit-btn:hover {
+    background-color: #27b027;
+}
+
+.save-audit-btn:disabled {
+    background-color: #9e9e9e;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+.export2-btn {
+    background-color: #27b027; /* Púrpura para diferenciar */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 10px;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+
+.export2-btn:hover {
+    background-color: #27b027;
+}
+
+.export2-btn:disabled {
+    background-color: #9e9e9e;
+    cursor: not-allowed;
+    opacity: 0.7;
 }

@@ -1,0 +1,712 @@
+{% extends "index.html" %}
+{% block title %}Dashboard Auditorías{% endblock %}
+{% block header_title %}Dashboard de Auditorías{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/gaylortracker.css') }}">
+
+<div class="sop-container">
+    <!-- Botón para volver -->
+    <div style="margin-bottom: 20px;">
+        <a href="{{ url_for('gaylorTracker.index') }}" class="btn btn-secondary">
+            ← Volver al Escáner
+        </a>
+    </div>
+
+    <!-- Formulario de Filtros -->
+    <div class="filter-card">
+        <h3>Filtrar Auditorías</h3>
+        <form method="GET" action="{{ url_for('gaylorTracker.dashboard') }}" class="filter-form">
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label>Fecha Desde:</label>
+                    <input type="date" name="date_from" value="{{ date_from }}">
+                </div>
+                <div class="filter-group">
+                    <label>Fecha Hasta:</label>
+                    <input type="date" name="date_to" value="{{ date_to }}">
+                </div>
+                <div class="filter-group">
+                    <label>Año:</label>
+                    <input type="number" name="year" placeholder="Ej: 2024" value="{{ year }}" min="2023" max="2030">
+                </div>
+                <div class="filter-group">
+                    <label>Semana:</label>
+                    <input type="number" name="week_number" placeholder="Número de semana" value="{{ week_number }}" min="1" max="53">
+                </div>
+            </div>
+            <div class="filter-actions">
+                <button type="submit" class="btn btn-primary">Aplicar Filtros</button>
+                <a href="{{ url_for('gaylorTracker.dashboard') }}" class="btn btn-secondary">Limpiar</a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Selector de vista -->
+    <div class="view-selector">
+        <button class="view-btn active" data-view="daily">Vista Diaria</button>
+        <button class="view-btn" data-view="weekly">Vista Semanal</button>
+        <button class="view-btn" data-view="monthly">Vista Mensual</button>
+    </div>
+
+    <!-- Div oculto para pasar datos a JavaScript -->
+    <div id="filterData" 
+         data-date-from="{{ date_from }}" 
+         data-date-to="{{ date_to }}" 
+         data-week-number="{{ week_number }}"
+         data-year="{{ year }}"
+         style="display: none;">
+    </div>
+
+    <!-- Gráficas -->
+    <div class="charts-container">
+        <!-- Gráfica Principal - Total HU vs Over+Short -->
+        <div class="chart-card">
+            <h3>Total HU vs Hallazgos (Over + Short)</h3>
+            <div class="chart-wrapper">
+                <canvas id="mainChart" height="400"></canvas>
+            </div>
+        </div>
+
+        <!-- Gráficas adicionales -->
+        <div class="charts-grid">
+            <div class="chart-card">
+                <h3>Distribución de Hallazgos</h3>
+                <div class="chart-wrapper">
+                    <canvas id="findingsChart" height="300"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-card">
+                <h3>Tendencia Semanal</h3>
+                <div class="chart-wrapper">
+                    <canvas id="weeklyTrendChart" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabla de resumen -->
+        <div class="chart-card">
+            <h3>Resumen de Datos</h3>
+            <div id="summaryTable" class="summary-table">
+                <!-- La tabla se llenará con JavaScript -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Incluir Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+// Configuración de la API
+const API_URL = "http://10.81.153.123:8000/api/gaylor-auditory/";
+let currentView = 'daily';
+let chartData = [];
+
+// Función para construir URL con filtros
+function buildApiUrl() {
+    const params = new URLSearchParams();
+    const filterData = document.getElementById('filterData').dataset;
+    
+    if (filterData.dateFrom) {
+        params.append('dateTime_after', filterData.dateFrom + 'T00:00:00');
+    }
+    
+    if (filterData.dateTo) {
+        params.append('dateTime_before', filterData.dateTo + 'T23:59:59');
+    }
+    
+    if (filterData.weekNumber) {
+        params.append('weekNumber', filterData.weekNumber);
+    }
+    
+    if (filterData.year) {
+        params.append('year', filterData.year);
+    }
+    
+    return API_URL + (params.toString() ? '?' + params.toString() : '');
+}
+
+// Función para agrupar datos por vista
+function groupDataByView(data, viewType) {
+    const grouped = {};
+    
+    data.forEach(item => {
+        const date = new Date(item.dateTime);
+        let key;
+        
+        switch(viewType) {
+            case 'daily':
+                key = date.toLocaleDateString();
+                break;
+            case 'weekly':
+                key = `Semana ${item.weekNumber}`;
+                break;
+            case 'monthly':
+                key = date.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
+                break;
+        }
+        
+        if (!grouped[key]) {
+            grouped[key] = {
+                totalQty: 0,
+                totalOver: 0,
+                totalShort: 0,
+                count: 0
+            };
+        }
+        
+        grouped[key].totalQty += item.qty;
+        grouped[key].totalOver += item.over;
+        grouped[key].totalShort += item.short;
+        grouped[key].count += 1;
+    });
+    
+    return grouped;
+}
+
+// Función principal para cargar gráficas
+async function loadCharts() {
+    try {
+        const url = buildApiUrl();
+        console.log('📊 Cargando datos desde:', url);
+        
+        const response = await fetch(url);
+        chartData = await response.json();
+        
+        if (chartData.length === 0) {
+            showNoDataMessage();
+            return;
+        }
+        
+        renderCharts();
+        
+    } catch (error) {
+        console.error('Error cargando gráficas:', error);
+        alert('Error al cargar los datos: ' + error.message);
+    }
+}
+
+function showNoDataMessage() {
+    const containers = ['mainChart', 'findingsChart', 'weeklyTrendChart'];
+    containers.forEach(container => {
+        const element = document.getElementById(container);
+        if (element) {
+            element.parentElement.innerHTML = '<p class="no-data">No hay datos para los filtros seleccionados</p>';
+        }
+    });
+}
+
+function renderCharts() {
+    const groupedData = groupDataByView(chartData, currentView);
+    const labels = Object.keys(groupedData);
+    const data = Object.values(groupedData);
+    
+    renderMainChart(labels, data);
+    renderFindingsChart(chartData);
+    renderWeeklyTrendChart(chartData);
+    renderSummaryTable(labels, data);
+}
+
+// Gráfica Principal - Total HU vs Hallazgos combinados
+// Gráfica Principal - Combinación Barras (Over/Short) y Línea (Total HU)
+function renderMainChart(labels, groupedData) {
+    const ctx = document.getElementById('mainChart').getContext('2d');
+    
+    // Destruir chart anterior si existe
+    if (window.mainChartInstance) {
+        window.mainChartInstance.destroy();
+    }
+    
+    window.mainChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [
+                // LÍNEA - Total HU
+                {
+                    label: 'Total HU',
+                    data: groupedData.map(item => item.totalQty),
+                    type: 'line',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    yAxisID: 'y',
+                    pointBackgroundColor: 'rgba(54, 162, 235, 1)',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 5,
+                    pointHoverRadius: 7
+                },
+                // BARRAS - Over
+                {
+                    label: 'Over',
+                    data: groupedData.map(item => item.totalOver),
+                    backgroundColor: 'rgba(255, 99, 132, 0.8)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1,
+                    yAxisID: 'y1'
+                },
+                // BARRAS - Short
+                {
+                    label: 'Short',
+                    data: groupedData.map(item => item.totalShort),
+                    backgroundColor: 'rgba(255, 205, 86, 0.8)',
+                    borderColor: 'rgba(255, 205, 86, 1)',
+                    borderWidth: 1,
+                    yAxisID: 'y1'
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+                mode: 'index',
+                intersect: false,
+            },
+            scales: {
+                y: {
+                    type: 'linear',
+                    display: true,
+                    position: 'left',
+                    title: {
+                        display: true,
+                        text: 'Total HU'
+                    },
+                    min: 0,
+                    grid: {
+                        drawOnChartArea: true,
+                    },
+                    ticks: {
+                        callback: function(value) {
+                            return value.toLocaleString();
+                        }
+                    }
+                },
+                y1: {
+                    type: 'linear',
+                    display: true,
+                    position: 'right',
+                    title: {
+                        display: true,
+                        text: 'Over / Short'
+                    },
+                    min: 0,
+                    grid: {
+                        drawOnChartArea: false,
+                    },
+                    suggestedMax: function(context) {
+                        const max = Math.max(...context.chart.data.datasets[1].data, ...context.chart.data.datasets[2].data);
+                        return max * 1.5 || 10;
+                    }
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: `Vista ${currentView === 'daily' ? 'Diaria' : currentView === 'weekly' ? 'Semanal' : 'Mensual'}`
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.dataset.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            label += context.parsed.y.toLocaleString();
+                            return label;
+                        }
+                    }
+                },
+                legend: {
+                    display: true,
+                    position: 'top',
+                }
+            }
+        }
+    });
+}
+
+// Las otras funciones se mantienen igual:
+// - renderFindingsChart (se mantiene igual)
+// - renderWeeklyTrendChart (se mantiene igual) 
+// - renderSummaryTable (se mantiene igual)
+
+// Gráfica de Hallazgos - Over vs Short
+function renderFindingsChart(data) {
+    const totalOver = data.reduce((sum, item) => sum + item.over, 0);
+    const totalShort = data.reduce((sum, item) => sum + item.short, 0);
+    const totalHU = data.reduce((sum, item) => sum + item.qty, 0);
+    
+    const ctx = document.getElementById('findingsChart').getContext('2d');
+    
+    // Destruir chart anterior si existe
+    if (window.findingsChartInstance) {
+        window.findingsChartInstance.destroy();
+    }
+    
+    window.findingsChartInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Over', 'Short', 'Correctos'],
+            datasets: [{
+                data: [totalOver, totalShort, totalHU - totalOver - totalShort],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.8)',
+                    'rgba(255, 205, 86, 0.8)',
+                    'rgba(75, 192, 192, 0.8)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(255, 205, 86, 1)',
+                    'rgba(75, 192, 192, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const label = context.label;
+                            const value = context.parsed;
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const percentage = ((value / total) * 100).toFixed(1);
+                            return `${label}: ${value} (${percentage}%)`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Gráfica de Tendencia Semanal
+function renderWeeklyTrendChart(data) {
+    // Agrupar por semana
+    const weeklyData = {};
+    data.forEach(item => {
+        const key = `Semana ${item.weekNumber}`;
+        if (!weeklyData[key]) {
+            weeklyData[key] = { totalQty: 0, totalOver: 0, totalShort: 0 };
+        }
+        weeklyData[key].totalQty += item.qty;
+        weeklyData[key].totalOver += item.over;
+        weeklyData[key].totalShort += item.short;
+    });
+    
+    const labels = Object.keys(weeklyData);
+    const weeklyValues = Object.values(weeklyData);
+    
+    const ctx = document.getElementById('weeklyTrendChart').getContext('2d');
+    
+    // Destruir chart anterior si existe
+    if (window.weeklyChartInstance) {
+        window.weeklyChartInstance.destroy();
+    }
+    
+    window.weeklyChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Total HU',
+                    data: weeklyValues.map(item => item.totalQty),
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                },
+                {
+                    label: 'Over + Short',
+                    data: weeklyValues.map(item => item.totalOver + item.totalShort),
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Cantidad'
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Tabla de resumen
+function renderSummaryTable(labels, groupedData) {
+    const table = document.getElementById('summaryTable');
+    let html = `
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Periodo</th>
+                    <th>Total HU</th>
+                    <th>Over</th>
+                    <th>Short</th>
+                    <th>Over + Short</th>
+                    <th>Eficiencia</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+    
+    labels.forEach((label, index) => {
+        const data = groupedData[index];
+        const totalIssues = data.totalOver + data.totalShort;
+        const efficiency = ((1 - (totalIssues / data.totalQty)) * 100).toFixed(2);
+        
+        html += `
+            <tr>
+                <td>${label}</td>
+                <td>${data.totalQty.toLocaleString()}</td>
+                <td>${data.totalOver}</td>
+                <td>${data.totalShort}</td>
+                <td>${totalIssues}</td>
+                <td>${efficiency}%</td>
+            </tr>
+        `;
+    });
+    
+    // Total general
+    const totalQty = groupedData.reduce((sum, item) => sum + item.totalQty, 0);
+    const totalOver = groupedData.reduce((sum, item) => sum + item.totalOver, 0);
+    const totalShort = groupedData.reduce((sum, item) => sum + item.totalShort, 0);
+    const totalIssues = totalOver + totalShort;
+    const totalEfficiency = ((1 - (totalIssues / totalQty)) * 100).toFixed(2);
+    
+    html += `
+            <tr class="total-row">
+                <td><strong>TOTAL</strong></td>
+                <td><strong>${totalQty.toLocaleString()}</strong></td>
+                <td><strong>${totalOver}</strong></td>
+                <td><strong>${totalShort}</strong></td>
+                <td><strong>${totalIssues}</strong></td>
+                <td><strong>${totalEfficiency}%</strong></td>
+            </tr>
+        </tbody>
+    </table>
+    `;
+    
+    table.innerHTML = html;
+}
+
+// Manejar cambio de vista
+document.querySelectorAll('.view-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        currentView = this.dataset.view;
+        if (chartData.length > 0) {
+            renderCharts();
+        }
+    });
+});
+
+// Cargar gráficas cuando se cargue la página
+document.addEventListener('DOMContentLoaded', loadCharts);
+</script>
+
+<style>
+.filter-card {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+.filter-card h3 {
+    margin-top: 0;
+    color: #333;
+}
+
+.filter-row {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+.filter-group {
+    flex: 1;
+    min-width: 200px;
+}
+
+.filter-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+}
+
+.filter-group input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.filter-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.view-selector {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    justify-content: center;
+}
+
+.view-btn {
+    padding: 10px 20px;
+    border: 2px solid #007bff;
+    background: white;
+    color: #007bff;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.view-btn.active {
+    background: #007bff;
+    color: white;
+}
+
+.view-btn:hover {
+    background: #0056b3;
+    color: white;
+}
+
+.charts-container {
+    margin-top: 20px;
+}
+
+.chart-card {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+.chart-card h3 {
+    margin-top: 0;
+    color: #333;
+    text-align: center;
+}
+
+.chart-wrapper {
+    position: relative;
+    height: 400px;
+}
+
+.charts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.charts-grid .chart-card .chart-wrapper {
+    height: 300px;
+}
+
+.summary-table {
+    overflow-x: auto;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.data-table th,
+.data-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.data-table th {
+    background-color: #f8f9fa;
+    font-weight: bold;
+}
+
+.data-table tr:hover {
+    background-color: #f5f5f5;
+}
+
+.total-row {
+    background-color: #e9ecef !important;
+    font-weight: bold;
+}
+
+.no-data {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+    padding: 40px;
+}
+
+.btn {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+@media (max-width: 768px) {
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .filter-row {
+        flex-direction: column;
+    }
+    
+    .view-selector {
+        flex-direction: column;
+    }
+}
+</style>
+{% endblock %}

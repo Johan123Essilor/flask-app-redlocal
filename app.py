@@ -7,6 +7,8 @@ from apps.auth.routes import auth_bp
 from apps.LoadingClose import ShippingClose_bp
 from apps.GaylorTracker import gaylorTracker_bp
 from apps.SureData import confirmationTracker_bp
+from apps.InboundVisualizer import inboundVisualizer_bp
+from apps.HardVAS import HardVAS_bp
 from datetime import timedelta
 from jinja2 import ChoiceLoader, FileSystemLoader
 from apps.VisualAID import VisualAID_bp
@@ -97,6 +99,12 @@ app.register_blueprint(confirmationTracker_bp, url_prefix='/confirmationTracker'
 #---------------------------------Visual IAD
 
 app.register_blueprint(VisualAID_bp, url_prefix='/VisualAID')
+
+#------------------------------------InboundVisualizer
+app.register_blueprint(inboundVisualizer_bp, url_prefix='/InboundVisualizer')
+
+#---------------------------------Hard VAS
+# app.register_blueprint(HardVAS_bp, url_prefix='/HardVAS')
 
 
 

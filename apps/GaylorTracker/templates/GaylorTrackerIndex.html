@@ -14,7 +14,8 @@
     <input type="text" name="packing_object" placeholder="Buscar Packing Object" value="{{ filter_packing or '' }}">
     <button type="submit">Buscar</button>
   </form>
-
+<!-- Agregar este campo hidden en tu HTML -->
+<input type="hidden" id="totalResultados" value="{{ total_resultados or 0 }}">
 {% if filter_packing %}
   <p><strong>Total resultados:</strong> {{ total_resultados }}</p>
   <div id="alertBox" class="missing-alert"></div>
@@ -28,8 +29,11 @@
 
   <div class="spacer"></div>
 
-  <button type="button" id="exportExcel" class="export-btn">Exportar a Excel</button>
+  <button type="button" id="exportExcel" class="export2-btn">Exportar a Excel</button>
+  <button type="button" id="saveAuditBtn" class="save-audit-btn">Guardar Auditoría</button>
   <button type="button" id="reportBtn" class="report-btn">Reportar</button>
+  <button type="button" id="exportHistoricalBtn" class="export-historical-btn">Extraer Datos Históricos</button>
+</div>
 </div>
 
   <!-- Tabla de resultados -->
@@ -60,9 +64,10 @@
   <div class="modal-content">
     <span class="close">&times;</span>
     <h3>HUs Over (escaneados pero no encontrados)</h3>
-    <textarea id="overList" rows="10" style="width:100%;"></textarea>
+    <div id="overListContainer" style="max-height:300px; overflow-y:auto;"></div>
   </div>
 </div>
+
 
 <!-- Modal Reporte -->
 <div id="reportModal" class="modal">
@@ -76,8 +81,12 @@
       <label>HU físicos:</label>
       <input type="text" id="reportHUfisicos" placeholder="Ingrese HU físicos"><br><br>
 
+
+      <!-- Total HU en SAP -->
+      <input type="hidden" id="reportHUregistrados" value="{{ total_resultados or 0 }}">
+
       <label>Linea:</label>
-      <input type="text" id="reportLinea" placeholder="Ingrese Línea"><br><br>
+      <input type="text" id="reportLinea" value=""><br><br>
 
       <label>Carrier:</label>
       <select id="reportCarrier">
@@ -97,7 +106,9 @@
   </div>
 </div>
 
+
 <script>
+const saveAuditBtn = document.getElementById('saveAuditBtn');
 const huInput = document.getElementById('huInput');
 const huTable = document.getElementById('huTable');
 const alertBox = document.getElementById('alertBox');
@@ -105,8 +116,7 @@ const showOverBtn = document.getElementById('showOverBtn');
 const markShortBtn = document.getElementById('markShortBtn');
 const modal = document.getElementById('overModal');
 const closeModal = document.querySelector('.close');
-const overList = document.getElementById('overList');
-
+const overListContainer = document.getElementById('overListContainer'); // Cambiado del textarea
 const exportExcelBtn = document.getElementById('exportExcel');
 const reportBtn = document.getElementById('reportBtn');
 const reportModal = document.getElementById('reportModal');
@@ -117,19 +127,19 @@ let overHUs = [];
 let shortHUs = [];
 let scannedHUs = new Set();
 
-// Función para generar el Excel y devolver el Blob y el filename
+// ------------------ GENERAR EXCEL ------------------
 function generateExcel() {
     const packingObject = document.querySelector('input[name="packing_object"]').value || 'PackingObject';
     const timestamp = new Date().toISOString().replace(/[-:T]/g, '').split('.')[0];
     const filename = `${packingObject}_scanResults_${timestamp}.xlsx`;
     const wb = XLSX.utils.book_new();
 
-    // Over HUs
+    // --- Over HUs ---
     const ws1_data = [["Packing Object","Handling Unit"]];
     overHUs.forEach(hu => ws1_data.push([packingObject, hu]));
     XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(ws1_data), "Over HUs");
 
-    // Encontrados
+    // --- Encontrados ---
     const ws2_data = [["Packing Object","Handling Unit","Ubicación"]];
     const rows = huTable.getElementsByTagName('tr');
     for(let i=1;i<rows.length;i++){
@@ -140,12 +150,12 @@ function generateExcel() {
     }
     XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(ws2_data), "Encontrados");
 
-    // Short HUs
+    // --- Short HUs ---
     const ws3_data = [["Packing Object","Handling Unit","Ubicación"]];
-    shortHUs.forEach(r => ws3_data.push(r));
+    shortHUs.forEach(hu => ws3_data.push([packingObject, hu, ""])); // ✅ convertir string a array
     XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(ws3_data), "Short HUs");
 
-    // Todos
+    // --- Todos ---
     const ws4_data = [["Packing Object","Handling Unit","Ubicación"]];
     for(let i=1;i<rows.length;i++){
         ws4_data.push([rows[i].cells[0].textContent.trim(), rows[i].cells[1].textContent.trim(), rows[i].cells[2].textContent.trim()]);
@@ -158,7 +168,7 @@ function generateExcel() {
     return { blob, filename };
 }
 
-// Escaneo de HU
+// ------------------ ESCANEO HU ------------------
 huInput.addEventListener('keydown', function(event) {
     if (event.key === 'Enter') {
         event.preventDefault();
@@ -172,7 +182,6 @@ huInput.addEventListener('keydown', function(event) {
             const huCell = rows[i].cells[1];
             if (huCell.textContent.trim() === hu) {
                 rows[i].style.backgroundColor = '#d4edda';
-
                 if (scannedHUs.has(hu)) {
                     overHUs.push(hu + " (repetido)");
                     alertBox.textContent = 'HU Repetido enviado a Over: ' + hu;
@@ -184,7 +193,6 @@ huInput.addEventListener('keydown', function(event) {
                 } else {
                     scannedHUs.add(hu);
                 }
-
                 foundInTable = true;
                 break;
             }
@@ -204,17 +212,40 @@ huInput.addEventListener('keydown', function(event) {
     }
 });
 
-// Mostrar Over
+// ------------------ MOSTRAR OVER CON OPCIÓN ELIMINAR ------------------
 showOverBtn.addEventListener('click', () => {
     if (overHUs.length === 0) { alert('No hay HUs Over.'); return; }
-    overList.value = overHUs.join('\n');
+    overListContainer.innerHTML = '';
+    overHUs.forEach((hu, index) => {
+        const div = document.createElement('div');
+        div.style.display = 'flex';
+        div.style.alignItems = 'center';
+        div.style.marginBottom = '5px';
+
+        const span = document.createElement('span');
+        span.textContent = hu;
+        span.style.flexGrow = '1';
+
+        const btn = document.createElement('button');
+        btn.textContent = 'Eliminar';
+        btn.style.marginLeft = '10px';
+        btn.addEventListener('click', () => {
+            overHUs.splice(index, 1);
+            div.remove();
+        });
+
+        div.appendChild(span);
+        div.appendChild(btn);
+        overListContainer.appendChild(div);
+    });
     modal.style.display = 'block';
 });
 
+// Cerrar modal
 closeModal.addEventListener('click', () => { modal.style.display = 'none'; });
 window.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
 
-// Marcar Short
+// ------------------ MARCAR SHORT ------------------
 markShortBtn.addEventListener('click', () => {
     shortHUs = [];
     const rows = huTable.getElementsByTagName('tr');
@@ -222,17 +253,13 @@ markShortBtn.addEventListener('click', () => {
         const huCell = rows[i].cells[1].textContent.trim();
         if (!scannedHUs.has(huCell)) {
             rows[i].style.backgroundColor = '#f8d7da';
-            shortHUs.push([
-                rows[i].cells[0].textContent.trim(),
-                huCell,
-                rows[i].cells[2].textContent.trim()
-            ]);
+            shortHUs.push(huCell); // ✅ solo el HU
         }
     }
     alert("Se marcaron " + shortHUs.length + " HUs como Short.");
 });
 
-// Exportar Excel (opcional)
+// ------------------ EXPORTAR EXCEL ------------------
 exportExcelBtn.addEventListener('click', () => {
     const { blob, filename } = generateExcel();
     const link = document.createElement('a');
@@ -241,7 +268,60 @@ exportExcelBtn.addEventListener('click', () => {
     link.click();
 });
 
-// Reporte Auditoría
+// ------------------ GUARDAR AUDITORÍA ------------------
+saveAuditBtn.addEventListener('click', async function() {
+    const originalText = saveAuditBtn.textContent;
+    saveAuditBtn.disabled = true;
+    saveAuditBtn.textContent = "Guardando...";
+
+    try {
+        const packingObject = document.querySelector('input[name="packing_object"]').value;
+        if (!packingObject) {
+            throw new Error('Primero busca un Packing Object');
+        }
+
+        const auditData = {
+            packing_object: document.getElementById('reportPacking').value,
+            hu_fisicos: document.getElementById('totalResultados').value,
+            over_count: overHUs.length,
+            short_count: shortHUs.length
+        };
+
+        console.log("📤 Enviando datos:", auditData);
+
+        const res = await fetch('/GaylorTracker/save_audit', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(auditData)
+        });
+
+        console.log("📥 Respuesta recibida - Status:", res.status);
+
+        // Ver el contenido de la respuesta aunque no sea JSON
+        const responseText = await res.text();
+        console.log("📥 Contenido de respuesta:", responseText);
+
+        try {
+            const data = JSON.parse(responseText);
+            if (!res.ok) throw new Error(data.message || 'Error del servidor');
+            alert(`✅ ${data.message}\nHUs Físicos: ${document.getElementById('totalResultados').value}\nOver: ${overHUs.length}\nShort: ${shortHUs.length}`);
+        } catch (jsonError) {
+            console.error("❌ No se pudo parsear JSON:", jsonError);
+            throw new Error('El servidor devolvió una respuesta no válida: ' + responseText.substring(0, 100));
+        }
+
+    } catch(err) {
+        alert('❌ Error guardando auditoría: ' + err.message);
+        console.error(err);
+    } finally {
+        saveAuditBtn.disabled = false;
+        saveAuditBtn.textContent = originalText;
+    }
+});
+
+// ------------------ REPORTES ------------------
 reportBtn.addEventListener('click', () => { reportModal.style.display = 'block'; });
 closeReportModal.addEventListener('click', () => { reportModal.style.display = 'none'; });
 window.addEventListener('click', (e) => { if (e.target === reportModal) reportModal.style.display = 'none'; });
@@ -250,68 +330,598 @@ function countRegisteredHUs(){ return scannedHUs.size; }
 
 reportForm.addEventListener('submit', async function(e){
     e.preventDefault();
-
     const submitBtn = reportForm.querySelector('button[type="submit"]');
-    submitBtn.disabled = true;                       // 🔒 desactiva el botón
+    submitBtn.disabled = true;
     const originalText = submitBtn.textContent;
-    submitBtn.textContent = "Enviando...";           // cambia texto
+    submitBtn.textContent = "Enviando...";
 
     try {
         const packingObject = document.getElementById('reportPacking').value;
         const huFisicos = document.getElementById('reportHUfisicos').value;
-        const huRegistrados = "{{ total_resultados or 0 }}";
+        const huRegistrados = document.getElementById('reportHUregistrados').value;
         const linea = document.getElementById('reportLinea').value;
         const carrier = document.getElementById('reportCarrier').value;
         const auditor = "{{ usuario or 'Desconocido' }}";
-        const fechaHora = new Date().toLocaleString();
 
-        const subject = `Reporte de auditoría (${fechaHora})`;
-        const body = `
-          Packing Object: ${packingObject}
-          HU físicos: ${huFisicos}
-          HU registrados: ${huRegistrados}
-          Linea: ${linea}
-          Carrier: ${carrier}
-          Auditor: ${auditor}
-        `;
+        let hallazgo = '';
+        if(overHUs.length && shortHUs.length) hallazgo = 'Over y Short';
+        else if(overHUs.length) hallazgo = 'Over';
+        else if(shortHUs.length) hallazgo = 'Short';
+        else hallazgo = 'Sin hallazgos';
 
-        // Generar Excel
+        const subject = `Reporte de auditoría - ${hallazgo} (${new Date().toLocaleString()})`;
+
+        // Construir cuerpo del mensaje
+        let body = `Se audita gaylord automático ${packingObject}, en donde se encuentran físicamente ${huFisicos} HU, y en SAP hay ${huRegistrados} HU.`;
+
+        if(overHUs.length){
+            body += `\n\n🔹 HUs Over (encontrados físicamente pero no en SAP):\n`;
+            body += overHUs.map(hu => `   - ${hu}`).join('\n');
+        }
+
+        if(shortHUs.length){
+            body += `\n\n🔹 HUs Short (en SAP pero no encontrados físicamente):\n`;
+            body += shortHUs.map(hu => `   - ${hu}`).join('\n');
+        }
+
+        if(!overHUs.length && !shortHUs.length){
+            body += `\n\n✅ No se detectaron diferencias entre los HU físicos y los registrados en SAP.`;
+        }
+
+        // body += `\n\nAuditor: ${auditor}\nLinea: ${linea}\nCarrier: ${carrier}`;
+
+        // Adjuntar Excel
         const { blob, filename } = generateExcel();
-        if (blob.size === 0) throw new Error('El archivo Excel está vacío');
+        if(blob.size === 0) throw new Error('El archivo Excel está vacío');
 
         const formData = new FormData();
         formData.append('subject', subject);
         formData.append('body', body);
-        formData.append('to', 'johan.lozoya@essilorluxottica.id');
+        formData.append('to', 'johan.lozoya@essilorluxottica.id'); // temporal
         formData.append('excel_file', blob, filename);
+        formData.append('over_hus', JSON.stringify(overHUs));
+        formData.append('short_hus', JSON.stringify(shortHUs));
+        formData.append('huFisicos', huFisicos);
+        formData.append('huRegistrados', huRegistrados);
+        formData.append('linea', linea);
+        formData.append('carrier', carrier);
 
         const res = await fetch('/GaylorTracker/send_report', { method: 'POST', body: formData });
-        
-        const contentType = res.headers.get('content-type');
-        if (!contentType || !contentType.includes('application/json')) {
-            const text = await res.text();
-            throw new Error(`Respuesta inesperada del servidor: ${text.substring(0, 100)}...`);
-        }
-
         const data = await res.json();
-        if (!res.ok) throw new Error(data.message || 'Error del servidor');
+        if(!res.ok) throw new Error(data.message || 'Error del servidor');
 
         alert(data.message);
         reportModal.style.display = 'none';
         reportForm.reset();
     } catch(err) {
         alert('Error enviando reporte: ' + err.message);
-        console.error('Error completo:', err);
+        console.error(err);
     } finally {
-        submitBtn.disabled = false;                 // 🔓 vuelve a habilitar
-        submitBtn.textContent = originalText;       // restaura el texto
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
     }
 });
 
+// Función para exportar TODOS los datos históricos de la API
+async function exportHistoricalData() {
+    const exportBtn = document.getElementById('exportHistoricalBtn');
+    const originalText = exportBtn.textContent;
+    
+    try {
+        // Deshabilitar botón durante la exportación
+        exportBtn.disabled = true;
+        exportBtn.textContent = "Descargando datos...";
+        
+        // URL de la API de auditorías (sin filtros)
+        const API_URL = "http://10.81.153.123:8000/api/gaylor-auditory/";
+        
+        // Mostrar mensaje de carga en la alertBox
+        if (alertBox) {
+            alertBox.textContent = '📥 Descargando datos históricos de la API...';
+            alertBox.style.color = '#fff';
+            alertBox.style.backgroundColor = '#9c27b0';
+            alertBox.style.padding = '10px';
+            alertBox.style.borderRadius = '5px';
+            alertBox.style.marginTop = '10px';
+            alertBox.style.display = 'block';
+        }
+        
+        console.log('🔍 Solicitando datos históricos desde:', API_URL);
+        
+        // Obtener datos de la API con timeout
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 segundos timeout
+        
+        const response = await fetch(API_URL, {
+            signal: controller.signal
+        });
+        
+        clearTimeout(timeoutId);
+        
+        if (!response.ok) {
+            throw new Error(`Error HTTP: ${response.status} - ${response.statusText}`);
+        }
+        
+        const allData = await response.json();
+        console.log(`✅ Datos recibidos: ${allData.length} registros históricos`);
+        
+        if (!Array.isArray(allData)) {
+            throw new Error('La API no devolvió un array de datos');
+        }
+        
+        if (allData.length === 0) {
+            throw new Error('No hay datos históricos disponibles');
+        }
+        
+        // Crear libro de Excel
+        const timestamp = new Date().toISOString().replace(/[-:T]/g, '').split('.')[0];
+        const filename = `Auditorias_Historicas_${timestamp}.xlsx`;
+        const wb = XLSX.utils.book_new();
+        
+        // ==================== HOJA 1: DATOS COMPLETOS ====================
+        const ws1_data = [
+            ["Packing Object", "Cantidad (Qty)", "Auditor", "Over", "Short", 
+             "Fecha/Hora", "Año", "Trimestre", "Semana", "Diferencia", "Eficiencia (%)"]
+        ];
+        
+        allData.forEach(item => {
+            const diferencia = (item.over || 0) + (item.short || 0);
+            const qty = item.qty || 0;
+            const eficiencia = qty > 0 ? 
+                ((1 - (diferencia / qty)) * 100).toFixed(2) : 
+                0;
+            
+            // Formatear fecha
+            let fechaFormateada = 'N/A';
+            if (item.dateTime) {
+                try {
+                    const fecha = new Date(item.dateTime);
+                    fechaFormateada = fecha.toLocaleString('es-MX', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit'
+                    });
+                } catch (e) {
+                    fechaFormateada = item.dateTime;
+                }
+            }
+            
+            ws1_data.push([
+                item.packing_object || '',
+                qty,
+                item.auditor || 'Desconocido',
+                item.over || 0,
+                item.short || 0,
+                fechaFormateada,
+                item.year || '',
+                item.quarter || '',
+                item.weekNumber || '',
+                diferencia,
+                eficiencia
+            ]);
+        });
+        
+        XLSX.utils.book_append_sheet(
+            wb, 
+            XLSX.utils.aoa_to_sheet(ws1_data), 
+            "Datos Completos"
+        );
+        
+        // ==================== HOJA 2: RESUMEN POR PACKING OBJECT ====================
+        const summaryMap = new Map();
+        
+        allData.forEach(item => {
+            const po = item.packing_object;
+            if (!po) return;
+            
+            if (!summaryMap.has(po)) {
+                summaryMap.set(po, {
+                    packing_object: po,
+                    total_qty: 0,
+                    total_over: 0,
+                    total_short: 0,
+                    count: 0,
+                    first_date: item.dateTime,
+                    last_date: item.dateTime,
+                    auditors: new Set()
+                });
+            }
+            
+            const summary = summaryMap.get(po);
+            summary.total_qty += item.qty || 0;
+            summary.total_over += item.over || 0;
+            summary.total_short += item.short || 0;
+            summary.count += 1;
+            
+            if (item.auditor) {
+                summary.auditors.add(item.auditor);
+            }
+            
+            // Actualizar fechas
+            if (item.dateTime) {
+                try {
+                    const itemDate = new Date(item.dateTime);
+                    const currentFirst = new Date(summary.first_date);
+                    const currentLast = new Date(summary.last_date);
+                    
+                    if (itemDate < currentFirst || summary.first_date === 'N/A') {
+                        summary.first_date = item.dateTime;
+                    }
+                    if (itemDate > currentLast || summary.last_date === 'N/A') {
+                        summary.last_date = item.dateTime;
+                    }
+                } catch (e) {
+                    // Si hay error con fechas, mantener las existentes
+                }
+            }
+        });
+        
+        const ws2_data = [
+            ["Packing Object", "Total Audiciones", "Total HU", "Total Over", 
+             "Total Short", "Total Diferencias", "Eficiencia (%)", 
+             "Primera Auditoría", "Última Auditoría", "Auditores"]
+        ];
+        
+        // Ordenar por Packing Object
+        const sortedSummary = Array.from(summaryMap.values()).sort((a, b) => 
+            a.packing_object.localeCompare(b.packing_object)
+        );
+        
+        sortedSummary.forEach(summary => {
+            const totalDiferencias = summary.total_over + summary.total_short;
+            const eficienciaPromedio = summary.total_qty > 0 ? 
+                ((1 - (totalDiferencias / summary.total_qty)) * 100).toFixed(2) : 
+                0;
+            
+            // Formatear fechas
+            let primeraAuditoria = 'N/A';
+            let ultimaAuditoria = 'N/A';
+            
+            try {
+                if (summary.first_date && summary.first_date !== 'N/A') {
+                    const fecha = new Date(summary.first_date);
+                    primeraAuditoria = fecha.toLocaleDateString('es-MX');
+                }
+                if (summary.last_date && summary.last_date !== 'N/A') {
+                    const fecha = new Date(summary.last_date);
+                    ultimaAuditoria = fecha.toLocaleDateString('es-MX');
+                }
+            } catch (e) {
+                // Si hay error, mantener N/A
+            }
+            
+            ws2_data.push([
+                summary.packing_object,
+                summary.count,
+                summary.total_qty,
+                summary.total_over,
+                summary.total_short,
+                totalDiferencias,
+                eficienciaPromedio,
+                primeraAuditoria,
+                ultimaAuditoria,
+                Array.from(summary.auditors).join(', ') || 'Desconocido'
+            ]);
+        });
+        
+        XLSX.utils.book_append_sheet(
+            wb, 
+            XLSX.utils.aoa_to_sheet(ws2_data), 
+            "Resumen por PO"
+        );
+        
+        // ==================== HOJA 3: RESUMEN SEMANAL/ANUAL ====================
+        const weeklyMap = new Map();
+        
+        allData.forEach(item => {
+            const year = item.year || new Date().getFullYear();
+            const week = item.weekNumber || 1;
+            const key = `${year}-W${week.toString().padStart(2, '0')}`;
+            
+            if (!weeklyMap.has(key)) {
+                weeklyMap.set(key, {
+                    periodo: key,
+                    year: year,
+                    week: week,
+                    total_qty: 0,
+                    total_over: 0,
+                    total_short: 0,
+                    count: 0
+                });
+            }
+            
+            const weekly = weeklyMap.get(key);
+            weekly.total_qty += item.qty || 0;
+            weekly.total_over += item.over || 0;
+            weekly.total_short += item.short || 0;
+            weekly.count += 1;
+        });
+        
+        const ws3_data = [
+            ["Periodo", "Año", "Semana", "Total Audiciones", "Total HU", 
+             "Total Over", "Total Short", "Total Diferencias", "Eficiencia (%)"]
+        ];
+        
+        // Ordenar por año y semana
+        const sortedWeekly = Array.from(weeklyMap.values()).sort((a, b) => {
+            if (a.year !== b.year) return a.year - b.year;
+            return a.week - b.week;
+        });
+        
+        sortedWeekly.forEach(weekly => {
+            const totalDiferencias = weekly.total_over + weekly.total_short;
+            const eficiencia = weekly.total_qty > 0 ? 
+                ((1 - (totalDiferencias / weekly.total_qty)) * 100).toFixed(2) : 
+                0;
+            
+            ws3_data.push([
+                weekly.periodo,
+                weekly.year,
+                weekly.week,
+                weekly.count,
+                weekly.total_qty,
+                weekly.total_over,
+                weekly.total_short,
+                totalDiferencias,
+                eficiencia
+            ]);
+        });
+        
+        XLSX.utils.book_append_sheet(
+            wb, 
+            XLSX.utils.aoa_to_sheet(ws3_data), 
+            "Resumen Semanal"
+        );
+        
+        // ==================== HOJA 4: ESTADÍSTICAS GENERALES ====================
+        const totalQty = allData.reduce((sum, item) => sum + (item.qty || 0), 0);
+        const totalOver = allData.reduce((sum, item) => sum + (item.over || 0), 0);
+        const totalShort = allData.reduce((sum, item) => sum + (item.short || 0), 0);
+        const totalDiferencias = totalOver + totalShort;
+        const eficienciaGeneral = totalQty > 0 ? 
+            ((1 - (totalDiferencias / totalQty)) * 100).toFixed(2) : 
+            0;
+        
+        // Encontrar fechas extremas
+        const fechasValidas = allData
+            .filter(item => item.dateTime)
+            .map(item => {
+                try {
+                    return new Date(item.dateTime);
+                } catch (e) {
+                    return null;
+                }
+            })
+            .filter(date => date instanceof Date && !isNaN(date));
+        
+        let fechaMin = 'N/A';
+        let fechaMax = 'N/A';
+        
+        if (fechasValidas.length > 0) {
+            fechaMin = new Date(Math.min(...fechasValidas)).toLocaleDateString('es-MX');
+            fechaMax = new Date(Math.max(...fechasValidas)).toLocaleDateString('es-MX');
+        }
+        
+        // Contar auditores únicos
+        const auditores = new Set();
+        allData.forEach(item => {
+            if (item.auditor && item.auditor.trim() !== '') {
+                auditores.add(item.auditor.trim());
+            }
+        });
+        
+        // Contar packing objects únicos
+        const packingObjects = new Set();
+        allData.forEach(item => {
+            if (item.packing_object && item.packing_object.trim() !== '') {
+                packingObjects.add(item.packing_object.trim());
+            }
+        });
+        
+        const ws4_data = [
+            ["ESTADÍSTICAS GENERALES - AUDITORÍAS GAYLOR"],
+            ["", ""],
+            ["PERIODO ANALIZADO:", ""],
+            ["Desde:", fechaMin],
+            ["Hasta:", fechaMax],
+            ["", ""],
+            ["TOTALES:", ""],
+            ["Total de auditorías:", allData.length],
+            ["Total de HU auditados:", totalQty],
+            ["Total Over:", totalOver],
+            ["Total Short:", totalShort],
+            ["Total diferencias:", totalDiferencias],
+            ["Eficiencia general:", eficienciaGeneral + "%"],
+            ["", ""],
+            ["DISTRIBUCIÓN:", ""],
+            ["Packing Objects únicos:", packingObjects.size],
+            ["Auditores únicos:", auditores.size],
+            ["", ""],
+            ["PROMEDIOS POR AUDITORÍA:", ""],
+            ["HU por auditoría:", (totalQty / allData.length).toFixed(2)],
+            ["Over por auditoría:", (totalOver / allData.length).toFixed(2)],
+            ["Short por auditoría:", (totalShort / allData.length).toFixed(2)],
+            ["Diferencias por auditoría:", (totalDiferencias / allData.length).toFixed(2)],
+            ["", ""],
+            ["LISTA DE AUDITORES:", ""]
+        ];
+        
+        // Agregar auditores a la lista
+        Array.from(auditores).sort().forEach(auditor => {
+            ws4_data.push([auditor, ""]);
+        });
+        
+        ws4_data.push(
+            ["", ""],
+            ["TOP 5 PACKING OBJECTS CON MÁS AUDITORÍAS:", ""]
+        );
+        
+        // Top 5 packing objects por cantidad de auditorías
+        const poCounts = {};
+        allData.forEach(item => {
+            const po = item.packing_object;
+            if (po) {
+                poCounts[po] = (poCounts[po] || 0) + 1;
+            }
+        });
+        
+        const top5PO = Object.entries(poCounts)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 5);
+        
+        top5PO.forEach(([po, count], index) => {
+            ws4_data.push([`${index + 1}. ${po}`, `${count} auditorías`]);
+        });
+        
+        XLSX.utils.book_append_sheet(
+            wb, 
+            XLSX.utils.aoa_to_sheet(ws4_data), 
+            "Estadísticas"
+        );
+        
+        // ==================== HOJA 5: DETALLE POR AUDITOR ====================
+        const auditorMap = new Map();
+        
+        allData.forEach(item => {
+            const auditor = item.auditor || 'Desconocido';
+            if (!auditorMap.has(auditor)) {
+                auditorMap.set(auditor, {
+                    auditor: auditor,
+                    total_qty: 0,
+                    total_over: 0,
+                    total_short: 0,
+                    count: 0,
+                    packing_objects: new Set()
+                });
+            }
+            
+            const auditorData = auditorMap.get(auditor);
+            auditorData.total_qty += item.qty || 0;
+            auditorData.total_over += item.over || 0;
+            auditorData.total_short += item.short || 0;
+            auditorData.count += 1;
+            
+            if (item.packing_object) {
+                auditorData.packing_objects.add(item.packing_object);
+            }
+        });
+        
+        const ws5_data = [
+            ["Auditor", "Total Audiciones", "Total HU", "Total Over", 
+             "Total Short", "Total Diferencias", "Eficiencia (%)", 
+             "Packing Objects Auditados"]
+        ];
+        
+        const sortedAuditors = Array.from(auditorMap.values()).sort((a, b) => 
+            b.count - a.count  // Ordenar por cantidad de auditorías
+        );
+        
+        sortedAuditors.forEach(auditorData => {
+            const totalDiferencias = auditorData.total_over + auditorData.total_short;
+            const eficiencia = auditorData.total_qty > 0 ? 
+                ((1 - (totalDiferencias / auditorData.total_qty)) * 100).toFixed(2) : 
+                0;
+            
+            ws5_data.push([
+                auditorData.auditor,
+                auditorData.count,
+                auditorData.total_qty,
+                auditorData.total_over,
+                auditorData.total_short,
+                totalDiferencias,
+                eficiencia,
+                Array.from(auditorData.packing_objects).join(', ')
+            ]);
+        });
+        
+        XLSX.utils.book_append_sheet(
+            wb, 
+            XLSX.utils.aoa_to_sheet(ws5_data), 
+            "Por Auditor"
+        );
+        
+        // ==================== GENERAR Y DESCARGAR ARCHIVO ====================
+        const wbout = XLSX.write(wb, { 
+            bookType: 'xlsx', 
+            type: 'array',
+            bookSST: true
+        });
+        
+        const blob = new Blob([wbout], { 
+            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' 
+        });
+        
+        // Crear enlace de descarga
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+        
+        // Simular clic para descargar
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        // Liberar memoria
+        setTimeout(() => URL.revokeObjectURL(link.href), 100);
+        
+        // Mensaje de éxito
+        if (alertBox) {
+            alertBox.textContent = `✅ Exportado: ${allData.length} registros históricos`;
+            alertBox.style.backgroundColor = '#4caf50';
+            
+            // Ocultar mensaje después de 5 segundos
+            setTimeout(() => {
+                alertBox.style.display = 'none';
+            }, 5000);
+        }
+        
+        console.log(`📊 Excel generado exitosamente: ${filename}`);
+        console.log(`   - Registros: ${allData.length}`);
+        console.log(`   - Hojas: 5`);
+        console.log(`   - Tamaño: ${(blob.size / 1024 / 1024).toFixed(2)} MB`);
+        
+        // Mostrar alerta de éxito
+        alert(`✅ Exportación completada\n\n📊 ${allData.length} registros históricos\n📁 ${filename}\n\nEl archivo se ha descargado automáticamente.`);
+        
+    } catch (error) {
+        console.error('❌ Error exportando datos históricos:', error);
+        
+        // Mostrar error en la alertBox
+        if (alertBox) {
+            alertBox.textContent = `❌ Error: ${error.message}`;
+            alertBox.style.backgroundColor = '#f44336';
+            alertBox.style.display = 'block';
+            
+            setTimeout(() => {
+                alertBox.style.display = 'none';
+            }, 5000);
+        }
+        
+        // Mostrar alerta de error
+        alert(`❌ Error al exportar datos:\n\n${error.message}\n\nVerifica la conexión con la API: http://10.81.153.123:8000/api/gaylor-auditory/`);
+        
+    } finally {
+        // Restaurar botón
+        exportBtn.disabled = false;
+        exportBtn.textContent = originalText;
+    }
+}
+
+// Event listener para el nuevo botón
+document.getElementById('exportHistoricalBtn').addEventListener('click', exportHistoricalData);
 </script>
 
 
 
+<script>
+// Agregar este evento al final del script
+document.getElementById('dashboardBtn').addEventListener('click', function() {
+    window.location.href = "{{ url_for('gaylorTracker.dashboard') }}";
+});
+</script>
 
 
 {% endblock %}

@@ -1,10 +1,17 @@
 <nav>
   <ul style="display: flex; align-items: center;">
 
-    <li><a href="{{ url_for('home') }}">Home</a></li>
-    <li><a href="{{ url_for('landing') }}">About</a></li>
-    <li><a href="#">Sitios web</a>
-      <ul>
+    <li class="dropdown">
+      <a href="{{ url_for('home') }}">Home</a>
+    </li>
+
+    <li class="dropdown">
+      <a href="{{ url_for('landing') }}">About</a>
+    </li>
+
+    <li class="dropdown">
+      <a href="#">Sitios web</a>
+      <ul class="submenu">
         <li><a href="{{ url_for('cubo') }}">Labels position</a></li>
         <li><a href="{{ url_for('infoship') }}">Infoship</a></li>
         <li><a href="{{ url_for('VisualAID.index') }}">VisualAID</a></li>
@@ -12,20 +19,14 @@
         <li><a href="{{ url_for('ShippingClose.index') }}">ShippingClose</a></li>
         <li><a href="{{ url_for('gaylorTracker.index') }}">GaylorTracker</a></li>
         <li><a href="{{ url_for('confirmationTracker.index') }}">HU Scanner</a></li>
+        <li><a href="{{ url_for('inboundVisualizer.index') }}">Inbound Visualizer</a></li>
       </ul>
     </li>
-    <!-- <li><a href="#">Contact</a>
-      <ul>
-        <li><a href="#">Map</a></li>
-        <li><a href="#">Form</a></li>
-      </ul>
-    </li> -->
 
-    <!-- Este item se empuja a la derecha con margin-left auto -->
-    <li style="margin-left: auto; position: relative;">
+    <li style="margin-left: auto;" class="dropdown">
       {% if session.usuario %}
         <a href="#">{{ session.usuario }}</a>
-        <ul>
+        <ul class="submenu right">
           <li>
             <form action="{{ url_for('auth.logout') }}" method="GET" style="margin: 0;">
               <button type="submit" class="btn-logout">Cerrar sesión</button>
@@ -39,3 +40,47 @@
 
   </ul>
 </nav>
+<style>
+  /* Los <li> con submenú ahora son contenedores relativos */
+.dropdown {
+  position: relative;
+}
+
+/* El submenú no ocupa espacio en el flex */
+.submenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+
+  display: none;
+  background: black;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border: 1px solid black;
+  min-width: 180px;
+}
+
+/* Para el menú del usuario alineado a la derecha */
+.submenu.right {
+  right: 0;
+  left: auto;
+}
+
+.dropdown:hover .submenu {
+  display: block;
+}
+
+.submenu li a {
+  display: block;
+  padding: 10px 15px;
+  color: white;
+  text-decoration: none;
+}
+
+.submenu li a:hover {
+  background: white;
+  color: black;
+}
+
+</style>

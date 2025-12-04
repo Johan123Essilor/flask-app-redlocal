@@ -1,0 +1,456 @@
+{% extends "index.html" %}
+{% block title %}Inbound Visualizer{% endblock %}
+{% block header_title %}Inbound Visualizer{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/gaylortracker.css') }}">
+<!-- SheetJS -->
+<script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+<style>
+.completed {
+  background-color: #4CAF50 !important;
+}
+</style>
+
+<div class="sop-container">
+
+  <!-- Formulario de búsqueda -->
+  <form method="GET" action="{{ url_for('inboundVisualizer.index') }}" class="filter-form">
+    <input type="text" name="hu_number" placeholder="Buscar HU Number" value="{{ filter_HU or '' }}">
+    <button type="submit">Buscar</button>
+  </form>
+
+
+{% if filter_HU %}
+  <p><strong>Total resultados:</strong> {{ total_resultados }}</p>
+  <div id="alertBox" class="missing-alert"></div>
+{% endif %}
+
+
+<!-- <div class="scan-hu">
+  <input type="text" id="huInput" placeholder="Escanear HU aquí" autofocus>
+  <button type="button" id="showOverBtn">Mostrar HUs Over</button>
+  <button type="button" id="markShortBtn">Marcar como Short</button>
+
+  <div class="spacer"></div>
+
+  <button type="button" id="exportExcel" class="export-btn">Exportar a Excel</button>
+
+</div> -->
+
+  <!-- Tabla de resultados -->
+  <div class="table-container">
+    <table id="huTable">
+      <thead>
+        <tr>
+          <th>Handling Unit</th>
+          <th>Cont Id</th>
+          <th>Material</th>
+          <th>Grid Value</th>
+          <th>Stock Category</th>
+          <th>Quantity</th>
+          <th>Object</th>
+          <th>Object Group Position</th>
+        </tr>
+      </thead>
+<tbody>
+  {% for r in registros %}
+    <tr data-id="{{ r.id }}" data-completo="{{ r.completo }}">
+      <td>{{ r.hu_number }}</td>
+      <td>{{ r.cont_id }}</td>
+      <td>{{ r.material }}</td>
+      <td>{{ r.grid_value }}</td>
+      <td>{{ r.stock_category }}</td>
+      <td>{{ r.quantity }}</td>
+      <td>{{ r.object }}</td>
+      <td>{{ r.object_group_position }}</td>
+    </tr>
+  {% endfor %}
+</tbody>
+
+
+
+    </table>
+  </div>
+</div>
+
+<!-- Modal HUs Over -->
+<div id="overModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h3>HUs Over (escaneados pero no encontrados)</h3>
+    <div id="overListContainer" style="max-height:300px; overflow-y:auto;"></div>
+  </div>
+</div>
+
+
+<!-- Modal Reporte -->
+<div id="reportModal" class="modal">
+  <div class="modal-content">
+    <span class="closeReport">&times;</span>
+    <h3>Reporte de Auditoría</h3>
+    <form id="reportForm">
+      <label>Packing Object:</label>
+      <input type="text" id="reportPacking" value="{{ filter_HU or '' }}" readonly><br><br>
+
+      <label>HU físicos:</label>
+      <input type="text" id="reportHUfisicos" placeholder="Ingrese HU físicos"><br><br>
+
+
+      <!-- Total HU en SAP -->
+      <input type="hidden" id="reportHUregistrados" value="{{ total_resultados or 0 }}">
+
+      <label>Linea:</label>
+      <input type="text" id="reportLinea" value=""><br><br>
+
+      <label>Carrier:</label>
+      <select id="reportCarrier">
+        <option value="DHLINTL">DHLINTL</option>
+        <option value="DHL MX">DHL MX</option>
+        <option value="UPS NEXT DAY">UPS NEXT DAY</option>
+        <option value="DHL GLOBAL">DHL GLOBAL</option>
+        <option value="UPSG / UPS 2DAY">UPSG / UPS 2DAY</option>
+        <option value="UPS WORLD WIDE">UPS WORLD WIDE</option>
+        <option value="UPS AIR MX">UPS AIR MX</option>
+        <option value="DHL DOMESTIC MX">DHL DOMESTIC MX</option>
+        <option value="GLSSAT">GLSSAT</option>
+      </select><br><br>
+
+      <button type="submit">Enviar Reporte</button>
+    </form>
+  </div>
+</div>
+<script>
+// --- Al cargar la página, marcar las filas completas ---
+document.addEventListener('DOMContentLoaded', () => {
+    const rows = document.querySelectorAll('#huTable tbody tr');
+    rows.forEach(row => {
+        const completo = row.getAttribute('data-completo') === 'True';
+        if (completo) {
+            row.style.backgroundColor = '#45a049'; // verde
+        }
+    });
+});
+</script>
+
+<script>
+  
+  // ------------------ MARCAR COMPLETADO ------------------
+// ------------------ ACTUALIZAR COMPLETO AL CLICK ------------------
+const rows = huTable.getElementsByTagName('tr');
+
+for (let i = 1; i < rows.length; i++) {
+    rows[i].style.cursor = 'pointer'; // indicar que es clickeable
+    rows[i].addEventListener('click', async function() {
+        const row = this;
+        const record_id = row.getAttribute('data-id'); // asegúrate de que cada fila tenga data-id
+        const hu_number = row.cells[0].textContent.trim(); // primer columna hu_number
+
+        if (!record_id) {
+            console.error('❌ Fila sin data-id');
+            return;
+        }
+
+        // Determinar el nuevo valor de completo (toggle)
+        const currentCompleto = row.getAttribute('data-completo') === 'True';
+        const newCompleto = !currentCompleto;
+
+        console.log(`Intentando actualizar record_id ${record_id} a completo=${newCompleto}`);
+
+        try {
+            const res = await fetch('http://10.81.153.123:8000/api/inboundVisualizer/update_completo', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({
+                    id: record_id,
+                    completo: newCompleto
+                })
+            });
+
+
+
+            if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+            const data = await res.json();
+            console.log('✅ Respuesta del servidor:', data);
+
+            // Actualizar UI
+            row.setAttribute('data-completo', newCompleto);
+            row.style.backgroundColor = newCompleto ? '#45a049' : ''; // verde si true, normal si false
+        } catch (err) {
+            console.error('❌ Error al actualizar:', err);
+        }
+    });
+}
+
+
+// Función para obtener CSRF cookie
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+</script>
+
+<!-- <script>
+const huInput = document.getElementById('huInput');
+const huTable = document.getElementById('huTable');
+const alertBox = document.getElementById('alertBox');
+const showOverBtn = document.getElementById('showOverBtn');
+const markShortBtn = document.getElementById('markShortBtn');
+const modal = document.getElementById('overModal');
+const closeModal = document.querySelector('.close');
+const overListContainer = document.getElementById('overListContainer'); // Cambiado del textarea
+const exportExcelBtn = document.getElementById('exportExcel');
+const reportBtn = document.getElementById('reportBtn');
+const reportModal = document.getElementById('reportModal');
+const closeReportModal = document.querySelector('.closeReport');
+const reportForm = document.getElementById('reportForm');
+
+let overHUs = [];
+let shortHUs = [];
+let scannedHUs = new Set();
+
+// ------------------ GENERAR EXCEL ------------------
+function generateExcel() {
+    const packingObject = document.querySelector('input[name="packing_object"]').value || 'PackingObject';
+    const timestamp = new Date().toISOString().replace(/[-:T]/g, '').split('.')[0];
+    const filename = `${packingObject}_scanResults_${timestamp}.xlsx`;
+    const wb = XLSX.utils.book_new();
+
+    // --- Over HUs ---
+    const ws1_data = [["Packing Object","Handling Unit"]];
+    overHUs.forEach(hu => ws1_data.push([packingObject, hu]));
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(ws1_data), "Over HUs");
+
+    // --- Encontrados ---
+    const ws2_data = [["Packing Object","Handling Unit","Ubicación"]];
+    const rows = huTable.getElementsByTagName('tr');
+    for(let i=1;i<rows.length;i++){
+        const huCell = rows[i].cells[1].textContent.trim();
+        if(scannedHUs.has(huCell)){
+            ws2_data.push([rows[i].cells[0].textContent.trim(), huCell, rows[i].cells[2].textContent.trim()]);
+        }
+    }
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(ws2_data), "Encontrados");
+
+    // --- Short HUs ---
+    const ws3_data = [["Packing Object","Handling Unit","Ubicación"]];
+    shortHUs.forEach(hu => ws3_data.push([packingObject, hu, ""])); // ✅ convertir string a array
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(ws3_data), "Short HUs");
+
+    // --- Todos ---
+    const ws4_data = [["Packing Object","Handling Unit","Ubicación"]];
+    for(let i=1;i<rows.length;i++){
+        ws4_data.push([rows[i].cells[0].textContent.trim(), rows[i].cells[1].textContent.trim(), rows[i].cells[2].textContent.trim()]);
+    }
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(ws4_data), "Todos HUs (PO)");
+
+    const wbout = XLSX.write(wb, { bookType:'xlsx', type:'array' });
+    const blob = new Blob([wbout], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+    return { blob, filename };
+}
+
+// ------------------ ESCANEO HU ------------------
+huInput.addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+        event.preventDefault();
+        const hu = huInput.value.trim();
+        if (!hu) return;
+
+        const rows = huTable.getElementsByTagName('tr');
+        let foundInTable = false;
+
+        for (let i = 1; i < rows.length; i++) {
+            const huCell = rows[i].cells[1];
+            if (huCell.textContent.trim() === hu) {
+                rows[i].style.backgroundColor = '#d4edda';
+                if (scannedHUs.has(hu)) {
+                    overHUs.push(hu + " (repetido)");
+                    alertBox.textContent = 'HU Repetido enviado a Over: ' + hu;
+                    alertBox.style.color = '#fff';
+                    alertBox.style.backgroundColor = '#ff9800';
+                    alertBox.style.padding = '10px';
+                    alertBox.style.borderRadius = '5px';
+                    alertBox.style.marginTop = '10px';
+                } else {
+                    scannedHUs.add(hu);
+                }
+                foundInTable = true;
+                break;
+            }
+        }
+
+        if (!foundInTable) {
+            overHUs.push(hu);
+            alertBox.textContent = 'HU Over: ' + hu;
+            alertBox.style.color = '#fff';
+            alertBox.style.backgroundColor = '#ff9800';
+            alertBox.style.padding = '10px';
+            alertBox.style.borderRadius = '5px';
+            alertBox.style.marginTop = '10px';
+        }
+
+        huInput.value = '';
+    }
+});
+
+// ------------------ MOSTRAR OVER CON OPCIÓN ELIMINAR ------------------
+showOverBtn.addEventListener('click', () => {
+    if (overHUs.length === 0) { alert('No hay HUs Over.'); return; }
+    overListContainer.innerHTML = '';
+    overHUs.forEach((hu, index) => {
+        const div = document.createElement('div');
+        div.style.display = 'flex';
+        div.style.alignItems = 'center';
+        div.style.marginBottom = '5px';
+
+        const span = document.createElement('span');
+        span.textContent = hu;
+        span.style.flexGrow = '1';
+
+        const btn = document.createElement('button');
+        btn.textContent = 'Eliminar';
+        btn.style.marginLeft = '10px';
+        btn.addEventListener('click', () => {
+            overHUs.splice(index, 1);
+            div.remove();
+        });
+
+        div.appendChild(span);
+        div.appendChild(btn);
+        overListContainer.appendChild(div);
+    });
+    modal.style.display = 'block';
+});
+
+// Cerrar modal
+closeModal.addEventListener('click', () => { modal.style.display = 'none'; });
+window.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
+
+// ------------------ MARCAR SHORT ------------------
+markShortBtn.addEventListener('click', () => {
+    shortHUs = [];
+    const rows = huTable.getElementsByTagName('tr');
+    for (let i = 1; i < rows.length; i++) {
+        const huCell = rows[i].cells[1].textContent.trim();
+        if (!scannedHUs.has(huCell)) {
+            rows[i].style.backgroundColor = '#f8d7da';
+            shortHUs.push(huCell); // ✅ solo el HU
+        }
+    }
+    alert("Se marcaron " + shortHUs.length + " HUs como Short.");
+});
+
+// ------------------ EXPORTAR EXCEL ------------------
+exportExcelBtn.addEventListener('click', () => {
+    const { blob, filename } = generateExcel();
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    link.click();
+});
+
+// ------------------ REPORTES ------------------
+reportBtn.addEventListener('click', () => { reportModal.style.display = 'block'; });
+closeReportModal.addEventListener('click', () => { reportModal.style.display = 'none'; });
+window.addEventListener('click', (e) => { if (e.target === reportModal) reportModal.style.display = 'none'; });
+
+function countRegisteredHUs(){ return scannedHUs.size; }
+
+reportForm.addEventListener('submit', async function(e){
+    e.preventDefault();
+    const submitBtn = reportForm.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    const originalText = submitBtn.textContent;
+    submitBtn.textContent = "Enviando...";
+
+    try {
+        const packingObject = document.getElementById('reportPacking').value;
+        const huFisicos = document.getElementById('reportHUfisicos').value;
+        const huRegistrados = document.getElementById('reportHUregistrados').value;
+        const linea = document.getElementById('reportLinea').value;
+        const carrier = document.getElementById('reportCarrier').value;
+        const auditor = "{{ usuario or 'Desconocido' }}";
+
+        let hallazgo = '';
+        if(overHUs.length && shortHUs.length) hallazgo = 'Over y Short';
+        else if(overHUs.length) hallazgo = 'Over';
+        else if(shortHUs.length) hallazgo = 'Short';
+        else hallazgo = 'Sin hallazgos';
+
+        const subject = `Reporte de auditoría - ${hallazgo} (${new Date().toLocaleString()})`;
+
+        // Construir cuerpo del mensaje
+        let body = `Se audita gaylord automático ${packingObject}, en donde se encuentran físicamente ${huFisicos} HU, y en SAP hay ${huRegistrados} HU.`;
+
+        if(overHUs.length){
+            body += `\n\n🔹 HUs Over (encontrados físicamente pero no en SAP):\n`;
+            body += overHUs.map(hu => `   - ${hu}`).join('\n');
+        }
+
+        if(shortHUs.length){
+            body += `\n\n🔹 HUs Short (en SAP pero no encontrados físicamente):\n`;
+            body += shortHUs.map(hu => `   - ${hu}`).join('\n');
+        }
+
+        if(!overHUs.length && !shortHUs.length){
+            body += `\n\n✅ No se detectaron diferencias entre los HU físicos y los registrados en SAP.`;
+        }
+
+        // body += `\n\nAuditor: ${auditor}\nLinea: ${linea}\nCarrier: ${carrier}`;
+
+        // Adjuntar Excel
+        const { blob, filename } = generateExcel();
+        if(blob.size === 0) throw new Error('El archivo Excel está vacío');
+
+        const formData = new FormData();
+        formData.append('subject', subject);
+        formData.append('body', body);
+        formData.append('to', 'johan.lozoya@essilorluxottica.id'); // temporal
+        formData.append('excel_file', blob, filename);
+        formData.append('over_hus', JSON.stringify(overHUs));
+        formData.append('short_hus', JSON.stringify(shortHUs));
+        formData.append('huFisicos', huFisicos);
+        formData.append('huRegistrados', huRegistrados);
+        formData.append('linea', linea);
+        formData.append('carrier', carrier);
+
+        const res = await fetch('/GaylorTracker/send_report', { method: 'POST', body: formData });
+        const data = await res.json();
+        if(!res.ok) throw new Error(data.message || 'Error del servidor');
+
+        alert(data.message);
+        reportModal.style.display = 'none';
+        reportForm.reset();
+    } catch(err) {
+        alert('Error enviando reporte: ' + err.message);
+        console.error(err);
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+    }
+});
+
+</script> -->
+
+
+
+
+
+
+{% endblock %}
+{% set header_title = "Inbound Visualizer" %}
